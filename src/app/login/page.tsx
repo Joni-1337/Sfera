@@ -3,6 +3,7 @@ import { LoginForms } from "@/components/auth/LoginForms";
 import { AuthShell } from "@/components/layout/AuthShell";
 
 const VERIFY_MESSAGES: Record<string, string> = {
+  success: "Email подтверждён. Войдите с паролем.",
   missing:
     "Ссылка подтверждения неполная. Войдите с паролем — если email уже подтверждён, вход откроется.",
   failed:
@@ -13,18 +14,23 @@ const VERIFY_MESSAGES: Record<string, string> = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ verify?: string; hint?: string }>;
+  searchParams: Promise<{ verify?: string; hint?: string; email?: string }>;
 }) {
   await resolveGuestSession();
-  const { verify, hint } = await searchParams;
+  const { verify, hint, email } = await searchParams;
   const verifyNotice =
     (verify && VERIFY_MESSAGES[verify]) ||
     (verify === "failed" && hint) ||
     null;
+  const isSuccess = verify === "success";
 
   return (
     <AuthShell title="Вход" subtitle="Ученик или преподаватель">
-      <LoginForms verifyNotice={verifyNotice} />
+      <LoginForms
+        verifyNotice={verifyNotice}
+        verifySuccess={isSuccess}
+        presetEmail={email?.trim().toLowerCase() ?? ""}
+      />
     </AuthShell>
   );
 }

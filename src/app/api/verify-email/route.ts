@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildSessionCookie } from "@/lib/auth";
 import { completeEmailVerification } from "@/lib/verify-email-login";
 
 function loginRedirect(request: NextRequest, params: Record<string, string>) {
@@ -14,9 +13,7 @@ export async function GET(request: NextRequest) {
   const token = request.nextUrl.searchParams.get("token")?.trim();
 
   if (!token) {
-    return loginRedirect(request, {
-      verify: "missing",
-    });
+    return loginRedirect(request, { verify: "missing" });
   }
 
   try {
@@ -29,16 +26,10 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    const cookie = await buildSessionCookie({
-      role: "teacher",
-      id: result.teacher.id,
-      name: result.teacher.fullName,
+    return loginRedirect(request, {
+      verify: "success",
       email: result.teacher.email,
     });
-
-    const response = NextResponse.redirect(new URL("/dashboard", request.url));
-    response.cookies.set(cookie.name, cookie.value, cookie.options);
-    return response;
   } catch (error) {
     console.error("[api/verify-email]", error);
     return loginRedirect(request, { verify: "server" });
