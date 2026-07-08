@@ -1,22 +1,25 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useActionState } from "react";
 import Link from "next/link";
 import { registerTeacher } from "@/lib/actions";
 import { SUBSCRIPTION_PRICE_RUB } from "@/lib/subscription-shared";
 import { CheckboxField } from "@/components/ui/Checkbox";
 
-export function RegisterForm({ localVerify = false }: { localVerify?: boolean }) {
-  const [error, setError] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
+type RegisterState = { error?: string } | null;
 
-  function handleSubmit(formData: FormData) {
-    setError(null);
-    startTransition(async () => {
-      const result = await registerTeacher(formData);
-      if (result?.error) setError(result.error);
-    });
-  }
+async function registerAction(
+  _prev: RegisterState,
+  formData: FormData
+): Promise<RegisterState> {
+  const result = await registerTeacher(formData);
+  if (result?.error) return { error: result.error };
+  return null;
+}
+
+export function RegisterForm({ localVerify = false }: { localVerify?: boolean }) {
+  const [state, formAction, pending] = useActionState(registerAction, null);
+  const error = state?.error ?? null;
 
   return (
     <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-2xl shadow-black/40">
@@ -35,7 +38,7 @@ export function RegisterForm({ localVerify = false }: { localVerify?: boolean })
         )}
       </p>
 
-      <form action={handleSubmit} className="space-y-4">
+      <form action={formAction} className="space-y-4">
         <div>
           <label className="mb-1.5 block text-sm text-text-secondary">
             ФИО

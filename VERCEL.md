@@ -71,7 +71,38 @@ npm run db:seed
 2. У регистратора домена — DNS по подсказкам Vercel (обычно A/CNAME)
 3. Обновите `APP_URL=https://sferaege.ru` в Vercel → Redeploy
 
-## 5. Email (Resend)
+## 5. Регистрация преподавателя (Resend)
+
+На production после регистрации уходит **письмо с подтверждением email**. Нужны переменные в Vercel:
+
+| Переменная | Значение |
+|------------|----------|
+| `RESEND_API_KEY` | API Keys → Create на [resend.com](https://resend.com) |
+| `EMAIL_FROM` | `СФЕРА <noreply@sferaege.ru>` |
+| `APP_URL` | `https://sferaege.ru` (или ваш `.vercel.app` URL) |
+
+### Подключить домен в Resend
+
+1. [resend.com/domains](https://resend.com/domains) → **Add Domain** → `sferaege.ru`
+2. Resend покажет DNS-записи (обычно **TXT** для DKIM и **MX** для отправки)
+3. В Timeweb → **Редактор DNS** → **+ Добавить запись** (A-запись Vercel `76.76.21.21` **не трогайте**)
+4. Дождитесь статуса **Verified** в Resend
+5. Vercel → **Redeploy**
+
+### Быстрый тест (до верификации домена)
+
+Без своего домена Resend шлёт письма **только на email вашего аккаунта Resend**.
+
+- `EMAIL_FROM` = `СФЕРА <onboarding@resend.dev>`
+- Регистрируйтесь на сайте с **тем же email**, что в Resend
+
+### Проверка
+
+1. `/register` → ФИО, email, пароль
+2. Страница «Проверьте почту»
+3. Ссылка в письме → `/verify-email` → вход в кабинет
+
+## 6. Email (Resend) — полная настройка
 
 После привязки домена — верифицируйте `sferaege.ru` в [resend.com](https://resend.com) и добавьте DNS-записи.
 

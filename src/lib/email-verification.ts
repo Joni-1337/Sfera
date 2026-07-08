@@ -74,6 +74,10 @@ export async function sendTeacherVerificationEmail(teacherId: string) {
     return { success: true as const, devLink: null };
   }
 
+  if (process.env.NODE_ENV === "production") {
+    return { error: "Почта не настроена. Добавьте RESEND_API_KEY в настройках сервера." as const };
+  }
+
   console.info("[email-verification] Dev link:", verifyUrl);
   return { success: true as const, devLink: verifyUrl };
 }
