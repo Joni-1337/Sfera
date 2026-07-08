@@ -17,7 +17,7 @@ function hashToken(token: string) {
 }
 
 export function buildVerificationUrl(token: string) {
-  return `${appBaseUrl()}/verify-email?token=${encodeURIComponent(token)}`;
+  return `${appBaseUrl()}/api/verify-email?token=${encodeURIComponent(token)}`;
 }
 
 export async function createEmailVerificationToken(teacherId: string) {

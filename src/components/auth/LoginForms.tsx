@@ -1,49 +1,47 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GraduationCap, User } from "lucide-react";
-import { loginStudent, loginTeacher } from "@/lib/actions";
+import { loginStudentFormAction, loginTeacherFormAction } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { CheckboxField } from "@/components/ui/Checkbox";
 
 export function LoginForms() {
+  const router = useRouter();
   const [mode, setMode] = useState<"student" | "teacher">("student");
-  const [error, setError] = useState<string | null>(null);
-  const [verifyEmail, setVerifyEmail] = useState<string | null>(null);
-  const [pending, startTransition] = useTransition();
+  const [teacherState, teacherAction, teacherPending] = useActionState(
+    loginTeacherFormAction,
+    null
+  );
+  const [studentState, studentAction, studentPending] = useActionState(
+    loginStudentFormAction,
+    null
+  );
 
-  function handleStudentSubmit(formData: FormData) {
-    setError(null);
-    startTransition(async () => {
-      const result = await loginStudent(formData);
-      if (result?.error) setError(result.error);
-    });
-  }
+  const state = mode === "teacher" ? teacherState : studentState;
+  const pending = mode === "teacher" ? teacherPending : studentPending;
+  const error = state?.error ?? null;
+  const verifyEmail =
+    mode === "teacher" && teacherState?.needsVerification
+      ? teacherState.email ?? null
+      : null;
 
-  function handleTeacherSubmit(formData: FormData) {
-    setError(null);
-    setVerifyEmail(null);
-    startTransition(async () => {
-      const result = await loginTeacher(formData);
-      if (result?.error) {
-        setError(result.error);
-        if ("needsVerification" in result && result.needsVerification && result.email) {
-          setVerifyEmail(result.email);
-        }
-      }
-    });
-  }
+  useEffect(() => {
+    if (teacherState?.redirectTo) router.push(teacherState.redirectTo);
+  }, [teacherState?.redirectTo, router]);
+
+  useEffect(() => {
+    if (studentState?.redirectTo) router.push(studentState.redirectTo);
+  }, [studentState?.redirectTo, router]);
 
   return (
     <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-2xl shadow-black/40">
       <div className="mb-6 flex rounded-xl bg-bg-elevated p-1">
         <button
           type="button"
-          onClick={() => {
-            setMode("student");
-            setError(null);
-          }}
+          onClick={() => setMode("student")}
           className={cn(
             "flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all",
             mode === "student"
@@ -56,10 +54,7 @@ export function LoginForms() {
         </button>
         <button
           type="button"
-          onClick={() => {
-            setMode("teacher");
-            setError(null);
-          }}
+          onClick={() => setMode("teacher")}
           className={cn(
             "flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium transition-all",
             mode === "teacher"
@@ -80,7 +75,7 @@ export function LoginForms() {
             Ключ доступа выдаёт преподаватель.
           </p>
 
-          <form action={handleStudentSubmit} className="space-y-4">
+          <form action={studentAction} className="space-y-4">
             <div>
               <label className="mb-1.5 block text-sm text-text-secondary">
                 Ваше имя
@@ -136,7 +131,7 @@ export function LoginForms() {
             Войдите в личный кабинет для управления группами и учениками.
           </p>
 
-          <form action={handleTeacherSubmit} className="space-y-4">
+          <form action={teacherAction} className="space-y-4">
             <div>
               <label className="mb-1.5 block text-sm text-text-secondary">
                 Email

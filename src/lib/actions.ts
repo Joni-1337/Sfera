@@ -10,7 +10,6 @@ import { trialEndDate, assertCanCreateGroup } from "@/lib/subscription";
 import {
   sendTeacherVerificationEmail,
   sendTeacherVerificationEmailByAddress,
-  verifyEmailToken,
 } from "@/lib/email-verification";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -116,7 +115,40 @@ async function registerTeacherCore(formData: FormData): Promise<RegisterFormStat
   return { redirectTo: `/register/check-email?${params.toString()}` };
 }
 
-export async function loginTeacher(formData: FormData) {
+export type LoginFormState = {
+  error?: string;
+  redirectTo?: string;
+  needsVerification?: boolean;
+  email?: string;
+} | null;
+
+export async function loginTeacherFormAction(
+  _prev: LoginFormState,
+  formData: FormData
+): Promise<LoginFormState> {
+  try {
+    return await loginTeacherCore(formData);
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error("[loginTeacherFormAction]", error);
+    return { error: "Ошибка сервера. Попробуйте позже." };
+  }
+}
+
+export async function loginStudentFormAction(
+  _prev: LoginFormState,
+  formData: FormData
+): Promise<LoginFormState> {
+  try {
+    return await loginStudentCore(formData);
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error("[loginStudentFormAction]", error);
+    return { error: "Ошибка сервера. Попробуйте позже." };
+  }
+}
+
+async function loginTeacherCore(formData: FormData): Promise<LoginFormState> {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
 
@@ -144,10 +176,10 @@ export async function loginTeacher(formData: FormData) {
     email: teacher.email,
   });
 
-  redirect("/dashboard");
+  return { redirectTo: "/dashboard" };
 }
 
-export async function loginStudent(formData: FormData) {
+async function loginStudentCore(formData: FormData): Promise<LoginFormState> {
   const fullName = String(formData.get("fullName") ?? "").trim();
   const accessKey = String(formData.get("accessKey") ?? "").trim().toUpperCase();
   const agreed = formData.get("agreed") === "on";
@@ -183,7 +215,7 @@ export async function loginStudent(formData: FormData) {
     groupName: student.group.name,
   });
 
-  redirect("/dashboard");
+  return { redirectTo: "/dashboard" };
 }
 
 export async function logout() {
@@ -207,32 +239,6 @@ export async function resendVerificationEmail(formData: FormData) {
     success: true,
     devLink: "devLink" in result ? result.devLink : null,
   };
-}
-
-export async function verifyEmailAndLogin(token: string) {
-  try {
-  const trimmed = token.trim();
-  if (!trimmed) {
-    return { error: "Ссылка недействительна" };
-  }
-
-  const result = await verifyEmailToken(trimmed);
-  if ("error" in result) {
-    return { error: result.error };
-  }
-
-  await createSession({
-    role: "teacher",
-    id: result.teacher.id,
-    name: result.teacher.fullName,
-    email: result.teacher.email,
-  });
-
-  return { success: true as const };
-  } catch (error) {
-    console.error("[verifyEmailAndLogin]", error);
-    return { error: "Ошибка сервера. Попробуйте войти вручную." };
-  }
 }
 
 export async function changeTeacherPassword(formData: FormData) {
