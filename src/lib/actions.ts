@@ -210,6 +210,7 @@ export async function resendVerificationEmail(formData: FormData) {
 }
 
 export async function verifyEmailAndLogin(token: string) {
+  try {
   const trimmed = token.trim();
   if (!trimmed) {
     return { error: "Ссылка недействительна" };
@@ -227,7 +228,11 @@ export async function verifyEmailAndLogin(token: string) {
     email: result.teacher.email,
   });
 
-  redirect("/dashboard");
+  return { success: true as const };
+  } catch (error) {
+    console.error("[verifyEmailAndLogin]", error);
+    return { error: "Ошибка сервера. Попробуйте войти вручную." };
+  }
 }
 
 export async function changeTeacherPassword(formData: FormData) {

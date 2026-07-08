@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { verifyEmailAndLogin } from "@/lib/actions";
 import { AuthShell } from "@/components/layout/AuthShell";
@@ -19,17 +21,23 @@ export default async function VerifyEmailPage({
     );
   }
 
-  const result = await verifyEmailAndLogin(token);
-  if (result?.error) {
-    return <VerifyEmailResult success={false} message={result.error} />;
-  }
+  try {
+    const result = await verifyEmailAndLogin(token);
+    if (result?.error) {
+      return <VerifyEmailResult success={false} message={result.error} />;
+    }
 
-  return (
-    <VerifyEmailResult
-      success
-      message="Email подтверждён. Сейчас откроется личный кабинет..."
-    />
-  );
+    redirect("/dashboard");
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error("[verify-email]", error);
+    return (
+      <VerifyEmailResult
+        success={false}
+        message="Ошибка сервера при подтверждении. Попробуйте войти вручную или запросите новое письмо."
+      />
+    );
+  }
 }
 
 function VerifyEmailResult({
