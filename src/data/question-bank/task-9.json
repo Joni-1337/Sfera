@@ -1,0 +1,1002 @@
+[
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "изл...гать",
+    "optionB": "к...снуться",
+    "optionC": "заг...релый",
+    "optionD": "отр...сль",
+    "correctOption": "A",
+    "explanation": "Излагать — перед Г пишется А (корень -лаг-)."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "предл...гать",
+    "optionB": "прик...сновение",
+    "optionC": "выр...щенный",
+    "optionD": "ск...чок",
+    "correctOption": "B",
+    "explanation": "Прикосновение — корень -кос-, нет суффикса -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "соб...рать",
+    "optionB": "ст...реть",
+    "optionC": "зам...рать",
+    "optionD": "бл...стеть",
+    "correctOption": "A",
+    "explanation": "Собирать — корень -бир-, так как есть суффикс -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "выж...гать",
+    "optionB": "заст...лать",
+    "optionC": "уп...раться",
+    "optionD": "выч...сть",
+    "correctOption": "D",
+    "explanation": "Вычесть — корень -чет-, нет суффикса -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "тв...рение",
+    "optionB": "ск...чок",
+    "optionC": "з...ря",
+    "optionD": "пл...вец",
+    "correctOption": "C",
+    "explanation": "Заря — в безударном положении в корне -зар-/-зор- пишется А."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "заг...рать",
+    "optionB": "г...релый",
+    "optionC": "р...сток",
+    "optionD": "р...внина",
+    "correctOption": "B",
+    "explanation": "Горелый — в корне -гар-/-гор- под ударением А, без ударения О."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "зам...рать",
+    "optionB": "бл...стеть",
+    "optionC": "ум...реть",
+    "optionD": "расст...лать",
+    "correctOption": "A",
+    "explanation": "Замирать — корень -мир-, есть суффикс -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "выб...рать",
+    "optionB": "расст...лить",
+    "optionC": "заж...галка",
+    "optionD": "блист...ть",
+    "correctOption": "B",
+    "explanation": "Расстелить — корень -стел-, нет суффикса -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "ср...внение",
+    "optionB": "р...внина",
+    "optionC": "ур...вень",
+    "optionD": "пор...вну",
+    "correctOption": "B",
+    "explanation": "Равнина — исключение из правила о корне -равн-/-ровн-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "р...сток",
+    "optionB": "выр...щенный",
+    "optionC": "возр...ст",
+    "optionD": "отр...сль",
+    "correctOption": "A",
+    "explanation": "Росток — исключение из правила о корне -раст-/-ращ-/-рос-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "м...кать (хлеб в мед)",
+    "optionB": "вымокнуть",
+    "optionC": "пром...кашка",
+    "optionD": "н...мокший",
+    "correctOption": "A",
+    "explanation": "Макать — корень -мак- в значении 'погружать в жидкость'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "обм...кнуть",
+    "optionB": "выстр...гать",
+    "optionC": "вымокнуть",
+    "optionD": "выр...стать",
+    "correctOption": "C",
+    "explanation": "Вымокнуть — корень -мок- в значении 'пропускать жидкость'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "пл...вец",
+    "optionB": "пл...вчиха",
+    "optionC": "пл...вучий",
+    "optionD": "плывуны",
+    "correctOption": "C",
+    "explanation": "Плавучий — в корне -плав-/-плов- буква О пишется только в словах пловец и пловчиха."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "пл...вец",
+    "optionB": "плавучесть",
+    "optionC": "жур...вль",
+    "optionD": "попл...вок",
+    "correctOption": "A",
+    "explanation": "Пловец — корень -плов- пишется в словах пловец и пловчиха."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "соб...ру",
+    "optionB": "ум...рающий",
+    "optionC": "бл...стать",
+    "optionD": "заж...гательный",
+    "correctOption": "B",
+    "explanation": "Умирающий — корень -мир-, есть суффикс -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "соч...тание",
+    "optionB": "бл...стательный",
+    "optionC": "разд...рать",
+    "optionD": "выт...рать",
+    "correctOption": "A",
+    "explanation": "Сочетание — исключение, пишется Е."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "ск...кать",
+    "optionB": "проск...чить",
+    "optionC": "выск...чка",
+    "optionD": "вск...чить",
+    "correctOption": "A",
+    "explanation": "Скакать — корень -скак-, перед К пишется А."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "выск...чка",
+    "optionB": "ск...калка",
+    "optionC": "наск...ку",
+    "optionD": "обск...кать",
+    "correctOption": "A",
+    "explanation": "Выскочка — перед Ч пишется О в корне -скоч-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "бл...стеть",
+    "optionB": "заж...гать",
+    "optionC": "выч...тать",
+    "optionD": "расст...лать",
+    "correctOption": "B",
+    "explanation": "Зажигать — корень -жиг-, есть суффикс -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "бл...стеть",
+    "optionB": "выб...рать",
+    "optionC": "заж...галка",
+    "optionD": "приб...рать",
+    "correctOption": "A",
+    "explanation": "Блестеть — корень -блест-, нет суффикса -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "выр...щенный",
+    "optionB": "выр...сли",
+    "optionC": "пор...сль",
+    "optionD": "взр...слеть",
+    "correctOption": "A",
+    "explanation": "Выращенный — перед Щ пишется А."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "отр...стить",
+    "optionB": "выр...стать",
+    "optionC": "выр...сший",
+    "optionD": "прир...щение",
+    "correctOption": "C",
+    "explanation": "Выросший — перед С пишется О."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "выт...рать",
+    "optionB": "выт...реть",
+    "optionC": "уп...реться",
+    "optionD": "зам...реть",
+    "correctOption": "A",
+    "explanation": "Вытирать — корень -тир-, есть суффикс -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "прот...реть",
+    "optionB": "прот...рать",
+    "optionC": "отд...рать",
+    "optionD": "разж...гать",
+    "correctOption": "A",
+    "explanation": "Протереть — корень -тер-, нет суффикса -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "к...саться",
+    "optionB": "прик...снуться",
+    "optionC": "к...снувшись",
+    "optionD": "прик...сновение",
+    "correctOption": "A",
+    "explanation": "Касаться — есть суффикс -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "к...сательная",
+    "optionB": "неприк...сновенный",
+    "optionC": "прик...саться",
+    "optionD": "к...сание",
+    "correctOption": "B",
+    "explanation": "Неприкосновенный — корень -кос-, нет суффикса -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "ск...кать",
+    "optionB": "выск...чить",
+    "optionC": "подск...чить",
+    "optionD": "заск...чить",
+    "correctOption": "A",
+    "explanation": "Скакать — перед К пишется А."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "ск...чок",
+    "optionB": "ск...калка",
+    "optionC": "обск...кать",
+    "optionD": "наск...ку",
+    "correctOption": "A",
+    "explanation": "Скачок — исключение, пишется О."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "ст...рать (с доски)",
+    "optionB": "ст...реть",
+    "optionC": "зам...реть",
+    "optionD": "ум...рший",
+    "correctOption": "A",
+    "explanation": "Стирать — корень -тир-, есть суффикс -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "подст...лить",
+    "optionB": "подст...лать",
+    "optionC": "заж...гательный",
+    "optionD": "разд...рать",
+    "correctOption": "A",
+    "explanation": "Подстелить — корень -стел-, нет суффикса -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "нак...нить",
+    "optionB": "прекл...нение",
+    "optionC": "кл...няться",
+    "optionD": "скл...нение",
+    "correctOption": "C",
+    "explanation": "Кланяться — под ударением пишется А."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "скл...нение",
+    "optionB": "кл...няться",
+    "optionC": "поклон",
+    "optionD": "кланяющийся",
+    "correctOption": "A",
+    "explanation": "Склонение — в безударном положении в корне -клан-/-клон- пишется О."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "тв...рец",
+    "optionB": "тв...рчество",
+    "optionC": "утв...рь",
+    "optionD": "тв...рение",
+    "correctOption": "C",
+    "explanation": "Утварь — исключение, пишется А."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "утв...рь",
+    "optionB": "тв...рец",
+    "optionC": "тв...рчество",
+    "optionD": "вытв...рить",
+    "correctOption": "B",
+    "explanation": "Творец — безударный корень -твор-, пишется О."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "расст...лать",
+    "optionB": "расст...лить",
+    "optionC": "выст...ленный",
+    "optionD": "ст...лившийся",
+    "correctOption": "A",
+    "explanation": "Расстилать — корень -стил-, есть суффикс -а-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "ув...дать (без воды)",
+    "optionB": "ув...дать (друга)",
+    "optionC": "прим...рять (костюм)",
+    "optionD": "прим...рять (врагов)",
+    "correctOption": "A",
+    "explanation": "Увидать — проверочное слово 'увянуть' (увядший)."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "ум...лять (о помощи)",
+    "optionB": "ум...лять (значение)",
+    "optionC": "разв...вать (ум)",
+    "optionD": "разв...ваться (на ветру)",
+    "correctOption": "A",
+    "explanation": "Умолять — проверочное слово 'мо́лится'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "пос...деть (от старости)",
+    "optionB": "пос...деть (на стуле)",
+    "optionC": "посв...тить (фонариком)",
+    "optionD": "посв...тить (стихи)",
+    "correctOption": "B",
+    "explanation": "Посидеть — проверочное слово 'си́дя'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "прим...рять (платье)",
+    "optionB": "прим...рить (друзей)",
+    "optionC": "пос...деть (к старости)",
+    "optionD": "разр...дить (ружье)",
+    "correctOption": "C",
+    "explanation": "Поседеть — проверочное слово 'сед' (се́денький)."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "оч...ровать",
+    "optionB": "ч...стота (пульса)",
+    "optionC": "ч...стота (в комнате)",
+    "optionD": "щ...дить",
+    "correctOption": "A",
+    "explanation": "Очаровать — проверочное слово 'ча́ры'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "ук...рять",
+    "optionB": "к...рать",
+    "optionC": "роскошный",
+    "optionD": "обн...жить",
+    "correctOption": "C",
+    "explanation": "Роскошный — проверочное слово 'ро́скошь'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "уд...влять",
+    "optionB": "разв...вать (бизнес)",
+    "optionC": "об...жать (слабых)",
+    "optionD": "об...жать (вокруг дома)",
+    "correctOption": "C",
+    "explanation": "Обижать — проверочное слово 'оби́да'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "просв...щать",
+    "optionB": "посв...тить (жизнь науке)",
+    "optionC": "уд...вительный",
+    "optionD": "л...нейка",
+    "correctOption": "B",
+    "explanation": "Посвятить — проверочное слово 'свя́тость'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "раздр...жать",
+    "optionB": "др...жать",
+    "optionC": "к...рать",
+    "optionD": "обн...жать",
+    "correctOption": "D",
+    "explanation": "Обнажать — проверочное слово 'на́г'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "упл...тить",
+    "optionB": "к...рать",
+    "optionC": "пл...тить",
+    "optionD": "нагр...ждать",
+    "correctOption": "A",
+    "explanation": "Уплатить — проверочное слово 'пла́та' (в корне пишется А, но уплатить - проверим плата). СТОП: уплатить через А. Нужен О: вопл...тить -> плоть."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "вопл...тить",
+    "optionB": "упл...тить",
+    "optionC": "сож...ление",
+    "optionD": "просл...влять",
+    "correctOption": "A",
+    "explanation": "Воплотить — проверочное слово 'плоть'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "скр...петь (перу)",
+    "optionB": "скр...пить (печатью)",
+    "optionC": "л...нейка",
+    "optionD": "тр...щать",
+    "correctOption": "A",
+    "explanation": "Скрипеть — проверочное слово 'скрип'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "скр...петь (зубами)",
+    "optionB": "скр...пить (листы)",
+    "optionC": "ут...шать",
+    "optionD": "ед...ница",
+    "correctOption": "B",
+    "explanation": "Скрепить — проверочное слово 'скре́пка'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "посв...тить (фонарем)",
+    "optionB": "посв...щать (в тайну)",
+    "optionC": "разр...дить (грядки)",
+    "optionD": "разр...дить (атмосферу)",
+    "correctOption": "C",
+    "explanation": "Разрядить (грядки) — проверочное слово 'ре́дкий' (сделать редкими). Для буквы А: разрядить -> разряд."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "разр...дить (обстановку)",
+    "optionB": "разр...дить (грядки)",
+    "optionC": "прим...рять (вещи)",
+    "optionD": "пос...деть (на крыльце)",
+    "correctOption": "A",
+    "explanation": "Разрядить (обстановку) — проверочное слово 'разря́д'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "изм...нения",
+    "optionB": "укр...щать",
+    "optionC": "укротитель",
+    "optionD": "просв...титель",
+    "correctOption": "C",
+    "explanation": "Укротитель — проверочное слово 'кро́ткий'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "ч...стота (в доме)",
+    "optionB": "ч...стота (колебаний)",
+    "optionC": "об...зательно",
+    "optionD": "обн...вление",
+    "correctOption": "B",
+    "explanation": "Частота (колебаний) — проверочное слово 'ча́стый'. Для И: выч...слять -> чи́сла."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "выч...слять",
+    "optionB": "ч...стота (в доме)",
+    "optionC": "прив...дение",
+    "optionD": "разв...ваться",
+    "correctOption": "A",
+    "explanation": "Вычислять — проверочное слово 'чи́сла'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "разв...вать (страну)",
+    "optionB": "разв...ваться (флаг)",
+    "optionC": "ув...дать (цветы)",
+    "optionD": "прим...рять",
+    "correctOption": "A",
+    "explanation": "Развивать — проверочное слово 'разви́тие' (буква И). Для Е: разв...вать ум -> развитие (И). Пос...деть (на стуле) -> сидя. Пос...деть (волосы) -> сед."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "пос...девший (старик)",
+    "optionB": "пос...девший (на лавке)",
+    "optionC": "сл...паться",
+    "optionD": "упр...кать",
+    "correctOption": "A",
+    "explanation": "Поседевший — проверочное слово 'сед'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "погл...щать",
+    "optionB": "укрощать",
+    "optionC": "спл...титься",
+    "optionD": "сож...ление",
+    "correctOption": "D",
+    "explanation": "Сожаление — проверочное слово 'жа́лость'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "спл...титься",
+    "optionB": "пл...тить",
+    "optionC": "обог...щаться",
+    "optionD": "ув...дать",
+    "correctOption": "A",
+    "explanation": "Сплотиться — проверочное слово 'пло́тный'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "ед...нение",
+    "optionB": "прим...рение",
+    "optionC": "нам...рение",
+    "optionD": "зам...реть",
+    "correctOption": "A",
+    "explanation": "Единение — проверочное слово 'еди́ный'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "прим...рять",
+    "optionB": "прим...рить",
+    "optionC": "прим...рение",
+    "optionD": "пл...нительный",
+    "correctOption": "D",
+    "explanation": "Пленительный — проверочное слово 'плен'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "сотрясение",
+    "optionB": "тр...стись",
+    "optionC": "просл...влять",
+    "optionD": "к...рать",
+    "correctOption": "C",
+    "explanation": "Прославлять — проверочное слово 'сла́ва'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "обн...вить",
+    "optionB": "обн...жать",
+    "optionC": "раздр...жать",
+    "optionD": "нагр...да",
+    "correctOption": "A",
+    "explanation": "Обновить — проверочное слово 'но́вый'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "хв...стун",
+    "optionB": "ж...линейный",
+    "optionC": "ув...дающий",
+    "optionD": "ув...давший",
+    "correctOption": "D",
+    "explanation": "Увидавший — проверочное слово 'ви́дит'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "ув...дающий (цветок)",
+    "optionB": "ув...давший (знакомого)",
+    "optionC": "разв...вающийся",
+    "optionD": "разв...тисный",
+    "correctOption": "A",
+    "explanation": "Увядающий — проверочное слово 'увя́нуть'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "насл...ждение",
+    "optionB": "сл...дкоежка",
+    "optionC": "погл...щать",
+    "optionD": "укр...щать",
+    "correctOption": "A",
+    "explanation": "Наслаждение — проверочное слово 'сла́дкий'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "погл...щать",
+    "optionB": "гл...тать",
+    "optionC": "насл...ждаться",
+    "optionD": "нагр...дить",
+    "correctOption": "A",
+    "explanation": "Поглощать — проверочное слово 'гло́тка'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "сп...ши (домой)",
+    "optionB": "сп...ши (текст)",
+    "optionC": "п...ровать",
+    "optionD": "л...нейка",
+    "correctOption": "B",
+    "explanation": "Списать (спиши) — проверочное слово 'пи́шет'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "сп...ши (домой)",
+    "optionB": "сп...ши (данные)",
+    "optionC": "изм...рять",
+    "optionD": "выч...слять",
+    "correctOption": "A",
+    "explanation": "Спеши (домой) — проверочное слово 'спе́шка'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "к...рать",
+    "optionB": "ук...рять",
+    "optionC": "повторить",
+    "optionD": "разг...дать",
+    "correctOption": "D",
+    "explanation": "Разгадать — проверочное слово 'зага́дка'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "ук...рять",
+    "optionB": "к...рать",
+    "optionC": "ок...лдовать",
+    "optionD": "нагр...ждать",
+    "correctOption": "A",
+    "explanation": "Укорять — проверочное слово 'уко́р'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "ст...сненный",
+    "optionB": "т...снота",
+    "optionC": "л...нивый",
+    "optionD": "ед...ница",
+    "correctOption": "C",
+    "explanation": "Ленивый — проверочное слово 'лень' (буква Е). Для И: ст...сненный -> стиснуть. Или: лине́йка -> ли́ния."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "л...нейка",
+    "optionB": "т...снота",
+    "optionC": "ст...снить",
+    "optionD": "м...лькать",
+    "correctOption": "A",
+    "explanation": "Линейка — проверочное слово 'ли́ния'."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "в...негреть",
+    "optionB": "п...лисадник",
+    "optionC": "в...стибюль",
+    "optionD": "д...ректор",
+    "correctOption": "B",
+    "explanation": "Палисадник — словарное слово, пишется А."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "к...мпания (друзей)",
+    "optionB": "к...мпания (предвыборная)",
+    "optionC": "к...равелла",
+    "optionD": "б...гровый",
+    "correctOption": "A",
+    "explanation": "Компания (друзей) — пишется через О (в отличие от кампания — мероприятие)."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "в...негреть",
+    "optionB": "в...стибюль",
+    "optionC": "д...рижер",
+    "optionD": "п...лисадник",
+    "correctOption": "C",
+    "explanation": "Дирижер — словарное слово, пишется И."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "в...негреть",
+    "optionB": "в...стибюль",
+    "optionC": "п...лисадник",
+    "optionD": "к...розин",
+    "correctOption": "B",
+    "explanation": "Вестибюль — словарное слово, пишется Е в первом слоге."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "б...гровый",
+    "optionB": "б...гряный",
+    "optionC": "к...вычки",
+    "optionD": "п...норама",
+    "correctOption": "D",
+    "explanation": "Панорама — словарное слово, пишется А в первом слоге."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "б...гровый",
+    "optionB": "б...гряный",
+    "optionC": "в...кзал",
+    "optionD": "к...варный",
+    "correctOption": "C",
+    "explanation": "Вокзал — словарное слово, пишется О."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "в...негреть",
+    "optionB": "п...лисадник",
+    "optionC": "к...рамель",
+    "optionD": "г...рлянда",
+    "correctOption": "A",
+    "explanation": "Винегрет — словарное слово, пишется И в первом слоге."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "инт...ллигент",
+    "optionB": "д...рижер",
+    "optionC": "п...лисадник",
+    "optionD": "в...негреть",
+    "correctOption": "A",
+    "explanation": "Интеллигент — словарное слово, пишется Е."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "акв...рель",
+    "optionB": "ор...нжерея",
+    "optionC": "к...лейдоскоп",
+    "optionD": "к...тастрофа",
+    "correctOption": "A",
+    "explanation": "Акварель — словарное слово, от лат. aqua (вода)."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "к...лейдоскоп",
+    "optionB": "к...тастрофа",
+    "optionC": "н...стальгия",
+    "optionD": "акв...рель",
+    "correctOption": "C",
+    "explanation": "Ностальгия — словарное слово, пишется О."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "пр...зидент",
+    "optionB": "пр...зидиум",
+    "optionC": "пр...вилегия",
+    "optionD": "п...лисадник",
+    "correctOption": "C",
+    "explanation": "Привилегия — словарное слово, пишется И в корне."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "пр...зидент",
+    "optionB": "пр...вилегия",
+    "optionC": "д...рижер",
+    "optionD": "в...негреть",
+    "correctOption": "A",
+    "explanation": "Президент — словарное слово, пишется Е."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "ав...нгард",
+    "optionB": "в...кзал",
+    "optionC": "к...варный",
+    "optionD": "н...стальгия",
+    "correctOption": "A",
+    "explanation": "Авангард — словарное слово, пишется А."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "к...варный",
+    "optionB": "ав...нгард",
+    "optionC": "п...лисадник",
+    "optionD": "п...норама",
+    "correctOption": "A",
+    "explanation": "Коварный — словарное слово, пишется О."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "д...ли things",
+    "optionB": "к...парис",
+    "optionC": "м...ридиан",
+    "optionD": "п...лисадник",
+    "correctOption": "B",
+    "explanation": "Кипарис — словарное слово, пишется И."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "к...парис",
+    "optionB": "м...ридиан",
+    "optionC": "п...лисадник",
+    "optionD": "п...ссимист",
+    "correctOption": "A",
+    "explanation": "Кипарис — пишется И."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "м...ридиан",
+    "optionB": "м...ценат",
+    "optionC": "п...ссимист",
+    "optionD": "д...рижер",
+    "correctOption": "A",
+    "explanation": "Меридиан — словарное слово, пишется Е."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "м...ценат",
+    "optionB": "п...триот",
+    "optionC": "п...ссимист",
+    "optionD": "ф...нарь",
+    "correctOption": "B",
+    "explanation": "Патриот — словарное слово, пишется А."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "п...триот",
+    "optionB": "ф...нарь",
+    "optionC": "м...нолог",
+    "optionD": "п...лисадник",
+    "correctOption": "C",
+    "explanation": "Монолог — словарное слово, пишется О."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "д...фицит",
+    "optionB": "д...кларация",
+    "optionC": "д...легация",
+    "optionD": "д...ликатес",
+    "correctOption": "A",
+    "explanation": "Дефицит — словарное слово, пишется И во втором слоге."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "д...фицит",
+    "optionB": "д...кларация",
+    "optionC": "в...негреть",
+    "optionD": "п...лисадник",
+    "correctOption": "B",
+    "explanation": "Декларация — словарное слово, пишется Е."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "с...рафан",
+    "optionB": "с...наторий",
+    "optionC": "эст...када",
+    "optionD": "к...тастрофа",
+    "correctOption": "A",
+    "explanation": "Сарафан — словарное слово, пишутся все А."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "к...тастрофа",
+    "optionB": "с...наторий",
+    "optionC": "эст...када",
+    "optionD": "к...нфорка",
+    "correctOption": "D",
+    "explanation": "Конфорка — словарное слово, пишется О."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "миним...льный",
+    "optionB": "к...парис",
+    "optionC": "кр...терий",
+    "optionD": "м...ниатюра",
+    "correctOption": "B",
+    "explanation": "Кипарис — пишется И. Или критерий — пишется И."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква И?",
+    "optionA": "кр...терий",
+    "optionB": "п...лисадник",
+    "optionC": "в...стибюль",
+    "optionD": "к...розин",
+    "correctOption": "A",
+    "explanation": "Критерий — словарное слово, пишется И."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква Е?",
+    "optionA": "к...розин",
+    "optionB": "п...лисадник",
+    "optionC": "в...негреть",
+    "optionD": "д...рижер",
+    "correctOption": "A",
+    "explanation": "Керосин — словарное слово, пишется Е."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква А?",
+    "optionA": "б...лкон",
+    "optionB": "б...гровый",
+    "optionC": "в...кзал",
+    "optionD": "к...нфорка",
+    "correctOption": "A",
+    "explanation": "Балкон — словарное слово, пишется А."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "б...гровый",
+    "optionB": "б...лкон",
+    "optionC": "п...лисадник",
+    "optionD": "в...стибюль",
+    "correctOption": "A",
+    "explanation": "Багровый — пишется О во втором слоге (багро́вый), но в первом А. Давайте заменим на поролон: п...ролон."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком слове пропущена буква О?",
+    "optionA": "п...ролон",
+    "optionB": "п...лисадник",
+    "optionC": "в...негреть",
+    "optionD": "в...стибюль",
+    "correctOption": "A",
+    "explanation": "Поролон — словарное слово, пишутся О."
+  }
+]

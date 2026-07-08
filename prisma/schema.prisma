@@ -1,0 +1,316 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Teacher {
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  passwordHash       String
+  fullName           String
+  emailVerified      Boolean   @default(true)
+  subscriptionStatus String    @default("trial")
+  trialEndsAt        DateTime?
+  subscriptionEndsAt DateTime?
+  uiTheme            String    @default("dark")
+  createdAt          DateTime  @default(now())
+  groups             Group[]
+  texts              Text[]
+  hardWords          HardWord[]
+  notifications      TeacherNotification[]
+  emailVerificationToken EmailVerificationToken?
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  teacherId String   @unique
+  teacher   Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  tokenHash String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Group {
+  id          String       @id @default(cuid())
+  name        String
+  teacherId   String
+  teacher     Teacher      @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  archived    Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  students    Student[]
+  assignments Assignment[]
+  tests       Test[]
+}
+
+model Student {
+  id            String         @id @default(cuid())
+  fullName      String
+  accessKey     String         @unique
+  groupId       String
+  group         Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  createdAt     DateTime       @default(now())
+  results       Result[]
+  attempts      Attempt[]
+  testAttempts  TestAttempt[]
+  notifications Notification[]
+  hardWordProgress HardWordProgress[]
+  wordDailySessions WordDailySession[]
+  wordStreak          Int      @default(0)
+  wordStreakBest      Int      @default(0)
+  wordStreakLastDate  String?
+  pauseItems          PauseItem[]
+}
+
+model Text {
+  id        String    @id @default(cuid())
+  title     String
+  author    String
+  textType  String
+  year      Int
+  topic     String
+  content   String
+  teacherId String?
+  teacher   Teacher?  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+}
+
+model Result {
+  id          String   @id @default(cuid())
+  studentId   String
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  category    String
+  taskName    String
+  score       Int
+  maxScore    Int
+  completedAt DateTime @default(now())
+  attemptId     String?      @unique
+  attempt       Attempt?     @relation(fields: [attemptId], references: [id], onDelete: SetNull)
+  testAttemptId String?      @unique
+  testAttempt   TestAttempt? @relation(fields: [testAttemptId], references: [id], onDelete: SetNull)
+}
+
+model Assignment {
+  id          String         @id @default(cuid())
+  title       String
+  category    String
+  description String         @default("")
+  groupId     String
+  group       Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  published   Boolean        @default(false)
+  allowRetake Boolean        @default(false)
+  shuffleQuestions Boolean   @default(false)
+  dueAt       DateTime?
+  createdAt   DateTime       @default(now())
+  questions   Question[]
+  attempts    Attempt[]
+  notifications Notification[]
+}
+
+model Question {
+  id            String           @id @default(cuid())
+  assignmentId  String
+  assignment    Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  orderIndex    Int
+  type          String           @default("multiple_choice")
+  prompt        String
+  optionA       String           @default("")
+  optionB       String           @default("")
+  optionC       String           @default("")
+  optionD       String           @default("")
+  answerOptions String           @default("")
+  correctOption String
+  explanation   String           @default("")
+  answers       QuestionAnswer[]
+}
+
+model Attempt {
+  id            String           @id @default(cuid())
+  assignmentId  String
+  assignment    Assignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  studentId     String
+  student       Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  attemptNumber Int              @default(1)
+  status        String           @default("in_progress")
+  score         Int              @default(0)
+  maxScore      Int              @default(0)
+  startedAt     DateTime         @default(now())
+  completedAt   DateTime?
+  draftAnswers  String           @default("{}")
+  answers       QuestionAnswer[]
+  result        Result?
+
+  @@index([assignmentId, studentId])
+}
+
+model QuestionAnswer {
+  id           String   @id @default(cuid())
+  attemptId    String
+  attempt      Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId   String
+  question     Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  chosenOption String
+  isCorrect    Boolean
+
+  @@unique([attemptId, questionId])
+}
+
+model Notification {
+  id           String      @id @default(cuid())
+  studentId    String
+  student      Student     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  assignmentId String?
+  assignment   Assignment? @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
+  testId       String?
+  test         Test?       @relation(fields: [testId], references: [id], onDelete: SetNull)
+  type         String
+  title        String
+  message      String
+  read         Boolean     @default(false)
+  createdAt    DateTime    @default(now())
+
+  @@index([studentId, read])
+}
+
+model Test {
+  id            String         @id @default(cuid())
+  title         String
+  description   String         @default("")
+  groupId       String
+  group         Group          @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  published     Boolean        @default(false)
+  allowRetake   Boolean        @default(false)
+  shuffleQuestions Boolean     @default(false)
+  egeVariantNumber Int?
+  dueAt         DateTime?
+  createdAt     DateTime       @default(now())
+  questions     TestQuestion[]
+  attempts      TestAttempt[]
+  notifications Notification[]
+
+  @@index([groupId, published])
+}
+
+model TestQuestion {
+  id            String               @id @default(cuid())
+  testId        String
+  test          Test                 @relation(fields: [testId], references: [id], onDelete: Cascade)
+  orderIndex    Int
+  type          String               @default("multiple_choice")
+  prompt        String
+  optionA       String               @default("")
+  optionB       String               @default("")
+  optionC       String               @default("")
+  optionD       String               @default("")
+  answerOptions String               @default("")
+  correctOption String
+  explanation   String               @default("")
+  answers       TestQuestionAnswer[]
+}
+
+model TestAttempt {
+  id            String               @id @default(cuid())
+  testId        String
+  test          Test                 @relation(fields: [testId], references: [id], onDelete: Cascade)
+  studentId     String
+  student       Student              @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  attemptNumber Int                  @default(1)
+  status        String               @default("in_progress")
+  score         Int                  @default(0)
+  maxScore      Int                  @default(0)
+  startedAt     DateTime             @default(now())
+  completedAt   DateTime?
+  draftAnswers  String               @default("{}")
+  answers       TestQuestionAnswer[]
+  result        Result?
+
+  @@index([testId, studentId])
+}
+
+model TestQuestionAnswer {
+  id           String       @id @default(cuid())
+  attemptId    String
+  attempt      TestAttempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId   String
+  question     TestQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  chosenOption String
+  isCorrect    Boolean
+
+  @@unique([attemptId, questionId])
+}
+
+model HardWord {
+  id         String             @id @default(cuid())
+  teacherId  String
+  teacher    Teacher            @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  topic      String
+  word       String
+  definition String             @default("")
+  example    String             @default("")
+  createdAt  DateTime           @default(now())
+  progress   HardWordProgress[]
+
+  @@index([teacherId, topic])
+}
+
+model HardWordProgress {
+  id         String   @id @default(cuid())
+  studentId  String
+  student    Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  hardWordId String
+  hardWord   HardWord @relation(fields: [hardWordId], references: [id], onDelete: Cascade)
+  learnedAt  DateTime @default(now())
+
+  @@unique([studentId, hardWordId])
+}
+
+model WordDailySession {
+  id          String   @id @default(cuid())
+  studentId   String
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  sessionDate String
+  wordIds     String
+  score       Int      @default(0)
+  maxScore    Int      @default(3)
+  completed   Boolean  @default(false)
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  @@unique([studentId, sessionDate])
+  @@index([studentId])
+}
+
+model PauseItem {
+  id           String   @id @default(cuid())
+  studentId    String
+  student      Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  type         String
+  assignmentId String?
+  testId       String?
+  hardWordId   String?
+  title        String
+  note         String   @default("")
+  createdAt    DateTime @default(now())
+
+  @@index([studentId])
+}
+
+model TeacherNotification {
+  id           String   @id @default(cuid())
+  teacherId    String
+  teacher      Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  type         String
+  studentId    String?
+  assignmentId String?
+  testId       String?
+  title        String
+  message      String
+  link         String   @default("")
+  read         Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@index([teacherId, read])
+}

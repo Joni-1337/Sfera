@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: var(--theme-bg-primary);
+  --color-bg-secondary: var(--theme-bg-secondary);
+  --color-bg-card: var(--theme-bg-card);
+  --color-bg-elevated: var(--theme-bg-elevated);
+  --color-border: var(--theme-border);
+  --color-border-light: var(--theme-border-light);
+  --color-accent: #14b8a6;
+  --color-accent-hover: #0d9488;
+  --color-accent-muted: #14b8a633;
+  --color-text-primary: var(--theme-text-primary);
+  --color-text-secondary: var(--theme-text-secondary);
+  --color-text-muted: var(--theme-text-muted);
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+:root,
+[data-theme="dark"] {
+  --theme-bg-primary: #0a0a0f;
+  --theme-bg-secondary: #12121a;
+  --theme-bg-card: #1a1a24;
+  --theme-bg-elevated: #22222e;
+  --theme-border: #2a2a3a;
+  --theme-border-light: #3a3a4a;
+  --theme-text-primary: #f4f4f5;
+  --theme-text-secondary: #a1a1aa;
+  --theme-text-muted: #71717a;
+  --theme-glass: rgba(26, 26, 36, 0.8);
+}
+
+[data-theme="light"] {
+  --theme-bg-primary: #f4f4f5;
+  --theme-bg-secondary: #fafafa;
+  --theme-bg-card: #ffffff;
+  --theme-bg-elevated: #f4f4f5;
+  --theme-border: #e4e4e7;
+  --theme-border-light: #d4d4d8;
+  --theme-text-primary: #18181b;
+  --theme-text-secondary: #52525b;
+  --theme-text-muted: #71717a;
+  --theme-glass: rgba(255, 255, 255, 0.85);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    touch-action: manipulation;
+  }
+
+  button:active:not(:disabled),
+  [role="button"]:active:not([aria-disabled="true"]) {
+    transform: scale(0.98);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-light);
+    border-radius: 3px;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: var(--theme-glass);
+    backdrop-filter: blur(12px);
+  }
+
+  .gradient-accent {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+  }
+}

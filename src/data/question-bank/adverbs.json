@@ -1,0 +1,1002 @@
+[
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "с...разбегу",
+    "optionB": "на...ходу",
+    "optionC": "в...открытую",
+    "optionD": "в...догонку",
+    "correctOption": "D",
+    "explanation": "Вдогонку — наречие, образованное слиянием предлога с существительным, пишется слитно. Остальные — раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "на...миг",
+    "optionB": "под...силу",
+    "optionC": "в...полголоса",
+    "optionD": "до...упаду",
+    "correctOption": "C",
+    "explanation": "Вполголоса — наречия с приставкой впол- пишутся слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "на...совесть",
+    "optionB": "без...ведома",
+    "optionC": "с...глазу на глаз",
+    "optionD": "в...плотную",
+    "correctOption": "D",
+    "explanation": "Вплотную — наречие, образованное от прилагательного с помощью приставки в-, пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "до...смерти",
+    "optionB": "на...цыпочках",
+    "optionC": "за...частую",
+    "optionD": "под...мышками",
+    "correctOption": "C",
+    "explanation": "Зачастую — наречие, образованное от полного прилагательного, пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "с...размаху",
+    "optionB": "на...выручку",
+    "optionC": "в...сердцах",
+    "optionD": "ис...подлобья",
+    "correctOption": "D",
+    "explanation": "Исподлобья — наречие с приставкой из-под-, перешедшей в разряд приставок, пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "на...попятную",
+    "optionB": "с...ходу",
+    "optionC": "без...разбору",
+    "optionD": "на...отрез",
+    "correctOption": "D",
+    "explanation": "Наотрез — наречие, образованное от глагола, пишется слитно. На попятную — исключение (раздельно)."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "под...уздцы",
+    "optionB": "до...отвала",
+    "optionC": "по...неволе",
+    "optionD": "на...редкость",
+    "correctOption": "C",
+    "explanation": "Поневоле — пишется слитно, так как без предлога-приставки слово не употребляется."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "в...насмешку",
+    "optionB": "без...оглядки",
+    "optionC": "в...припрыжку",
+    "optionD": "на...вылет",
+    "correctOption": "C",
+    "explanation": "Вприпрыжку — наречие пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "на...спех",
+    "optionB": "до...нельзя",
+    "optionC": "на...авось",
+    "optionD": "в...рукопашную",
+    "correctOption": "A",
+    "explanation": "Наспех — пишется слитно. На авось — раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "в...рассрочку",
+    "optionB": "в...тупик",
+    "optionC": "в...дребезги",
+    "optionD": "в...диковинку",
+    "correctOption": "C",
+    "explanation": "Вдребезги — без приставки не употребляется, пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "на...износ",
+    "optionB": "на...вырост",
+    "optionC": "на...смех",
+    "optionD": "на...перебой",
+    "correctOption": "D",
+    "explanation": "Наперебой — пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "на...ура",
+    "optionB": "в...потьмах",
+    "optionC": "с...кандачка",
+    "optionD": "с...позаранку",
+    "correctOption": "D",
+    "explanation": "Спозаранку — пишется слитно, древняя приставка спо-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "к...спеху",
+    "optionB": "в...ничью (игра)",
+    "optionC": "в...ничью",
+    "optionD": "по...одиночке",
+    "correctOption": "C",
+    "explanation": "Вничью — наречие, пишется слитно. Поодиночке тоже слитно, заменим варианты."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "без...проса",
+    "optionB": "до...утра",
+    "optionC": "на...смерть (стоять)",
+    "optionD": "в...ничью",
+    "correctOption": "D",
+    "explanation": "Вничью — пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "на...сквозь",
+    "optionB": "на...память",
+    "optionC": "на...вкус",
+    "optionD": "на...глазок",
+    "correctOption": "A",
+    "explanation": "Насквозь — наречие, пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "в...угоду",
+    "optionB": "в...перемешку",
+    "optionC": "в...убыток",
+    "optionD": "в...обтяжку",
+    "correctOption": "B",
+    "explanation": "Вперемешку — пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "в...торопях",
+    "optionB": "в...шутку",
+    "optionC": "в...насмешку",
+    "optionD": "в...попыхах",
+    "correctOption": "D",
+    "explanation": "Впопыхах — пишется слитно, так как не употребляется без в-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "на...цыпочках",
+    "optionB": "на...отшибе",
+    "optionC": "на...кануне",
+    "optionD": "на...поруки",
+    "correctOption": "C",
+    "explanation": "Накануне — пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "в...отличии",
+    "optionB": "на...века",
+    "optionC": "в...миг",
+    "optionD": "в...след",
+    "correctOption": "D",
+    "explanation": "Вслед — наречие, пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "во...время (прийти)",
+    "optionB": "во...время (урока)",
+    "optionC": "в...просак",
+    "optionD": "на...днях",
+    "correctOption": "A",
+    "explanation": "Вовремя — в значении наречия 'своевременно' пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "в...потай",
+    "optionB": "в...лоск",
+    "optionC": "в...обмен",
+    "optionD": "в...тупик",
+    "correctOption": "A",
+    "explanation": "Впотай — пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "на...удачу (надеяться)",
+    "optionB": "в...обнимку",
+    "optionC": "с...разбегу",
+    "optionD": "на...удачу (сделать)",
+    "correctOption": "A",
+    "explanation": "Наудачу (наобум, наугад) — пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "на...выбор",
+    "optionB": "на...редкость",
+    "optionC": "на...ощупь",
+    "optionD": "на...угад",
+    "correctOption": "D",
+    "explanation": "Наугад — пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "по...старинке",
+    "optionB": "по...очереди",
+    "optionC": "по...всюду",
+    "optionD": "по...боку",
+    "correctOption": "C",
+    "explanation": "Повсюду — пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "с...размаху",
+    "optionB": "с...наружи",
+    "optionC": "с...виду",
+    "optionD": "с...голоду",
+    "correctOption": "B",
+    "explanation": "Снаружи — наречие пространства, пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "в...открытую",
+    "optionB": "в...целом",
+    "optionC": "в...ширь",
+    "optionD": "в...насмешку",
+    "correctOption": "C",
+    "explanation": "Вширь — наречие направления/пространства, пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "до...ночи",
+    "optionB": "с...утра",
+    "optionC": "на...завтра (надеяться)",
+    "optionD": "на...завтра (перенести)",
+    "correctOption": "D",
+    "explanation": "Назавтра — в значении наречия времени пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "до...тла",
+    "optionB": "под...вечер",
+    "optionC": "ис...покон",
+    "optionD": "на...веку",
+    "correctOption": "C",
+    "explanation": "Испокон (веков) — без приставки не употребляется, пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "до...краю",
+    "optionB": "до...смерти",
+    "optionC": "до...тла",
+    "optionD": "до...упаду",
+    "correctOption": "C",
+    "explanation": "Дотла — пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "на...отрез",
+    "optionB": "на...авось",
+    "optionC": "на...смех",
+    "optionD": "на...руку",
+    "correctOption": "A",
+    "explanation": "Наотрез — пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "в...срок",
+    "optionB": "в...доволь",
+    "optionC": "в...шутку",
+    "optionD": "в...тупик",
+    "correctOption": "B",
+    "explanation": "Вдоволь — без приставки не употребляется, пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "в...заперти",
+    "optionB": "в...целях",
+    "optionC": "в...ногу",
+    "optionD": "в...миг",
+    "correctOption": "A",
+    "explanation": "Взаперти — пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "на...яву",
+    "optionB": "на...ощупь",
+    "optionC": "на...славу",
+    "optionD": "на...века",
+    "correctOption": "A",
+    "explanation": "Наяву — пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "по...очереди",
+    "optionB": "по...трое",
+    "optionC": "по...одиночке",
+    "optionD": "по...двое",
+    "correctOption": "C",
+    "explanation": "Поодиночке — пишется слитно (в отличие от по двое, по трое)."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется СЛИТНО?",
+    "optionA": "в...открытую",
+    "optionB": "в...счет",
+    "optionC": "в...кратце",
+    "optionD": "в...корень",
+    "correctOption": "C",
+    "explanation": "Вкратце — наречие пишется слитно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "вдогонку",
+    "optionB": "вприпрыжку",
+    "optionC": "наспех",
+    "optionD": "на...ходу",
+    "correctOption": "D",
+    "explanation": "На ходу — наречное выражение, состоящее из предлога на и существительного на -у, пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "вполголоса",
+    "optionB": "с...разбегу",
+    "optionC": "вплотную",
+    "optionD": "зачастую",
+    "correctOption": "B",
+    "explanation": "С разбегу — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "до...упаду",
+    "optionB": "поневоле",
+    "optionC": "исподлобья",
+    "optionD": "наперебой",
+    "correctOption": "A",
+    "explanation": "До упаду — наречное сочетание предлога до с существительным, пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "спозаранку",
+    "optionB": "на...совесть",
+    "optionC": "насквозь",
+    "optionD": "вничью",
+    "correctOption": "B",
+    "explanation": "На совесть — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "накануне",
+    "optionB": "вперемешку",
+    "optionC": "впопыхах",
+    "optionD": "с...глазу на глаз",
+    "correctOption": "D",
+    "explanation": "С глазу на глаз — устойчивое сочетание, пишется раздельно в 4 слова."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "впотай",
+    "optionB": "вслед",
+    "optionC": "без...ведома",
+    "optionD": "вовремя",
+    "correctOption": "C",
+    "explanation": "Без ведома — предлог без с существительным пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "наугад",
+    "optionB": "наудачу",
+    "optionC": "до...смерти",
+    "optionD": "повсюду",
+    "correctOption": "C",
+    "explanation": "До смерти — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "назавтра",
+    "optionB": "снаружи",
+    "optionC": "вширь",
+    "optionD": "на...цыпочках",
+    "correctOption": "D",
+    "explanation": "На цыпочках — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "вдоволь",
+    "optionB": "под...мышками",
+    "optionC": "дотла",
+    "optionD": "испокон",
+    "correctOption": "B",
+    "explanation": "Под мышками — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "взаперти",
+    "optionB": "с...размаху",
+    "optionC": "поодиночке",
+    "optionD": "наяву",
+    "correctOption": "B",
+    "explanation": "С размаху — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "вдогонку",
+    "optionB": "на...выручку",
+    "optionC": "вполголоса",
+    "optionD": "вкратце",
+    "correctOption": "B",
+    "explanation": "На выручку — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "исподлобья",
+    "optionB": "вплотную",
+    "optionC": "зачастую",
+    "optionD": "в...сердцах",
+    "correctOption": "D",
+    "explanation": "В сердцах — предлог в с существительным во множественном числе пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "наперебой",
+    "optionB": "спозаранку",
+    "optionC": "на...попятную",
+    "optionD": "вничью",
+    "correctOption": "C",
+    "explanation": "На попятную — исключение, пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "впопыхах",
+    "optionB": "без...разбору",
+    "optionC": "насквозь",
+    "optionD": "вперемешку",
+    "correctOption": "B",
+    "explanation": "Без разбору — предлог без всегда пишется раздельно с наречными формами."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "накануне",
+    "optionB": "вслед",
+    "optionC": "вовремя",
+    "optionD": "с...ходу",
+    "correctOption": "D",
+    "explanation": "С ходу — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "наугад",
+    "optionB": "впотай",
+    "optionC": "наудачу",
+    "optionD": "до...отвала",
+    "correctOption": "D",
+    "explanation": "До отвала — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "повсюду",
+    "optionB": "вширь",
+    "optionC": "снаружи",
+    "optionD": "под...уздцы",
+    "correctOption": "D",
+    "explanation": "Под уздцы — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "на...редкость",
+    "optionB": "дотла",
+    "optionC": "испокон",
+    "optionD": "назавтра",
+    "correctOption": "A",
+    "explanation": "На редкость — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "в...насмешку",
+    "optionB": "взаперти",
+    "optionC": "наяву",
+    "optionD": "вдоволь",
+    "correctOption": "A",
+    "explanation": "В насмешку — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "вдогонку",
+    "optionB": "на...вылет",
+    "optionC": "вкратце",
+    "optionD": "поодиночке",
+    "correctOption": "B",
+    "explanation": "На вылет — пишется раздельно. (Ой, навылет пишется слитно: 'пуля прошла навылет'. Заменим на 'на выбор')"
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "на...выбор",
+    "optionB": "вдогонку",
+    "optionC": "поодиночке",
+    "optionD": "вкратце",
+    "correctOption": "A",
+    "explanation": "На выбор — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "без...оглядки",
+    "optionB": "вполголоса",
+    "optionC": "вплотную",
+    "optionD": "зачастую",
+    "correctOption": "A",
+    "explanation": "Без оглядки — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "исподлобья",
+    "optionB": "наперебой",
+    "optionC": "спозаранку",
+    "optionD": "на...авось",
+    "correctOption": "D",
+    "explanation": "На авось — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "насквозь",
+    "optionB": "вперемешку",
+    "optionC": "вничью",
+    "optionD": "в...диковинку",
+    "correctOption": "D",
+    "explanation": "В диковинку — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "вслед",
+    "optionB": "в...рассрочку",
+    "optionC": "накануне",
+    "optionD": "впопыхах",
+    "correctOption": "B",
+    "explanation": "В рассрочку — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "вовремя",
+    "optionB": "впотай",
+    "optionC": "наудачу",
+    "optionD": "в...тупик",
+    "correctOption": "D",
+    "explanation": "В тупик — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "снаружи",
+    "optionB": "повсюду",
+    "optionC": "на...вырост",
+    "optionD": "наугад",
+    "correctOption": "C",
+    "explanation": "На вырост — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "вширь",
+    "optionB": "испокон",
+    "optionC": "на...износ",
+    "optionD": "назавтра",
+    "correctOption": "C",
+    "explanation": "На износ — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "на...смех",
+    "optionB": "дотла",
+    "optionC": "взаперти",
+    "optionD": "вдоволь",
+    "correctOption": "A",
+    "explanation": "На смех — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "вкратце",
+    "optionB": "с...кандачка",
+    "optionC": "поодиночке",
+    "optionD": "наяву",
+    "correctOption": "B",
+    "explanation": "С кандачка — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "вполголоса",
+    "optionB": "вдогонку",
+    "optionC": "в...потьмах",
+    "optionD": "вплотную",
+    "correctOption": "C",
+    "explanation": "В потьмах — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "зачастую",
+    "optionB": "исподлобья",
+    "optionC": "на...ура",
+    "optionD": "наперебой",
+    "correctOption": "C",
+    "explanation": "На ура — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "насквозь",
+    "optionB": "спозаранку",
+    "optionC": "вничью",
+    "optionD": "без...спроса",
+    "correctOption": "D",
+    "explanation": "Без спроса — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "до...утра",
+    "optionB": "накануне",
+    "optionC": "вперемешку",
+    "optionD": "впопыхах",
+    "correctOption": "A",
+    "explanation": "До утра — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "вслед",
+    "optionB": "на...память",
+    "optionC": "вовремя",
+    "optionD": "впотай",
+    "correctOption": "B",
+    "explanation": "На память — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "В каком наречии пишется РАЗДЕЛЬНО?",
+    "optionA": "наугад",
+    "optionB": "наудачу",
+    "optionC": "повсюду",
+    "optionD": "на...глазок",
+    "correctOption": "D",
+    "explanation": "На глазок — пишется раздельно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "поодиночке",
+    "optionB": "вдогонку",
+    "optionC": "по...нашему",
+    "optionD": "вкратце",
+    "correctOption": "C",
+    "explanation": "По-нашему — наречие с приставкой по- и суффиксом -ему пишется через дефис."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "вплотную",
+    "optionB": "зачастую",
+    "optionC": "во...первых",
+    "optionD": "вполголоса",
+    "correctOption": "C",
+    "explanation": "Во-первых — вводное слово/наречие с приставкой во- и суффиксом -ых пишется через дефис."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "поневоле",
+    "optionB": "едва...едва",
+    "optionC": "наперебой",
+    "optionD": "исподлобья",
+    "correctOption": "B",
+    "explanation": "Едва-едва — образовано повторением слов, пишется через дефис."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "насквозь",
+    "optionB": "по...прежнему",
+    "optionC": "спозаранку",
+    "optionD": "вничью",
+    "correctOption": "B",
+    "explanation": "По-прежнему — приставка по- и суффикс -ему."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "впопыхах",
+    "optionB": "накануне",
+    "optionC": "вперемешку",
+    "optionD": "точь...в...точь",
+    "correctOption": "D",
+    "explanation": "Точь-в-точь — наречие-исключение, пишется через дефис."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "вслед",
+    "optionB": "впотай",
+    "optionC": "вовремя",
+    "optionD": "кое...как",
+    "correctOption": "D",
+    "explanation": "Кое-как — наречие с приставкой кое- пишется через дефис."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "наудачу",
+    "optionB": "наугад",
+    "optionC": "повсюду",
+    "optionD": "как...нибудь",
+    "correctOption": "D",
+    "explanation": "Как-нибудь — наречие с суффиксом -нибудь пишется через дефис."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "по...русски",
+    "optionB": "вширь",
+    "optionC": "снаружи",
+    "optionD": "назавтра",
+    "correctOption": "A",
+    "explanation": "По-русски — приставка по- и суффикс -и."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "дотла",
+    "optionB": "в...третьих",
+    "optionC": "вдоволь",
+    "optionD": "испокон",
+    "correctOption": "B",
+    "explanation": "В-третьих — приставка в- и суффикс -их."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "наяву",
+    "optionB": "давным...давно",
+    "optionC": "поодиночке",
+    "optionD": "взаперти",
+    "correctOption": "B",
+    "explanation": "Давным-давно — образовано повторением слов, пишется через дефис."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "мало...помалу",
+    "optionB": "вдогонку",
+    "optionC": "вкратце",
+    "optionD": "вполголоса",
+    "correctOption": "A",
+    "explanation": "Мало-помалу — через дефис."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "по...новому",
+    "optionB": "исподлобья",
+    "optionC": "вплотную",
+    "optionD": "зачастую",
+    "correctOption": "A",
+    "explanation": "По-новому — приставка по- и суффикс -ому."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "спозаранку",
+    "optionB": "вничью",
+    "optionC": "как...то",
+    "optionD": "наперебой",
+    "correctOption": "C",
+    "explanation": "Как-то — суффикс -то пишется через дефис."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "впопыхах",
+    "optionB": "вперемешку",
+    "optionC": "где...либо",
+    "optionD": "насквозь",
+    "correctOption": "C",
+    "explanation": "Где-либо — суффикс -либо."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "накануне",
+    "optionB": "вовремя",
+    "optionC": "по...лисьи",
+    "optionD": "вслед",
+    "correctOption": "C",
+    "explanation": "По-лисьи — приставка по- и суффикс -и на конце наречий от притяжательных прилагательных."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "впотай",
+    "optionB": "крест...накрест",
+    "optionC": "наудачу",
+    "optionD": "наугад",
+    "correctOption": "B",
+    "explanation": "Крест-накрест — пишется через дефис."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "повсюду",
+    "optionB": "вширь",
+    "optionC": "снаружи",
+    "optionD": "по...медвежьи",
+    "correctOption": "D",
+    "explanation": "По-медвежьи — приставка по- и суффикс -и."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "дотла",
+    "optionB": "испокон",
+    "optionC": "куда...либо",
+    "optionD": "назавтра",
+    "correctOption": "C",
+    "explanation": "Куда-либо — суффикс -либо."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "взаперти",
+    "optionB": "по...детски",
+    "optionC": "наяву",
+    "optionD": "вдоволь",
+    "correctOption": "B",
+    "explanation": "По-детски — приставка по- и суффикс -и."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "вдогонку",
+    "optionB": "откуда...то",
+    "optionC": "вкратце",
+    "optionD": "поодиночке",
+    "correctOption": "B",
+    "explanation": "Откуда-то — суффикс -то."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "зачастую",
+    "optionB": "вплотную",
+    "optionC": "вполголоса",
+    "optionD": "по...птичьи",
+    "correctOption": "D",
+    "explanation": "По-птичьи — приставка по- и суффикс -и."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "спозаранку",
+    "optionB": "исподлобья",
+    "optionC": "ждатель...нежданно",
+    "optionD": "наперебой",
+    "correctOption": "C",
+    "explanation": "Нежданно-негаданно — перепутано в варианте, напишем точно: нежданно...негаданно."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "нежданно...негаданно",
+    "optionB": "наперебой",
+    "optionC": "спозаранку",
+    "optionD": "исподлобья",
+    "correctOption": "A",
+    "explanation": "Нежданно-негаданно — пишется через дефис."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "по...человечески",
+    "optionB": "вперемешку",
+    "optionC": "насквозь",
+    "optionD": "вничью",
+    "correctOption": "A",
+    "explanation": "По-человечески — приставка по- и суффикс -и."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "накануне",
+    "optionB": "по...дружески",
+    "optionC": "впопыхах",
+    "optionD": "вслед",
+    "correctOption": "B",
+    "explanation": "По-дружески — пишется через дефис."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "впотай",
+    "optionB": "наудачу",
+    "optionC": "вовремя",
+    "optionD": "кое...где",
+    "correctOption": "D",
+    "explanation": "Кое-где — приставка кое-."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "наугад",
+    "optionB": "снаружи",
+    "optionC": "повсюду",
+    "optionD": "задом...наперед",
+    "correctOption": "D",
+    "explanation": "Задом-наперед — сочетание синонимичных слов."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "испокон",
+    "optionB": "вширь",
+    "optionC": "по...зимнему",
+    "optionD": "назавтра",
+    "correctOption": "C",
+    "explanation": "По-зимнему — приставка по- и суффикс -ему."
+  },
+  {
+    "type": "multiple_choice",
+    "prompt": "Какое наречие пишется ЧЕРЕЗ ДЕФИС?",
+    "optionA": "вдоволь",
+    "optionB": "дотла",
+    "optionC": "взаперти",
+    "optionD": "по...волчьи",
+    "correctOption": "D",
+    "explanation": "По-волчьи — приставка по- и суффикс -и."
+  }
+]
