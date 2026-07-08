@@ -15,12 +15,12 @@
 ```powershell
 cd "c:\Users\mixal\OneDrive\Рабочий стол\Progects\Russkii100"
 
-git remote add origin https://github.com/ВАШ_ЛОГИН/sfera.git
+git remote add origin https://github.com/Joni-1337/sfera.git
 git branch -M main
 git push -u origin main
 ```
 
-Замените `ВАШ_ЛОГИН` на ваш GitHub username.
+Замените URL, если ваш логин GitHub другой (сейчас указан **Joni-1337** из настроек git на этом ПК).
 
 При первом push GitHub попросит войти (браузер или токен).
 
@@ -30,7 +30,15 @@ git push -u origin main
 2. **Publish repository** → имя `sfera`, private
 3. **Push origin**
 
-## Шаг 3. Timeweb Cloud → App Platform
+## Шаг 3. Vercel (рекомендуется, бесплатно)
+
+См. **[VERCEL.md](./VERCEL.md)** — Neon + Vercel + GitHub.
+
+Кратко: [vercel.com/new](https://vercel.com/new) → Import `sfera` → env из `neon.env.example` + `JWT_SECRET`, `APP_URL`.
+
+---
+
+## Альтернатива: Timeweb Cloud → App Platform
 
 1. [timeweb.cloud](https://timeweb.cloud) → **App Platform** → **Создать**
 2. **Frontend → Next.js**
@@ -47,7 +55,8 @@ git push -u origin main
 6. **Переменные окружения** — скопируйте из `timeweb.env.example`:
 
 ```
-DATABASE_URL=file:./prisma/prod.db
+DATABASE_URL=<pooled Neon URL>
+DIRECT_URL=<direct Neon URL>
 JWT_SECRET=<сгенерируйте длинную случайную строку>
 APP_URL=https://sferaege.ru
 RESEND_API_KEY=
