@@ -14,22 +14,30 @@ const VERIFY_MESSAGES: Record<string, string> = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ verify?: string; hint?: string; email?: string }>;
+  searchParams: Promise<{
+    verify?: string;
+    hint?: string;
+    email?: string;
+    reset?: string;
+  }>;
 }) {
   await resolveGuestSession();
-  const { verify, hint, email } = await searchParams;
+  const { verify, hint, email, reset } = await searchParams;
   const verifyNotice =
     (verify && VERIFY_MESSAGES[verify]) ||
     (verify === "failed" && hint) ||
     null;
   const isSuccess = verify === "success";
+  const resetNotice = reset === "success" ? "Пароль обновлён. Войдите с новым паролем." : null;
+  const presetEmail = email?.trim().toLowerCase() ?? "";
 
   return (
     <AuthShell title="Вход" subtitle="Ученик или преподаватель">
       <LoginForms
         verifyNotice={verifyNotice}
         verifySuccess={isSuccess}
-        presetEmail={email?.trim().toLowerCase() ?? ""}
+        presetEmail={presetEmail}
+        resetNotice={resetNotice}
       />
     </AuthShell>
   );

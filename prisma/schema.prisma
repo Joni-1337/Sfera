@@ -24,9 +24,19 @@ model Teacher {
   hardWords          HardWord[]
   notifications      TeacherNotification[]
   emailVerificationToken EmailVerificationToken?
+  passwordResetToken PasswordResetToken?
 }
 
 model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  teacherId String   @unique
+  teacher   Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  tokenHash String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model PasswordResetToken {
   id        String   @id @default(cuid())
   teacherId String   @unique
   teacher   Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)

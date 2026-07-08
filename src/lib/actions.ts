@@ -11,6 +11,10 @@ import {
   sendTeacherVerificationEmail,
   sendTeacherVerificationEmailByAddress,
 } from "@/lib/email-verification";
+import {
+  resetPasswordWithToken,
+  sendTeacherPasswordResetEmail,
+} from "@/lib/password-reset";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -57,6 +61,86 @@ export async function resendVerificationFormAction(
   }
 
   return { message: "Письмо отправлено. Проверьте почту и папку «Спам»." };
+}
+
+export type ForgotPasswordFormState = {
+  error?: string;
+  success?: boolean;
+  devLink?: string | null;
+  localMode?: boolean;
+} | null;
+
+export async function requestPasswordResetFormAction(
+  _prev: ForgotPasswordFormState,
+  formData: FormData
+): Promise<ForgotPasswordFormState> {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+
+  if (!email || !EMAIL_RE.test(email)) {
+    return { error: "Введите корректный email" };
+  }
+
+  try {
+    const result = await sendTeacherPasswordResetEmail(email);
+
+    if ("error" in result && result.error) {
+      return { error: result.error };
+    }
+
+    return {
+      success: true,
+      devLink: result.devLink ?? null,
+      localMode: "localMode" in result && result.localMode === true,
+    };
+  } catch (error) {
+    console.error("[requestPasswordResetFormAction]", error);
+    return { error: "Ошибка сервера. Попробуйте позже." };
+  }
+}
+
+export type ResetPasswordFormState = {
+  error?: string;
+  redirectTo?: string;
+} | null;
+
+export async function resetPasswordFormAction(
+  _prev: ResetPasswordFormState,
+  formData: FormData
+): Promise<ResetPasswordFormState> {
+  const token = String(formData.get("token") ?? "").trim();
+  const password = String(formData.get("password") ?? "");
+  const confirmPassword = String(formData.get("confirmPassword") ?? "");
+
+  if (!token) {
+    return { error: "Ссылка недействительна" };
+  }
+
+  if (password.length < 6) {
+    return { error: "Пароль должен быть не короче 6 символов" };
+  }
+
+  if (password !== confirmPassword) {
+    return { error: "Пароли не совпадают" };
+  }
+
+  try {
+    const result = await resetPasswordWithToken(token, password);
+
+    if ("error" in result && result.error) {
+      return { error: result.error };
+    }
+
+    const params = new URLSearchParams({ reset: "success" });
+    if (result.email) {
+      params.set("email", result.email);
+    }
+
+    return { redirectTo: `/login?${params.toString()}` };
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error("[resetPasswordFormAction]", error);
+    return { error: "Ошибка сервера. Попробуйте позже." };
+  }
 }
 
 async function registerTeacherCore(formData: FormData): Promise<RegisterFormState> {

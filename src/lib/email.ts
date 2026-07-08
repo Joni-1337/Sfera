@@ -140,6 +140,35 @@ export async function sendVerificationEmail(to: string, verifyUrl: string, fullN
   return sendEmail({ to, subject, html, text });
 }
 
+export async function sendPasswordResetEmail(
+  to: string,
+  resetUrl: string,
+  fullName: string
+) {
+  const subject = `Сброс пароля — ${APP_TITLE}`;
+  const html = `
+    <div style="font-family: sans-serif; max-width: 520px; margin: 0 auto; color: #18181b;">
+      <h1 style="font-size: 20px; margin-bottom: 8px;">Здравствуйте, ${escapeHtml(fullName)}!</h1>
+      <p style="line-height: 1.5; color: #52525b;">
+        Вы запросили сброс пароля на платформе <strong>${APP_NAME}</strong>.
+        Нажмите кнопку ниже, чтобы задать новый пароль.
+      </p>
+      <p style="margin: 24px 0;">
+        <a href="${resetUrl}" style="display: inline-block; background: #14b8a6; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 10px; font-weight: 600;">
+          Сбросить пароль
+        </a>
+      </p>
+      <p style="font-size: 13px; color: #71717a; line-height: 1.5;">
+        Ссылка действует 1 час. Если вы не запрашивали сброс — просто проигнорируйте письмо.
+      </p>
+      <p style="font-size: 12px; color: #a1a1aa; word-break: break-all;">${resetUrl}</p>
+    </div>
+  `;
+  const text = `Сброс пароля: ${resetUrl}`;
+
+  return sendEmail({ to, subject, html, text });
+}
+
 function escapeHtml(value: string) {
   return value
     .replace(/&/g, "&amp;")

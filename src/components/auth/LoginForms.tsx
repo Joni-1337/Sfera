@@ -12,10 +12,12 @@ export function LoginForms({
   verifyNotice = null,
   verifySuccess = false,
   presetEmail = "",
+  resetNotice = null,
 }: {
   verifyNotice?: string | null;
   verifySuccess?: boolean;
   presetEmail?: string;
+  resetNotice?: string | null;
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<"student" | "teacher">(
@@ -48,15 +50,15 @@ export function LoginForms({
 
   return (
     <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-2xl shadow-black/40">
-      {verifyNotice && (
+      {(verifyNotice || resetNotice) && (
         <p
           className={`mb-5 rounded-lg px-3 py-2 text-sm ${
-            verifySuccess
+            verifySuccess || resetNotice
               ? "bg-green-500/10 text-green-400"
               : "bg-yellow-500/10 text-yellow-300"
           }`}
         >
-          {verifyNotice}
+          {resetNotice ?? verifyNotice}
         </p>
       )}
 
@@ -169,9 +171,15 @@ export function LoginForms({
             </div>
 
             <div>
-              <label className="mb-1.5 block text-sm text-text-secondary">
-                Пароль
-              </label>
+              <div className="mb-1.5 flex items-center justify-between">
+                <label className="text-sm text-text-secondary">Пароль</label>
+                <Link
+                  href="/forgot-password"
+                  className="text-xs text-accent hover:underline"
+                >
+                  Забыли пароль?
+                </Link>
+              </div>
               <input
                 name="password"
                 type="password"
