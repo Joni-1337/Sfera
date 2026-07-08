@@ -15,8 +15,52 @@ import {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export async function registerTeacher(formData: FormData) {
+export type RegisterFormState = { error?: string; redirectTo?: string } | null;
+export type ResendEmailState = {
+  error?: string;
+  message?: string;
+  devLink?: string | null;
+} | null;
+
+export async function registerTeacherFormAction(
+  _prev: RegisterFormState,
+  formData: FormData
+): Promise<RegisterFormState> {
   try {
+    return await registerTeacherCore(formData);
+  } catch (error) {
+    if (isRedirectError(error)) throw error;
+    console.error("[registerTeacherFormAction]", error);
+    return { error: "Ошибка сервера. Попробуйте позже." };
+  }
+}
+
+export async function resendVerificationFormAction(
+  _prev: ResendEmailState,
+  formData: FormData
+): Promise<ResendEmailState> {
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+
+  if (!email || !EMAIL_RE.test(email)) {
+    return { error: "Введите корректный email" };
+  }
+
+  const result = await sendTeacherVerificationEmailByAddress(email);
+  if ("error" in result && result.error) {
+    return { error: result.error };
+  }
+
+  if ("devLink" in result && result.devLink) {
+    return {
+      message: "Ссылка для подтверждения обновлена.",
+      devLink: result.devLink,
+    };
+  }
+
+  return { message: "Письмо отправлено. Проверьте почту и папку «Спам»." };
+}
+
+async function registerTeacherCore(formData: FormData): Promise<RegisterFormState> {
   const fullName = String(formData.get("fullName") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const password = String(formData.get("password") ?? "");
@@ -65,20 +109,11 @@ export async function registerTeacher(formData: FormData) {
     return { error: sent.error };
   }
 
-  redirect(
-    `/register/check-email?email=${encodeURIComponent(email)}${
-      "localMode" in sent && sent.localMode ? "&local=1" : ""
-    }${
-      "warning" in sent && sent.warning
-        ? `&warn=${encodeURIComponent(sent.warning)}`
-        : ""
-    }`
-  );
-  } catch (error) {
-    if (isRedirectError(error)) throw error;
-    console.error("[registerTeacher]", error);
-    return { error: "Ошибка сервера. Попробуйте позже." };
-  }
+  const params = new URLSearchParams({ email });
+  if ("localMode" in sent && sent.localMode) params.set("local", "1");
+  if ("warning" in sent && sent.warning) params.set("warn", sent.warning);
+
+  return { redirectTo: `/register/check-email?${params.toString()}` };
 }
 
 export async function loginTeacher(formData: FormData) {

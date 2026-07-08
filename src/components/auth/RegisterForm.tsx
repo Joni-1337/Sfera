@@ -1,25 +1,22 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { registerTeacher } from "@/lib/actions";
+import { registerTeacherFormAction } from "@/lib/actions";
 import { SUBSCRIPTION_PRICE_RUB } from "@/lib/subscription-shared";
 import { CheckboxField } from "@/components/ui/Checkbox";
 
-type RegisterState = { error?: string } | null;
-
-async function registerAction(
-  _prev: RegisterState,
-  formData: FormData
-): Promise<RegisterState> {
-  const result = await registerTeacher(formData);
-  if (result?.error) return { error: result.error };
-  return null;
-}
-
 export function RegisterForm({ localVerify = false }: { localVerify?: boolean }) {
-  const [state, formAction, pending] = useActionState(registerAction, null);
+  const router = useRouter();
+  const [state, formAction, pending] = useActionState(registerTeacherFormAction, null);
   const error = state?.error ?? null;
+
+  useEffect(() => {
+    if (state?.redirectTo) {
+      router.push(state.redirectTo);
+    }
+  }, [state?.redirectTo, router]);
 
   return (
     <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-2xl shadow-black/40">

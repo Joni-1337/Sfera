@@ -41,6 +41,14 @@ function parseResendError(status: number, body: string): string {
         : "Resend (тест): письмо можно отправить только на email вашего аккаунта Resend.";
     }
 
+    if (status === 403 && message.toLowerCase().includes("domain")) {
+      return "Домен для почты ещё не подтверждён в Resend. Дождитесь статуса Verified или проверьте EMAIL_FROM в Vercel.";
+    }
+
+    if (status === 422 && message.toLowerCase().includes("from")) {
+      return "Некорректный адрес отправителя (EMAIL_FROM). Используйте: СФЕРА <noreply@sferaege.ru>";
+    }
+
     if (message) return message;
   } catch {
     /* ignore */

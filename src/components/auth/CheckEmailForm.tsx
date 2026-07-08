@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { Mail, RefreshCw, Link2 } from "lucide-react";
-import { resendVerificationEmail } from "@/lib/actions";
+import { resendVerificationFormAction } from "@/lib/actions";
 
 export function CheckEmailForm({
   email,
@@ -16,28 +16,14 @@ export function CheckEmailForm({
   warning?: string | null;
   localMode?: boolean;
 }) {
-  const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const [localDevLink, setLocalDevLink] = useState(devLink ?? null);
-  const [pending, startTransition] = useTransition();
+  const [state, formAction, pending] = useActionState(resendVerificationFormAction, null);
 
-  function handleResend(formData: FormData) {
-    setError(null);
-    setMessage(null);
-    startTransition(async () => {
-      const result = await resendVerificationEmail(formData);
-      if (result?.error) {
-        setError(result.error);
-        return;
-      }
-      if (result?.devLink) {
-        setLocalDevLink(result.devLink);
-        setMessage("Ссылка для подтверждения обновлена.");
-        return;
-      }
-      setMessage("Письмо отправлено. Проверьте почту и папку «Спам».");
-    });
-  }
+  useEffect(() => {
+    if (state?.devLink) {
+      setLocalDevLink(state.devLink);
+    }
+  }, [state?.devLink]);
 
   return (
     <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-2xl shadow-black/40">
@@ -89,18 +75,18 @@ export function CheckEmailForm({
       )}
 
       {!localMode && (
-        <form action={handleResend} className="space-y-4">
+        <form action={formAction} className="space-y-4">
           <input type="hidden" name="email" value={email} />
 
-          {message && (
+          {state?.message && (
             <p className="rounded-lg bg-green-500/10 px-3 py-2 text-sm text-green-400">
-              {message}
+              {state.message}
             </p>
           )}
 
-          {error && (
+          {state?.error && (
             <p className="rounded-lg bg-red-500/10 px-3 py-2 text-sm text-red-400">
-              {error}
+              {state.error}
             </p>
           )}
 
