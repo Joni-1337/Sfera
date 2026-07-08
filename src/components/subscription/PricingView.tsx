@@ -57,7 +57,7 @@ export function PricingView({
           <p className="text-sm text-text-secondary">Ваш текущий тариф</p>
           <p className="mt-1 text-xl font-bold">{planLabel(subscription.plan)}</p>
           {subscription.plan === "trial" && subscription.daysLeftTrial !== null && (
-            <p className="mt-1 text-sm text-accent">
+            <p className="mt-1 text-sm font-medium text-teal-300">
               Осталось {subscription.daysLeftTrial}{" "}
               {subscription.daysLeftTrial === 1 ? "день" : "дн."} пробного периода
             </p>
@@ -105,7 +105,7 @@ export function PricingView({
                     : `Оформить · ${SUBSCRIPTION_PRICE_RUB.toLocaleString("ru-RU")} ₽/мес`}
                 </button>
               ) : (
-                <p className="mt-6 text-sm font-medium text-green-400">
+                <p className="mt-6 text-sm font-medium text-teal-300">
                   Подписка активна. Спасибо!
                 </p>
               )
@@ -158,7 +158,7 @@ export function PricingView({
       )}
 
       {isLoggedIn && (
-        <p className="text-center text-xs text-text-muted">
+        <p className="text-center text-xs text-text-secondary">
           {paymentsEnabled
             ? "Тестовая оплата активна (режим разработки)."
             : "Оплата через ЮKassa будет подключена после регистрации самозанятости."}
@@ -217,7 +217,7 @@ function PlanCard({
       </div>
 
       {current && (
-        <span className="mb-3 inline-block w-fit rounded-full bg-green-500/10 px-2.5 py-0.5 text-xs text-green-400">
+        <span className="badge-current-plan mb-3 inline-block w-fit rounded-full px-2.5 py-0.5 text-xs">
           Ваш тариф
         </span>
       )}

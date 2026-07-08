@@ -89,4 +89,32 @@
   .gradient-accent {
     background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
   }
+
+  .step-number {
+    background: linear-gradient(135deg, #5eead4 0%, #14b8a6 55%, #0d9488 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .notice-success {
+    border: 1px solid rgb(45 212 191 / 0.45);
+    background: rgb(20 184 166 / 0.18);
+    color: #ccfbf1;
+    font-weight: 500;
+  }
+
+  .badge-current-plan {
+    border: 1px solid rgb(45 212 191 / 0.5);
+    background: rgb(20 184 166 / 0.22);
+    color: #ccfbf1;
+    font-weight: 600;
+  }
+
+  .badge-trial {
+    border: 1px solid rgb(45 212 191 / 0.45);
+    background: rgb(20 184 166 / 0.2);
+    color: #99f6e4;
+    font-weight: 600;
+  }
 }

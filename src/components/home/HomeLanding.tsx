@@ -162,7 +162,7 @@ export default function HomeLanding() {
                 key={step}
                 className="relative rounded-2xl border border-border bg-bg-card p-6"
               >
-                <span className="text-3xl font-bold text-accent/30">{step}</span>
+                <span className="step-number text-3xl font-bold">{step}</span>
                 <h3 className="mt-2 text-lg font-semibold">{title}</h3>
                 <p className="mt-1 text-sm text-text-secondary">{text}</p>
               </div>

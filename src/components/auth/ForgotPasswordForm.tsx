@@ -29,7 +29,7 @@ export function ForgotPasswordForm({
 
       {success ? (
         <div className="space-y-4">
-          <p className="rounded-lg bg-green-500/10 px-3 py-2 text-sm text-green-400">
+          <p className="notice-success rounded-lg px-3 py-2 text-sm">
             {isLocalMode
               ? "Ссылка для сброса пароля готова (режим разработки):"
               : "Если аккаунт с таким email есть, письмо уже отправлено. Проверьте почту и папку «Спам»."}

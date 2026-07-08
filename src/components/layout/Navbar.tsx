@@ -325,7 +325,7 @@ function SubscriptionBadge({ plan }: { plan: PlanType }) {
 
   if (plan === "trial") {
     return (
-      <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-teal-400/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-teal-400 ring-1 ring-teal-400/30">
+      <span className="badge-trial inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide">
         <Sparkles className="h-3 w-3" />
         {planLabel(plan)}
       </span>

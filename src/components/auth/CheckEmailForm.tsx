@@ -79,7 +79,7 @@ export function CheckEmailForm({
           <input type="hidden" name="email" value={email} />
 
           {state?.message && (
-            <p className="rounded-lg bg-green-500/10 px-3 py-2 text-sm text-green-400">
+            <p className="notice-success rounded-lg px-3 py-2 text-sm">
               {state.message}
             </p>
           )}

@@ -54,8 +54,8 @@ export function LoginForms({
         <p
           className={`mb-5 rounded-lg px-3 py-2 text-sm ${
             verifySuccess || resetNotice
-              ? "bg-green-500/10 text-green-400"
-              : "bg-yellow-500/10 text-yellow-300"
+              ? "notice-success"
+              : "bg-yellow-500/15 text-yellow-200"
           }`}
         >
           {resetNotice ?? verifyNotice}
