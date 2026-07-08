@@ -1,6 +1,5 @@
 import "server-only";
 
-import { createSession } from "@/lib/auth";
 import { verifyEmailToken } from "@/lib/email-verification";
 
 export async function completeEmailVerification(token: string) {
@@ -14,12 +13,5 @@ export async function completeEmailVerification(token: string) {
     return { error: result.error };
   }
 
-  await createSession({
-    role: "teacher",
-    id: result.teacher.id,
-    name: result.teacher.fullName,
-    email: result.teacher.email,
-  });
-
-  return { success: true as const };
+  return { success: true as const, teacher: result.teacher };
 }

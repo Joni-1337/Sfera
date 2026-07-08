@@ -16,21 +16,30 @@ export type SessionPayload = {
 
 const COOKIE_NAME = "russkii100_session";
 
-export async function createSession(payload: SessionPayload) {
+export async function buildSessionCookie(payload: SessionPayload) {
   const token = await new SignJWT({ ...payload })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
     .sign(SECRET);
 
+  return {
+    name: COOKIE_NAME,
+    value: token,
+    options: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax" as const,
+      maxAge: 60 * 60 * 24 * 7,
+      path: "/",
+    },
+  };
+}
+
+export async function createSession(payload: SessionPayload) {
+  const cookie = await buildSessionCookie(payload);
   const cookieStore = await cookies();
-  cookieStore.set(COOKIE_NAME, token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 7,
-    path: "/",
-  });
+  cookieStore.set(cookie.name, cookie.value, cookie.options);
 }
 
 export async function getSession(): Promise<SessionPayload | null> {

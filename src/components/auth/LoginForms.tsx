@@ -8,7 +8,7 @@ import { loginStudentFormAction, loginTeacherFormAction } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { CheckboxField } from "@/components/ui/Checkbox";
 
-export function LoginForms() {
+export function LoginForms({ verifyNotice = null }: { verifyNotice?: string | null }) {
   const router = useRouter();
   const [mode, setMode] = useState<"student" | "teacher">("student");
   const [teacherState, teacherAction, teacherPending] = useActionState(
@@ -38,6 +38,12 @@ export function LoginForms() {
 
   return (
     <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-2xl shadow-black/40">
+      {verifyNotice && (
+        <p className="mb-5 rounded-lg bg-yellow-500/10 px-3 py-2 text-sm text-yellow-300">
+          {verifyNotice}
+        </p>
+      )}
+
       <div className="mb-6 flex rounded-xl bg-bg-elevated p-1">
         <button
           type="button"
