@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     if ("error" in result) {
       return loginRedirect(request, {
         verify: "failed",
-        hint: result.error,
+        hint: result.error ?? "Не удалось подтвердить email",
       });
     }
 
