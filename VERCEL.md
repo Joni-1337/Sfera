@@ -51,7 +51,7 @@ npm run db:seed
 
 4. **Deploy**
 
-При каждом деплое Vercel выполнит `npm run build` — там уже есть `prisma db push`.
+При каждом деплое Vercel выполнит `npm run build` — в нём есть `prisma db push` (синхронизация схемы с Neon).
 
 ### Seed на production (один раз)
 
