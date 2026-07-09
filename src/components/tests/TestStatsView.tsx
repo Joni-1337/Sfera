@@ -15,14 +15,14 @@ import { cn } from "@/lib/utils";
 import { CheckboxRow } from "@/components/ui/Checkbox";
 import { formatQuestionLabel } from "@/lib/ege-prompt";
 import { resolveTestVariantLabel } from "@/lib/test-templates";
+import { QuestionReviewAccordionList } from "@/components/assignments/QuestionReviewAccordionList";
+import {
+  QuestionReviewCard,
+  errorRateBadgeClass,
+  type QuestionReviewData,
+} from "@/components/assignments/QuestionReviewCard";
 
-type Question = {
-  id: string;
-  orderIndex: number;
-  prompt: string;
-  correctOption: string;
-  explanation: string;
-};
+type Question = QuestionReviewData;
 
 type Answer = {
   questionId: string;
@@ -228,9 +228,16 @@ export function TestStatsView({ test }: { test: Test }) {
       </form>
 
       <section className="mb-8">
-        <h2 className="mb-4 text-lg font-semibold">
-          {test.published ? "Где чаще всего ошибаются" : "Вопросы"}
-        </h2>
+        <h2 className="mb-2 text-lg font-semibold">Содержание теста</h2>
+        <p className="mb-4 text-sm text-text-secondary">
+          Нажмите на вопрос, чтобы увидеть все варианты ответа — так же, как у ученика.
+        </p>
+        <QuestionReviewAccordionList questions={test.questions} />
+      </section>
+
+      {test.published && completedAttempts.length > 0 && (
+      <section className="mb-8">
+        <h2 className="mb-4 text-lg font-semibold">Где чаще всего ошибаются</h2>
         <div className="space-y-3">
           {questionStats.map(({ question, wrong, total, pct }, i) => {
             const label = formatQuestionLabel(question.prompt, i + 1);
@@ -240,18 +247,14 @@ export function TestStatsView({ test }: { test: Test }) {
               className="rounded-xl border border-border bg-bg-card p-4"
             >
               <div className="mb-2 flex items-start justify-between gap-4">
-                <p className="text-sm">
-                  <span className="text-text-muted">#{label.number} </span>
+                <p className="text-sm text-text-primary">
+                  <span className="font-semibold text-teal-200">#{label.number} </span>
                   {label.text}
                 </p>
                 <span
                   className={cn(
-                    "shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium",
-                    pct > 50
-                      ? "bg-red-500/10 text-red-400"
-                      : pct > 0
-                        ? "bg-yellow-500/10 text-yellow-400"
-                        : "bg-green-500/10 text-green-400"
+                    "shrink-0 rounded-full px-2.5 py-0.5 text-xs",
+                    errorRateBadgeClass(pct)
                   )}
                 >
                   {total ? `${wrong}/${total} ошибок` : "—"}
@@ -261,21 +264,22 @@ export function TestStatsView({ test }: { test: Test }) {
                 <div
                   className={cn(
                     "h-full rounded-full transition-all",
-                    pct > 50 ? "bg-red-400" : pct > 0 ? "bg-yellow-400" : "bg-green-400"
+                    pct > 50 ? "bg-red-400" : pct > 0 ? "bg-amber-400" : "bg-teal-400"
                   )}
                   style={{ width: `${pct}%` }}
                 />
               </div>
-              {question.explanation && pct > 0 && (
-                <p className="mt-2 text-xs text-text-muted">
-                  Правильный ответ: {question.correctOption}. {question.explanation}
-                </p>
+              {pct > 0 && (
+                <div className="mt-4">
+                  <QuestionReviewCard question={question} index={i} compact />
+                </div>
               )}
             </div>
             );
           })}
         </div>
       </section>
+      )}
 
       <section>
         <h2 className="mb-4 text-lg font-semibold">Результаты учеников</h2>
@@ -297,9 +301,13 @@ export function TestStatsView({ test }: { test: Test }) {
                   {!attempt ? (
                     <span className="shrink-0 text-xs text-text-muted">Не начинал</span>
                   ) : attempt.status === "completed" ? (
-                    <span className="shrink-0 text-xs text-green-400">Выполнено</span>
+                    <span className="badge-status-done shrink-0 rounded-full px-2.5 py-0.5 text-xs">
+                      Выполнено
+                    </span>
                   ) : (
-                    <span className="shrink-0 text-xs text-yellow-400">В процессе</span>
+                    <span className="badge-status-progress shrink-0 rounded-full px-2.5 py-0.5 text-xs">
+                      В процессе
+                    </span>
                   )}
                 </div>
 
@@ -355,7 +363,7 @@ export function TestStatsView({ test }: { test: Test }) {
                     studentName={student.fullName}
                     attempt={attempt}
                     allAttempts={allAttempts}
-                    wrongAnswers={wrongAnswers}
+                    questions={test.questions}
                   />
                 )}
               </div>
@@ -390,9 +398,13 @@ export function TestStatsView({ test }: { test: Test }) {
                         {!attempt ? (
                           <span className="text-xs text-text-muted">Не начинал</span>
                         ) : attempt.status === "completed" ? (
-                          <span className="text-xs text-green-400">Выполнено</span>
+                          <span className="badge-status-done rounded-full px-2.5 py-0.5 text-xs">
+                            Выполнено
+                          </span>
                         ) : (
-                          <span className="text-xs text-yellow-400">В процессе</span>
+                          <span className="badge-status-progress rounded-full px-2.5 py-0.5 text-xs">
+                            В процессе
+                          </span>
                         )}
                       </td>
                       <td className="px-5 py-3.5">
@@ -442,7 +454,7 @@ export function TestStatsView({ test }: { test: Test }) {
                             studentName={student.fullName}
                             attempt={attempt}
                             allAttempts={allAttempts}
-                            wrongAnswers={wrongAnswers}
+                            questions={test.questions}
                           />
                         </td>
                       </tr>
@@ -463,19 +475,23 @@ function StudentAttemptDetails({
   studentName,
   attempt,
   allAttempts,
-  wrongAnswers,
+  questions,
 }: {
   studentName: string;
   attempt: Attempt | undefined;
   allAttempts: Attempt[];
-  wrongAnswers: Answer[];
+  questions: Question[];
 }) {
+  const answerByQuestionId = new Map(
+    (attempt?.answers ?? []).map((answer) => [answer.questionId, answer])
+  );
+
   return (
     <div className="mt-4 border-t border-border pt-4 md:mt-0 md:border-0 md:pt-0">
-      <p className="mb-3 text-xs font-medium uppercase text-text-muted">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-secondary">
         История попыток — {studentName}
       </p>
-      <ul className="mb-4 space-y-2">
+      <ul className="mb-6 space-y-2">
         {allAttempts.map((at) => (
           <li
             key={at.id}
@@ -487,9 +503,9 @@ function StudentAttemptDetails({
             )}
           >
             <span>
-              <span className="font-medium text-accent">Попытка #{at.attemptNumber}</span>
+              <span className="font-medium text-teal-200">Попытка #{at.attemptNumber}</span>
               {at.id === attempt?.id && (
-                <span className="ml-2 text-xs text-text-muted">(лучший)</span>
+                <span className="ml-2 text-xs text-text-secondary">(лучший)</span>
               )}
             </span>
             <span className="text-text-secondary">
@@ -503,48 +519,29 @@ function StudentAttemptDetails({
                   )}
                 </>
               ) : (
-                <span className="text-yellow-400">В процессе</span>
+                <span className="text-amber-200">В процессе</span>
               )}
             </span>
           </li>
         ))}
       </ul>
 
-      {wrongAnswers.length > 0 && (
+      {attempt && (
         <>
-          <p className="mb-3 text-xs font-medium uppercase text-text-muted">
-            Ошибки (лучшая попытка №{attempt?.attemptNumber})
+          <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+            Ответы ученика (лучшая попытка №{attempt.attemptNumber})
           </p>
-          <ul className="space-y-3">
-            {wrongAnswers.map((ans) => {
-              const label = formatQuestionLabel(ans.question.prompt, 0);
-              return (
-              <li
-                key={ans.questionId}
-                className="rounded-lg border border-red-500/20 bg-red-500/5 p-3 text-sm"
-              >
-                <p className="mb-1 break-words">
-                  {label.number > 0 && (
-                    <span className="text-text-muted">#{label.number} </span>
-                  )}
-                  {label.text}
-                </p>
-                <p className="text-xs text-text-muted break-words">
-                  Ответ ученика:{" "}
-                  <span className="text-red-400">{ans.chosenOption || "—"}</span>
-                  {" · "}
-                  Правильно:{" "}
-                  <span className="text-green-400">{ans.question.correctOption}</span>
-                </p>
-                {ans.question.explanation && (
-                  <p className="mt-1 text-xs text-text-secondary break-words">
-                    {ans.question.explanation}
-                  </p>
-                )}
-              </li>
-              );
-            })}
-          </ul>
+          <QuestionReviewAccordionList
+            questions={questions}
+            chosenByQuestionId={
+              new Map(
+                questions.map((q) => [
+                  q.id,
+                  answerByQuestionId.get(q.id)?.chosenOption ?? null,
+                ])
+              )
+            }
+          />
         </>
       )}
     </div>

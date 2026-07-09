@@ -1,27 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { Check, X, ArrowLeft, RotateCcw } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { questionTypeLabel } from "@/lib/scoring";
-import { getOptionText } from "@/lib/question-options";
-import { formatQuestionLabel } from "@/lib/ege-prompt";
+import { ArrowLeft, RotateCcw } from "lucide-react";
 import { resolveTestVariantLabel } from "@/lib/test-templates";
+import {
+  QuestionReviewCard,
+  type QuestionReviewData,
+} from "@/components/assignments/QuestionReviewCard";
 
-type Answer = {
+type ResultAnswer = {
   chosenOption: string;
   isCorrect: boolean;
-  question: {
-    type: string;
-    prompt: string;
-    answerOptions?: string;
-    optionA: string;
-    optionB: string;
-    optionC: string;
-    optionD: string;
-    correctOption: string;
-    explanation: string;
-  };
+  question: QuestionReviewData & { id?: string; orderIndex?: number };
 };
 
 export function TestResultView({
@@ -41,20 +31,13 @@ export function TestResultView({
   allowRetake: boolean;
   testId: string;
   egeVariantNumber?: number | null;
-  answers: Answer[];
+  answers: ResultAnswer[];
 }) {
   const pct = Math.round((score / maxScore) * 100);
   const variantLabel = resolveTestVariantLabel(
     egeVariantNumber,
     answers.map((a) => a.question)
   );
-
-  const formatAnswer = (q: Answer["question"], key: string) => {
-    if (q.type === "multiple_choice") {
-      return `${key}. ${getOptionText(q, key)}`;
-    }
-    return key;
-  };
 
   return (
     <div>
@@ -69,10 +52,10 @@ export function TestResultView({
       <div className="mb-8 rounded-2xl border border-border bg-bg-card p-6 text-center">
         <h1 className="mb-2 text-2xl font-bold">{title}</h1>
         {variantLabel && (
-          <p className="mb-2 text-sm font-medium text-accent">{variantLabel}</p>
+          <p className="mb-2 text-sm font-medium text-teal-200">{variantLabel}</p>
         )}
         {attemptNumber > 1 && (
-          <p className="mb-2 text-sm text-text-muted">Попытка #{attemptNumber}</p>
+          <p className="mb-2 text-sm text-text-secondary">Попытка #{attemptNumber}</p>
         )}
         <p className="text-4xl font-bold text-accent">
           {score}/{maxScore}
@@ -91,56 +74,22 @@ export function TestResultView({
 
       <div className="max-w-2xl space-y-4">
         <h2 className="text-lg font-semibold">Разбор ответов</h2>
-        {answers.map((ans, i) => {
-          const label = formatQuestionLabel(ans.question.prompt, i + 1);
-          return (
-          <div
-            key={i}
-            className={cn(
-              "rounded-2xl border p-5",
-              ans.isCorrect
-                ? "border-green-500/20 bg-green-500/5"
-                : "border-red-500/20 bg-red-500/5"
-            )}
-          >
-            <div className="mb-2 flex items-start gap-2">
-              {ans.isCorrect ? (
-                <Check className="mt-0.5 h-5 w-5 shrink-0 text-green-400" />
-              ) : (
-                <X className="mt-0.5 h-5 w-5 shrink-0 text-red-400" />
-              )}
-              <div>
-                <p className="text-sm font-medium">
-                  <span className="text-text-muted">#{label.number} </span>
-                  {label.text}
-                </p>
-                <p className="mt-1 text-xs text-text-muted">
-                  {questionTypeLabel(ans.question.type)}
-                </p>
-              </div>
-            </div>
-            <div className="ml-7 space-y-1 text-sm">
-              <p>
-                Ваш ответ:{" "}
-                <span className={ans.isCorrect ? "text-green-400" : "text-red-400"}>
-                  {formatAnswer(ans.question, ans.chosenOption) || "—"}
-                </span>
-              </p>
-              {!ans.isCorrect && (
-                <p>
-                  Правильно:{" "}
-                  <span className="text-green-400">
-                    {formatAnswer(ans.question, ans.question.correctOption)}
-                  </span>
-                </p>
-              )}
-              {ans.question.explanation && (
-                <p className="text-xs text-text-muted">{ans.question.explanation}</p>
-              )}
-            </div>
-          </div>
-          );
-        })}
+        <p className="text-sm text-text-secondary">
+          Все варианты ответа — как при решении. Правильный выделен бирюзовым.
+        </p>
+        {answers.map((ans, index) => (
+          <QuestionReviewCard
+            key={ans.question.id ?? index}
+            question={{
+              ...ans.question,
+              id: ans.question.id ?? String(index),
+              orderIndex: ans.question.orderIndex ?? index,
+            }}
+            index={index}
+            chosenOption={ans.chosenOption}
+            compact
+          />
+        ))}
       </div>
     </div>
   );

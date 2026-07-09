@@ -31,15 +31,7 @@ export default async function TestDetailPage({
           student: true,
           answers: {
             include: {
-              question: {
-                select: {
-                  id: true,
-                  orderIndex: true,
-                  prompt: true,
-                  correctOption: true,
-                  explanation: true,
-                },
-              },
+              question: true,
             },
           },
         },

@@ -2,6 +2,7 @@ import { CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { questionTypeLabel } from "@/lib/scoring";
 import { getChoiceOptions, getOptionText } from "@/lib/question-options";
+import { formatQuestionLabel } from "@/lib/ege-prompt";
 
 export type QuestionReviewData = {
   id: string;
@@ -29,6 +30,7 @@ export function QuestionReviewCard({
   compact?: boolean;
 }) {
   const options = getChoiceOptions(question);
+  const label = formatQuestionLabel(question.prompt, index + 1);
   const correctKey = question.correctOption.trim().toUpperCase();
   const correctText = getOptionText(question, correctKey);
   const chosenKey = chosenOption?.trim().toUpperCase() ?? "";
@@ -49,7 +51,7 @@ export function QuestionReviewCard({
     >
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <span className="rounded-full bg-accent/15 px-2.5 py-0.5 text-xs font-semibold text-teal-200">
-          Вопрос {index + 1}
+          Вопрос {label.number}
         </span>
         <span className="text-xs text-text-secondary">
           {questionTypeLabel(question.type)}
@@ -66,7 +68,7 @@ export function QuestionReviewCard({
         )}
       </div>
 
-      <p className="mb-4 text-sm leading-relaxed text-text-primary">{question.prompt}</p>
+      <p className="mb-4 text-sm leading-relaxed text-text-primary">{label.text}</p>
 
       {options.length > 0 ? (
         <ul className="space-y-2">
