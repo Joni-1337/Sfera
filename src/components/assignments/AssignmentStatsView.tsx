@@ -3,7 +3,7 @@
 import { Fragment, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Eye, EyeOff, Pencil, Copy } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Pencil, Copy, ChevronDown } from "lucide-react";
 import { publishAssignment, unpublishAssignment, updateAssignmentSettings, duplicateAssignment } from "@/lib/assignment-actions";
 import {
   bestAttemptForStudent,
@@ -13,7 +13,7 @@ import {
 import { formatDateTime, RESULT_CATEGORIES } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { CheckboxRow } from "@/components/ui/Checkbox";
-import { AssignmentContentPreview } from "@/components/assignments/AssignmentContentPreview";
+import { QuestionReviewAccordionList } from "@/components/assignments/QuestionReviewAccordionList";
 import {
   QuestionReviewCard,
   errorRateBadgeClass,
@@ -59,6 +59,7 @@ function categoryLabel(id: string) {
 
 export function AssignmentStatsView({ assignment }: { assignment: Assignment }) {
   const [expandedStudent, setExpandedStudent] = useState<string | null>(null);
+  const [contentOpen, setContentOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const router = useRouter();
@@ -223,12 +224,41 @@ export function AssignmentStatsView({ assignment }: { assignment: Assignment }) 
         />
       </form>
 
-      <section className="mb-8">
-        <h2 className="mb-4 text-lg font-semibold">Содержание задания</h2>
-        <p className="mb-4 text-sm text-text-secondary">
-          Так ученики видят вопросы, варианты ответов и пояснения после проверки.
-        </p>
-        <AssignmentContentPreview questions={assignment.questions} />
+      <section className="mb-8 overflow-hidden rounded-2xl border border-border bg-bg-card">
+        <button
+          type="button"
+          onClick={() => setContentOpen((open) => !open)}
+          className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors hover:bg-bg-elevated/30"
+        >
+          <div>
+            <h2 className="text-lg font-semibold">Содержание задания</h2>
+            <p className="mt-0.5 text-sm text-text-secondary">
+              {assignment.questions.length}{" "}
+              {assignment.questions.length === 1
+                ? "вопрос"
+                : assignment.questions.length < 5
+                  ? "вопроса"
+                  : "вопросов"}
+              {" · "}
+              нажмите, чтобы {contentOpen ? "скрыть" : "открыть"}
+            </p>
+          </div>
+          <ChevronDown
+            className={cn(
+              "h-5 w-5 shrink-0 text-text-secondary transition-transform",
+              contentOpen && "rotate-180"
+            )}
+          />
+        </button>
+
+        {contentOpen && (
+          <div className="border-t border-border px-5 pb-5 pt-4">
+            <p className="mb-4 text-sm text-text-secondary">
+              Так ученики видят вопросы, варианты ответов и пояснения после проверки.
+            </p>
+            <QuestionReviewAccordionList questions={assignment.questions} />
+          </div>
+        )}
       </section>
 
       {assignment.published && completedAttempts.length > 0 && (
