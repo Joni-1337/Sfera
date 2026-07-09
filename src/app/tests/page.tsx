@@ -5,9 +5,6 @@ import { AppShell } from "@/components/layout/AppShell";
 import { StudentTestsView } from "@/components/tests/StudentTestsView";
 import { TeacherTestsView } from "@/components/tests/TeacherTestsView";
 import { bestAttemptForStudent, isPerfectScore } from "@/lib/attempts";
-import Link from "next/link";
-import { Plus } from "lucide-react";
-import { btnPrimary } from "@/lib/button-styles";
 
 export default async function TestsPage({
   searchParams,
@@ -39,24 +36,13 @@ export default async function TestsPage({
     return (
       <AppShell>
         <div>
-          <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
-            <div>
-              <h1 className="mb-2 text-3xl font-bold">Тесты</h1>
-              <p className="text-text-secondary">
-                {filteredGroup
-                  ? `Тесты группы «${filteredGroup.name}»`
-                  : "Пробные варианты ЕГЭ для ваших групп"}
-              </p>
-            </div>
-            {groups.length > 0 && (
-              <Link
-                href={`/tests/new?groupId=${filteredGroup?.id ?? groups[0].id}`}
-                className={btnPrimary}
-              >
-                <Plus className="h-4 w-4" />
-                Создать тест
-              </Link>
-            )}
+          <div className="mb-8">
+            <h1 className="mb-2 text-3xl font-bold">Тесты</h1>
+            <p className="text-text-secondary">
+              {filteredGroup
+                ? `Тесты группы «${filteredGroup.name}»`
+                : "Пробные варианты ЕГЭ для ваших групп"}
+            </p>
           </div>
           <TeacherTestsView
             groups={groups}
