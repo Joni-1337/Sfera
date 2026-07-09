@@ -5,6 +5,8 @@ import Link from "next/link";
 import { ClipboardList, Plus, Eye, EyeOff } from "lucide-react";
 import { formatDate, RESULT_CATEGORIES } from "@/lib/utils";
 import { SearchInput } from "@/components/ui/SearchInput";
+import { btnCardAction, btnPrimary } from "@/lib/button-styles";
+import { cn } from "@/lib/utils";
 
 type Assignment = {
   id: string;
@@ -64,10 +66,7 @@ export function TeacherTasksView({ groups }: { groups: GroupWithAssignments[] })
         <p className="mt-1 text-sm text-text-muted">
           Создайте задание в группе на дашборде
         </p>
-        <Link
-          href="/dashboard"
-          className="mt-4 inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-hover"
-        >
+        <Link href="/dashboard" className={cn("mt-4", btnPrimary)}>
           <Plus className="h-4 w-4" />
           Перейти к группам
         </Link>
@@ -103,7 +102,7 @@ export function TeacherTasksView({ groups }: { groups: GroupWithAssignments[] })
                   </div>
                   <Link
                     href={`/dashboard/group/${group.id}/assignments/new`}
-                    className="inline-flex items-center gap-2 rounded-xl border border-accent/30 px-4 py-2 text-sm font-medium text-accent hover:bg-accent/10"
+                    className={btnPrimary}
                   >
                     <Plus className="h-4 w-4" />
                     Создать задание
@@ -140,7 +139,7 @@ export function TeacherTasksView({ groups }: { groups: GroupWithAssignments[] })
                             </span>
                           </div>
                         </div>
-                        <span className="shrink-0 text-sm text-accent">Открыть →</span>
+                        <span className={btnCardAction}>Открыть →</span>
                       </div>
                       <div className="mt-3 space-y-0.5 text-sm text-text-muted">
                         <p>{categoryLabel(assignment.category)}</p>

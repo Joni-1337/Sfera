@@ -7,6 +7,7 @@ import { TeacherTestsView } from "@/components/tests/TeacherTestsView";
 import { bestAttemptForStudent, isPerfectScore } from "@/lib/attempts";
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import { btnPrimary } from "@/lib/button-styles";
 
 export default async function TestsPage({
   searchParams,
@@ -50,7 +51,7 @@ export default async function TestsPage({
             {groups.length > 0 && (
               <Link
                 href={`/tests/new?groupId=${filteredGroup?.id ?? groups[0].id}`}
-                className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-hover"
+                className={btnPrimary}
               >
                 <Plus className="h-4 w-4" />
                 Создать тест

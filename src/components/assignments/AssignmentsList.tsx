@@ -9,7 +9,8 @@ import {
   unpublishAssignment,
   deleteAssignment,
 } from "@/lib/assignment-actions";
-import { formatDate, RESULT_CATEGORIES } from "@/lib/utils";
+import { formatDate, RESULT_CATEGORIES, cn } from "@/lib/utils";
+import { btnPrimary, btnSecondary } from "@/lib/button-styles";
 
 type Assignment = {
   id: string;
@@ -63,7 +64,7 @@ export function AssignmentsList({
         </div>
         <Link
           href={`/dashboard/group/${group.id}/assignments/new`}
-          className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-hover"
+          className={btnPrimary}
         >
           <Plus className="h-4 w-4" />
           Создать задание
@@ -116,7 +117,7 @@ export function AssignmentsList({
                   )}
                   <Link
                     href={`/dashboard/group/${group.id}/assignments/${a.id}`}
-                    className="rounded-lg border border-border px-3 py-2 text-sm text-text-secondary hover:border-accent/30 hover:text-accent"
+                    className={cn(btnSecondary, "rounded-lg px-3 py-2")}
                   >
                     Открыть
                   </Link>

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { DeleteTextButton } from "@/components/texts/DeleteTextButton";
 import { CheckboxFilterItem } from "@/components/ui/Checkbox";
+import { btnPrimary, btnSecondary } from "@/lib/button-styles";
 
 type Text = {
   id: string;
@@ -172,7 +173,7 @@ export function TextsView({
             {isTeacher && (
               <Link
                 href="/texts/new"
-                className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-hover"
+                className={btnPrimary}
               >
                 <Plus className="h-4 w-4" />
                 Добавить текст
@@ -181,7 +182,7 @@ export function TextsView({
             <button
               type="button"
               onClick={() => setMobileFiltersOpen(true)}
-              className="inline-flex items-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-text-secondary hover:border-accent/30 hover:text-accent lg:hidden"
+              className={btnSecondary}
             >
               <SlidersHorizontal className="h-4 w-4" />
               Фильтры

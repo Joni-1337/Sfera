@@ -15,6 +15,7 @@ import {
   resetPasswordWithToken,
   sendTeacherPasswordResetEmail,
 } from "@/lib/password-reset";
+import { getTeacherSignupAttribution } from "@/lib/attribution-server";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -183,6 +184,7 @@ async function registerTeacherCore(formData: FormData): Promise<RegisterFormStat
       emailVerified: false,
       subscriptionStatus: "trial",
       trialEndsAt: trialEndDate(),
+      ...(await getTeacherSignupAttribution()),
     },
   });
 

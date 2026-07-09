@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { APP_NAME, APP_TITLE, APP_DESCRIPTION } from "@/lib/branding";
+import { Analytics } from "@/components/analytics/Analytics";
 import { JivoWidget } from "@/components/support/JivoWidget";
 import "./globals.css";
 
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="ru" data-theme="dark">
       <body className={`${inter.className} antialiased`}>
         {children}
+        <Analytics />
         <JivoWidget />
       </body>
     </html>

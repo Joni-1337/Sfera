@@ -5,6 +5,8 @@ import Link from "next/link";
 import { FlaskConical, Plus, Eye, EyeOff } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { SearchInput } from "@/components/ui/SearchInput";
+import { btnCardAction, btnPrimary } from "@/lib/button-styles";
+import { cn } from "@/lib/utils";
 
 type Test = {
   id: string;
@@ -68,10 +70,7 @@ export function TeacherTestsView({
           Создайте пробный вариант ЕГЭ для группы
         </p>
         {groups.length > 0 && (
-          <Link
-            href={`/tests/new?groupId=${groups[0].id}`}
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-hover"
-          >
+          <Link href={`/tests/new?groupId=${groups[0].id}`} className={cn("mt-4", btnPrimary)}>
             <Plus className="h-4 w-4" />
             Создать тест
           </Link>
@@ -112,7 +111,7 @@ export function TeacherTestsView({
                   </div>
                   <Link
                     href={`/tests/new?groupId=${group.id}`}
-                    className="inline-flex items-center gap-2 rounded-xl border border-accent/30 px-4 py-2 text-sm font-medium text-accent hover:bg-accent/10"
+                    className={btnPrimary}
                   >
                     <Plus className="h-4 w-4" />
                     Создать тест
@@ -149,7 +148,7 @@ export function TeacherTestsView({
                             </span>
                           </div>
                         </div>
-                        <span className="shrink-0 text-sm text-accent">Открыть →</span>
+                        <span className={btnCardAction}>Открыть →</span>
                       </div>
                       <div className="mt-3 space-y-0.5 text-sm text-text-muted">
                         <p>

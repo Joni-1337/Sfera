@@ -20,6 +20,7 @@ import { GroupCard } from "./GroupCard";
 import { AddGroupForm } from "./AddGroupForm";
 import { formatDateTime } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { btnPrimary } from "@/lib/button-styles";
 import type {
   AttentionItem,
   GroupWithStats,
@@ -116,7 +117,7 @@ export function TeacherDashboard({
             {firstGroupId && (
               <Link
                 href={createAssignmentHref}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-hover"
+                className={btnPrimary}
               >
                 <Plus className="h-4 w-4" />
                 <span className="truncate">Задание</span>

@@ -18,6 +18,13 @@ model Teacher {
   trialEndsAt        DateTime?
   subscriptionEndsAt DateTime?
   uiTheme            String    @default("dark")
+  signupUtmSource    String?
+  signupUtmMedium    String?
+  signupUtmCampaign  String?
+  signupUtmContent   String?
+  signupUtmTerm      String?
+  signupReferrer     String?
+  signupLandingPage  String?
   createdAt          DateTime  @default(now())
   groups             Group[]
   texts              Text[]

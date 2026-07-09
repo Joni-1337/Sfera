@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { Plus } from "lucide-react";
 import { createGroup } from "@/lib/actions";
 import { useRouter } from "next/navigation";
+import { btnPrimary } from "@/lib/button-styles";
 
 export function AddGroupForm() {
   const [showForm, setShowForm] = useState(false);
@@ -28,7 +29,7 @@ export function AddGroupForm() {
     return (
       <button
         onClick={() => setShowForm(true)}
-        className="flex items-center gap-2 text-sm font-medium text-accent transition-colors hover:text-accent-hover"
+        className={btnPrimary}
       >
         <Plus className="h-5 w-5" />
         Добавить группу

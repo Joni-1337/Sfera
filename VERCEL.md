@@ -43,6 +43,7 @@ npm run db:seed
 | `YOOKASSA_SHOP_ID` | shopId из [ЮKassa](https://yookassa.ru) (когда подключите) |
 | `YOOKASSA_SECRET_KEY` | Секретный ключ ЮKassa |
 | `NEXT_PUBLIC_JIVO_WIDGET_ID` | ID виджета Jivo (чат поддержки), напр. `3nsMY9KqtP` |
+| `NEXT_PUBLIC_YANDEX_METRIKA_ID` | Номер счётчика [Яндекс.Метрики](https://metrika.yandex.ru) |
 | `NEXT_PUBLIC_LEGAL_NAME` | ФИО самозанятого (как в «Мой налог») |
 | `NEXT_PUBLIC_LEGAL_INN` | ИНН самозанятого (12 цифр) |
 

@@ -27,6 +27,7 @@ import {
   type WordSort,
 } from "@/lib/hard-words-utils";
 import { HardWordsBulkImport } from "@/components/hard-words/HardWordsBulkImport";
+import { btnPrimary, btnSecondary } from "@/lib/button-styles";
 import { cn } from "@/lib/utils";
 
 type HardWord = {
@@ -129,7 +130,7 @@ export function TeacherHardWordsManager({
               setEditing(null);
               setError(null);
             }}
-            className="inline-flex items-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-text-secondary hover:border-accent/30 hover:text-accent"
+            className={btnSecondary}
           >
             <FileSpreadsheet className="h-4 w-4" />
             Импорт из Excel
@@ -142,7 +143,7 @@ export function TeacherHardWordsManager({
               setEditing(null);
               setError(null);
             }}
-            className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-hover"
+            className={btnPrimary}
           >
             <Plus className="h-4 w-4" />
             Добавить слово
