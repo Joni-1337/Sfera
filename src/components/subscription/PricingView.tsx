@@ -32,10 +32,12 @@ export function PricingView({
   subscription,
   isLoggedIn,
   paymentsEnabled = false,
+  yookassaEnabled = false,
 }: {
   subscription: TeacherSubscription | null;
   isLoggedIn: boolean;
   paymentsEnabled?: boolean;
+  yookassaEnabled?: boolean;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -52,6 +54,13 @@ export function PricingView({
 
   return (
     <div className="space-y-8">
+      {isLoggedIn && !paymentsEnabled && (
+        <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-100">
+          Оплата скоро будет доступна — подключаем ЮKassa после регистрации
+          самозанятости. Пока можно пользоваться пробным периодом.
+        </div>
+      )}
+
       {subscription && (
         <div className="rounded-2xl border border-accent/20 bg-accent/5 p-5">
           <p className="text-sm text-text-secondary">Ваш текущий тариф</p>
@@ -97,12 +106,14 @@ export function PricingView({
                 <button
                   type="button"
                   onClick={handleSubscribe}
-                  disabled={pending}
-                  className="mt-6 w-full rounded-xl bg-accent py-3 text-sm font-semibold text-white hover:bg-accent-hover disabled:opacity-50"
+                  disabled={pending || !paymentsEnabled}
+                  className="mt-6 w-full rounded-xl bg-accent py-3 text-sm font-semibold text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {pending
                     ? "Обработка..."
-                    : `Оформить · ${SUBSCRIPTION_PRICE_RUB.toLocaleString("ru-RU")} ₽/мес`}
+                    : !paymentsEnabled
+                      ? "Оплата скоро будет доступна"
+                      : `Оформить · ${SUBSCRIPTION_PRICE_RUB.toLocaleString("ru-RU")} ₽/мес`}
                 </button>
               ) : (
                 <p className="mt-6 text-sm font-medium text-teal-300">
@@ -159,9 +170,11 @@ export function PricingView({
 
       {isLoggedIn && (
         <p className="text-center text-xs text-text-secondary">
-          {paymentsEnabled
-            ? "Тестовая оплата активна (режим разработки)."
-            : "Оплата через ЮKassa будет подключена после регистрации самозанятости."}
+          {yookassaEnabled
+            ? "Оплата банковской картой через ЮKassa. Подписка продлевается на 30 дней."
+            : paymentsEnabled
+              ? "Тестовая оплата активна (режим разработки)."
+              : "Реальная оплата появится после подключения ЮKassa."}
         </p>
       )}
     </div>

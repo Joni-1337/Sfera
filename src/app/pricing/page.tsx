@@ -1,18 +1,55 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { getTeacherSubscription } from "@/lib/subscription";
+import { syncTeacherPaymentOnReturn } from "@/lib/subscription-payments";
+import { isPaymentsEnabled, isYookassaConfigured } from "@/lib/yookassa";
 import { AppShell } from "@/components/layout/AppShell";
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { PricingView } from "@/components/subscription/PricingView";
 import { APP_NAME } from "@/lib/branding";
 
+async function resolvePaymentNotice(
+  teacherId: string,
+  payment?: string
+): Promise<{ text: string; tone: "success" | "warning" | "info" } | null> {
+  if (payment !== "return") return null;
+
+  const latest = await syncTeacherPaymentOnReturn(teacherId);
+
+  if (latest?.status === "succeeded") {
+    return {
+      text: "Оплата прошла успешно. Подписка активирована!",
+      tone: "success",
+    };
+  }
+
+  if (latest?.status === "canceled") {
+    return {
+      text: "Оплата не завершена. Попробуйте ещё раз.",
+      tone: "warning",
+    };
+  }
+
+  if (latest?.status === "pending") {
+    return {
+      text: "Оплата обрабатывается. Подписка активируется автоматически в течение минуты.",
+      tone: "info",
+    };
+  }
+
+  return {
+    text: "Если оплата прошла, подписка появится автоматически в течение минуты.",
+    tone: "info",
+  };
+}
+
 export default async function PricingPage({
   searchParams,
 }: {
-  searchParams: Promise<{ success?: string }>;
+  searchParams: Promise<{ success?: string; payment?: string }>;
 }) {
   const session = await getSession();
-  const { success } = await searchParams;
+  const { success, payment } = await searchParams;
 
   const subscription =
     session?.role === "teacher"
@@ -22,6 +59,19 @@ export default async function PricingPage({
   if (session?.role === "student") {
     redirect("/dashboard");
   }
+
+  const paymentNotice =
+    session?.role === "teacher"
+      ? await resolvePaymentNotice(session.id, payment)
+      : null;
+
+  // Перезагрузить подписку после синхронизации оплаты
+  const subscriptionAfterPayment =
+    session?.role === "teacher" && payment === "return"
+      ? await getTeacherSubscription(session.id)
+      : subscription;
+
+  const yookassaEnabled = isYookassaConfigured();
 
   const content = (
     <>
@@ -42,13 +92,25 @@ export default async function PricingPage({
         </div>
       )}
 
+      {paymentNotice && (
+        <div
+          className={`mb-6 rounded-xl px-4 py-3 text-sm ${
+            paymentNotice.tone === "success"
+              ? "notice-success"
+              : paymentNotice.tone === "warning"
+                ? "border border-yellow-500/40 bg-yellow-500/15 text-yellow-100"
+                : "border border-accent/30 bg-accent/10 text-teal-100"
+          }`}
+        >
+          {paymentNotice.text}
+        </div>
+      )}
+
       <PricingView
-        subscription={subscription}
+        subscription={subscriptionAfterPayment}
         isLoggedIn={!!session}
-        paymentsEnabled={
-          process.env.NODE_ENV === "development" ||
-          process.env.SUBSCRIPTION_STUB === "true"
-        }
+        paymentsEnabled={isPaymentsEnabled()}
+        yookassaEnabled={yookassaEnabled}
       />
     </>
   );

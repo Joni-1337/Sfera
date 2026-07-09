@@ -3,13 +3,25 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireTeacher } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { SUBSCRIPTION_PRICE_RUB } from "@/lib/subscription-shared";
+import {
+  activateTeacherSubscription,
+  createSubscriptionCheckout,
+} from "@/lib/subscription-payments";
+import { isYookassaConfigured } from "@/lib/yookassa";
 
-/** Тестовая активация до подключения ЮKassa. В production без флага — заглушка. */
+/** Оформление подписки: ЮKassa или тестовая активация (SUBSCRIPTION_STUB). */
 export async function startSubscriptionCheckout() {
   const session = await requireTeacher();
   if (!session) return { error: "Необходима авторизация" };
+
+  if (isYookassaConfigured()) {
+    const checkout = await createSubscriptionCheckout(session.id);
+    if ("error" in checkout && checkout.error) {
+      return { error: checkout.error };
+    }
+    redirect(checkout.confirmationUrl!);
+  }
 
   const allowStub =
     process.env.NODE_ENV === "development" ||
@@ -22,16 +34,10 @@ export async function startSubscriptionCheckout() {
     };
   }
 
-  const endsAt = new Date();
-  endsAt.setDate(endsAt.getDate() + 30);
-
-  await prisma.teacher.update({
-    where: { id: session.id },
-    data: {
-      subscriptionStatus: "active",
-      subscriptionEndsAt: endsAt,
-    },
-  });
+  const result = await activateTeacherSubscription(session.id);
+  if ("error" in result && result.error) {
+    return { error: result.error };
+  }
 
   revalidatePath("/dashboard");
   revalidatePath("/pricing");
