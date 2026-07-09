@@ -1,8 +1,13 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { AppShell } from "@/components/layout/AppShell";
+import { SettingsSection } from "@/components/settings/SettingsSection";
+import { StudentProfileCard } from "@/components/settings/StudentProfileCard";
+import { StudentProgressCard } from "@/components/settings/StudentProgressCard";
+import { StudentThemePreview } from "@/components/settings/StudentThemePreview";
+import { StudentQuickLinks } from "@/components/settings/StudentQuickLinks";
+import type { UiTheme } from "@/components/layout/ThemeProvider";
 
 export default async function StudentSettingsPage() {
   const session = await getSession();
@@ -11,58 +16,66 @@ export default async function StudentSettingsPage() {
 
   const student = await prisma.student.findUnique({
     where: { id: session.id },
-    include: { group: { include: { teacher: { select: { uiTheme: true } } } } },
+    include: {
+      group: { include: { teacher: { select: { uiTheme: true } } } },
+    },
   });
   if (!student) redirect("/login");
 
-  const uiTheme = student.group.teacher.uiTheme === "light" ? "light" : "dark";
-  const themeLabel = uiTheme === "light" ? "Светлая" : "Тёмная";
+  const [completedAssignments, completedTests, learnedWords] = await Promise.all([
+    prisma.attempt.count({
+      where: { studentId: student.id, status: "completed" },
+    }),
+    prisma.testAttempt.count({
+      where: { studentId: student.id, status: "completed" },
+    }),
+    prisma.hardWordProgress.count({
+      where: { studentId: student.id },
+    }),
+  ]);
+
+  const uiTheme: UiTheme =
+    student.group.teacher.uiTheme === "light" ? "light" : "dark";
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-lg">
-        <h1 className="mb-2 text-3xl font-bold">Настройки</h1>
-        <p className="mb-8 text-text-secondary">Ваш профиль ученика</p>
+      <div className="mx-auto max-w-5xl">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold">Настройки</h1>
+          <p className="mt-1 text-text-secondary">Ваш профиль ученика</p>
+        </header>
 
-        <div className="space-y-6">
-          <section className="rounded-2xl border border-border bg-bg-card p-6">
-            <h2 className="mb-4 font-semibold">Профиль</h2>
-            <dl className="space-y-4 text-sm">
-              <div>
-                <dt className="mb-1 text-text-muted">Имя</dt>
-                <dd className="font-medium">{student.fullName}</dd>
-              </div>
-              <div>
-                <dt className="mb-1 text-text-muted">Группа</dt>
-                <dd className="font-medium text-accent">{student.group.name}</dd>
-              </div>
-              <div>
-                <dt className="mb-1 text-text-muted">Ключ доступа</dt>
-                <dd className="text-text-secondary">спросите у преподавателя</dd>
-              </div>
-            </dl>
-          </section>
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+          <SettingsSection
+            title="Профиль"
+            description="Данные для входа и ваша учебная группа"
+          >
+            <StudentProfileCard
+              fullName={student.fullName}
+              groupName={student.group.name}
+            />
+          </SettingsSection>
 
-          <section className="rounded-2xl border border-border bg-bg-card p-6">
-            <h2 className="mb-2 font-semibold">Оформление</h2>
-            <p className="text-sm text-text-secondary">
-              Тему задаёт преподаватель. Сейчас:{" "}
-              <span className="font-medium text-text-primary">{themeLabel}</span>
-            </p>
-          </section>
+          <aside className="space-y-6">
+            <StudentProgressCard
+              completedAssignments={completedAssignments}
+              completedTests={completedTests}
+              learnedWords={learnedWords}
+              wordStreak={student.wordStreak}
+              wordStreakBest={student.wordStreakBest}
+            />
 
-          <section className="rounded-2xl border border-border bg-bg-card p-6">
-            <h2 className="mb-2 font-semibold">Конфиденциальность</h2>
-            <p className="mb-4 text-sm text-text-secondary">
-              Как мы обрабатываем ваши данные
-            </p>
-            <Link
-              href="/privacy"
-              className="text-sm text-accent hover:underline"
+            <SettingsSection
+              title="Оформление"
+              description="Тему выбирает преподаватель группы"
             >
-              Политика обработки персональных данных →
-            </Link>
-          </section>
+              <StudentThemePreview currentTheme={uiTheme} />
+            </SettingsSection>
+          </aside>
+        </div>
+
+        <div className="mt-6">
+          <StudentQuickLinks />
         </div>
       </div>
     </AppShell>

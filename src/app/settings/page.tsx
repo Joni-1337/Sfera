@@ -3,34 +3,13 @@ import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getTeacherSubscription } from "@/lib/subscription";
 import { AppShell } from "@/components/layout/AppShell";
+import { SettingsSection } from "@/components/settings/SettingsSection";
 import { ProfileSettingsForm } from "@/components/settings/ProfileSettingsForm";
 import { PasswordSettingsForm } from "@/components/settings/PasswordSettingsForm";
 import { ThemeSelector } from "@/components/settings/ThemeSelector";
 import { SettingsSubscriptionCard } from "@/components/settings/SettingsSubscriptionCard";
 import { SettingsQuickLinks } from "@/components/settings/SettingsQuickLinks";
 import type { UiTheme } from "@/components/layout/ThemeProvider";
-
-function SettingsSection({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section className="rounded-2xl border border-border bg-bg-card p-6">
-      <h2 className="font-semibold">{title}</h2>
-      {description ? (
-        <p className="mt-1 mb-4 text-sm text-text-secondary">{description}</p>
-      ) : (
-        <div className="mb-4" />
-      )}
-      {children}
-    </section>
-  );
-}
 
 export default async function SettingsPage() {
   const session = await getSession();
