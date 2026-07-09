@@ -8,6 +8,7 @@ import {
   QuestionReviewCard,
   type QuestionReviewData,
 } from "@/components/assignments/QuestionReviewCard";
+import { Collapsible, chevronClass } from "@/components/ui/Collapsible";
 
 export function QuestionReviewAccordionList({
   questions,
@@ -50,14 +51,11 @@ export function QuestionReviewAccordionList({
                 {label.text}
               </span>
               <ChevronDown
-                className={cn(
-                  "mt-0.5 h-4 w-4 shrink-0 text-text-secondary transition-transform",
-                  open && "rotate-180"
-                )}
+                className={chevronClass(open, "mt-0.5 h-4 w-4 shrink-0 text-text-secondary")}
               />
             </button>
 
-            {open && (
+            <Collapsible open={open} scrollOnOpen>
               <div className="border-t border-border px-4 pb-4 pt-2">
                 <QuestionReviewCard
                   question={{ ...question, prompt: label.text }}
@@ -66,7 +64,7 @@ export function QuestionReviewAccordionList({
                   compact
                 />
               </div>
-            )}
+            </Collapsible>
           </div>
         );
       })}

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { formatDateTime, cn } from "@/lib/utils";
+import { Collapsible, chevronClass } from "@/components/ui/Collapsible";
 import { streakLabel } from "@/lib/daily-words-shared";
 
 export type StudentHardWordProgress = {
@@ -74,10 +75,7 @@ function GroupProgressCard({
         className="flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-bg-elevated/50 sm:px-5"
       >
         <ChevronDown
-          className={cn(
-            "mt-1 h-4 w-4 shrink-0 text-text-muted transition-transform",
-            open && "rotate-180"
-          )}
+          className={chevronClass(open, "mt-1 h-4 w-4 shrink-0 text-text-muted")}
         />
         <div className="min-w-0 flex-1">
           <h3 className="text-base font-semibold">{name}</h3>
@@ -97,7 +95,7 @@ function GroupProgressCard({
         </div>
       </button>
 
-      {open && (
+      <Collapsible open={open}>
         <div className="border-t border-border">
           <table className="w-full">
             <thead>
@@ -127,7 +125,7 @@ function GroupProgressCard({
             </tbody>
           </table>
         </div>
-      )}
+      </Collapsible>
     </div>
   );
 }

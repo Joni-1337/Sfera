@@ -22,6 +22,7 @@ import {
   type WordSort,
 } from "@/lib/hard-words-utils";
 import { cn } from "@/lib/utils";
+import { Collapsible, chevronClass } from "@/components/ui/Collapsible";
 
 type WordItem = {
   id: string;
@@ -235,10 +236,7 @@ function WordCard({
           className="flex min-w-0 flex-1 items-center gap-3 text-left"
         >
           <ChevronDown
-            className={cn(
-              "h-4 w-4 shrink-0 text-text-muted transition-transform",
-              expanded && "rotate-180"
-            )}
+            className={chevronClass(expanded, "h-4 w-4 shrink-0 text-text-muted")}
           />
           <div className="min-w-0 flex-1">
             <p className="truncate text-base font-semibold sm:text-lg">{word.word}</p>
@@ -250,11 +248,11 @@ function WordCard({
         </button>
       </div>
 
-      {expanded && (
+      <Collapsible open={expanded} scrollOnOpen>
         <div className="border-t border-border/60 px-4 pb-4 pt-3 sm:px-5">
           <WordContentBlocks definition={word.definition} example={word.example} compact />
         </div>
-      )}
+      </Collapsible>
     </article>
   );
 }

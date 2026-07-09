@@ -329,14 +329,14 @@ export function TextsView({
       </div>
 
       {mobileFiltersOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
+        <div className="overlay-enter fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
             aria-label="Закрыть"
             className="absolute inset-0 bg-black/60"
             onClick={() => setMobileFiltersOpen(false)}
           />
-          <div className="absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto rounded-t-2xl border border-border bg-bg-card p-5">
+          <div className="panel-enter-up absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto rounded-t-2xl border border-border bg-bg-card p-5">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold">Фильтры</h2>
               <button

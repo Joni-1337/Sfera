@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Collapsible, chevronClass } from "@/components/ui/Collapsible";
 
 export function Accordion({
   title,
@@ -36,9 +37,9 @@ export function Accordion({
       >
         <div className="flex min-w-0 items-center gap-2 sm:gap-3">
           <ChevronDown
-            className={cn(
-              "h-4 w-4 shrink-0 text-accent transition-transform sm:h-5 sm:w-5",
-              open && "rotate-180"
+            className={chevronClass(
+              open,
+              cn("h-4 w-4 shrink-0 text-accent sm:h-5 sm:w-5")
             )}
           />
           <span className={cn("truncate font-medium", nested && "text-sm")}>{title}</span>
@@ -49,11 +50,11 @@ export function Accordion({
           )}
         </div>
       </button>
-      {open && (
+      <Collapsible open={open}>
         <div className={cn("border-t border-border", nested ? "px-4 py-3" : "px-5 py-4")}>
           {children}
         </div>
-      )}
+      </Collapsible>
     </div>
   );
 }

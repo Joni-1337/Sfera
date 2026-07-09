@@ -19,6 +19,7 @@ import {
   errorRateBadgeClass,
   type QuestionReviewData,
 } from "@/components/assignments/QuestionReviewCard";
+import { Collapsible, chevronClass } from "@/components/ui/Collapsible";
 
 type Question = QuestionReviewData;
 
@@ -244,21 +245,18 @@ export function AssignmentStatsView({ assignment }: { assignment: Assignment }) 
             </p>
           </div>
           <ChevronDown
-            className={cn(
-              "h-5 w-5 shrink-0 text-text-secondary transition-transform",
-              contentOpen && "rotate-180"
-            )}
+            className={chevronClass(contentOpen, "h-5 w-5 shrink-0 text-text-secondary")}
           />
         </button>
 
-        {contentOpen && (
+        <Collapsible open={contentOpen}>
           <div className="border-t border-border px-5 pb-5 pt-4">
             <p className="mb-4 text-sm text-text-secondary">
               Так ученики видят вопросы, варианты ответов и пояснения после проверки.
             </p>
             <QuestionReviewAccordionList questions={assignment.questions} />
           </div>
-        )}
+        </Collapsible>
       </section>
 
       {assignment.published && completedAttempts.length > 0 && (
@@ -370,24 +368,26 @@ export function AssignmentStatsView({ assignment }: { assignment: Assignment }) 
                 </dl>
 
                 {canExpand && (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setExpandedStudent(expanded ? null : student.id)
-                    }
-                    className="mt-3 text-sm text-accent hover:underline"
-                  >
-                    {expanded ? "Скрыть" : "Подробнее"}
-                  </button>
-                )}
+                  <>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedStudent(expanded ? null : student.id)
+                      }
+                      className="mt-3 text-sm text-accent hover:underline"
+                    >
+                      {expanded ? "Скрыть" : "Подробнее"}
+                    </button>
 
-                {expanded && (
-                  <StudentAttemptDetails
-                    studentName={student.fullName}
-                    attempt={attempt}
-                    allAttempts={allAttempts}
-                    questions={assignment.questions}
-                  />
+                    <Collapsible open={expanded} scrollOnOpen>
+                      <StudentAttemptDetails
+                        studentName={student.fullName}
+                        attempt={attempt}
+                        allAttempts={allAttempts}
+                        questions={assignment.questions}
+                      />
+                    </Collapsible>
+                  </>
                 )}
               </div>
             );
@@ -470,18 +470,20 @@ export function AssignmentStatsView({ assignment }: { assignment: Assignment }) 
                         )}
                       </td>
                     </tr>
-                    {expandedStudent === student.id && (
-                      <tr>
-                        <td colSpan={6} className="bg-bg-elevated/50 px-5 py-4">
-                          <StudentAttemptDetails
-                            studentName={student.fullName}
-                            attempt={attempt}
-                            allAttempts={allAttempts}
-                            questions={assignment.questions}
-                          />
-                        </td>
-                      </tr>
-                    )}
+                    <tr>
+                      <td colSpan={6} className="p-0">
+                        <Collapsible open={expandedStudent === student.id} scrollOnOpen>
+                          <div className="bg-bg-elevated/50 px-5 py-4">
+                            <StudentAttemptDetails
+                              studentName={student.fullName}
+                              attempt={attempt}
+                              allAttempts={allAttempts}
+                              questions={assignment.questions}
+                            />
+                          </div>
+                        </Collapsible>
+                      </td>
+                    </tr>
                   </Fragment>
                 );
               })}

@@ -204,7 +204,7 @@ export function Navbar({
           </button>
 
           {profileOpen && (
-            <div className="absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-border bg-bg-card py-2 shadow-2xl shadow-black/50">
+            <div className="panel-enter-down absolute right-0 top-full z-50 mt-2 w-72 rounded-xl border border-border bg-bg-card py-2 shadow-2xl shadow-black/50">
               <div className="border-b border-border px-4 py-3">
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
@@ -275,14 +275,14 @@ export function Navbar({
       </nav>
 
       {mobileOpen && (
-        <div className="fixed inset-0 z-40 md:hidden">
+        <div className="overlay-enter fixed inset-0 z-40 md:hidden">
           <button
             type="button"
             aria-label="Закрыть меню"
             className="absolute inset-0 bg-black/60"
             onClick={closeMobileMenu}
           />
-          <div className="absolute left-4 right-4 top-[4.75rem] max-h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl border border-border bg-bg-card p-3 shadow-2xl shadow-black/50">
+          <div className="panel-enter-down absolute left-4 right-4 top-[4.75rem] max-h-[calc(100vh-6rem)] overflow-y-auto rounded-2xl border border-border bg-bg-card p-3 shadow-2xl shadow-black/50">
             <MobileMenuSearch onNavigate={closeMobileMenu} />
             <nav className="space-y-1">
               {nav.map((item) => {

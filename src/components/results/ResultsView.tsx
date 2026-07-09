@@ -19,6 +19,7 @@ import {
   Download,
 } from "lucide-react";
 import { Accordion } from "@/components/ui/Accordion";
+import { Collapsible, chevronClass } from "@/components/ui/Collapsible";
 import { DailyWordChallenge } from "@/components/hard-words/DailyWordChallenge";
 import type { DailyWordState } from "@/lib/daily-words-shared";
 import { formatDate, formatDateTime, RESULT_CATEGORIES } from "@/lib/utils";
@@ -706,10 +707,7 @@ function ResultGroupCard({
         className="flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-bg-elevated/50 sm:px-5"
       >
         <ChevronDown
-          className={cn(
-            "mt-1 h-4 w-4 shrink-0 text-text-muted transition-transform",
-            open && "rotate-180"
-          )}
+          className={chevronClass(open, "mt-1 h-4 w-4 shrink-0 text-text-muted")}
         />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
@@ -725,7 +723,7 @@ function ResultGroupCard({
         </div>
       </button>
 
-      {open && (
+      <Collapsible open={open}>
         <ul className="divide-y divide-border border-t border-border">
           {groupByStudent
             ? studentGroups.map(({ studentName, attempts }) => (
@@ -739,7 +737,7 @@ function ResultGroupCard({
                 <ResultRow key={result.id} result={result} compact={false} />
               ))}
         </ul>
-      )}
+      </Collapsible>
     </div>
   );
 }
@@ -771,10 +769,7 @@ function StudentAttemptsRow({
         className="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-bg-elevated/70 sm:px-5"
       >
         <ChevronDown
-          className={cn(
-            "h-4 w-4 shrink-0 text-text-muted transition-transform",
-            open && "rotate-180"
-          )}
+          className={chevronClass(open, "h-4 w-4 shrink-0 text-text-muted")}
         />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-accent">{studentName}</p>
@@ -803,13 +798,13 @@ function StudentAttemptsRow({
         </div>
       </button>
 
-      {open && (
+      <Collapsible open={open} scrollOnOpen>
         <ul className="border-t border-border bg-bg-elevated/40">
           {attempts.map((result) => (
             <ResultRow key={result.id} result={result} compact />
           ))}
         </ul>
-      )}
+      </Collapsible>
     </li>
   );
 }

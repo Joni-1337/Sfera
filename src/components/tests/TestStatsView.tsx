@@ -3,7 +3,7 @@
 import { Fragment, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Eye, EyeOff, Pencil, Copy } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, Pencil, Copy, ChevronDown } from "lucide-react";
 import { publishTest, unpublishTest, updateTestSettings, duplicateTest } from "@/lib/test-actions";
 import {
   bestAttemptForStudent,
@@ -21,6 +21,7 @@ import {
   errorRateBadgeClass,
   type QuestionReviewData,
 } from "@/components/assignments/QuestionReviewCard";
+import { Collapsible, chevronClass } from "@/components/ui/Collapsible";
 
 type Question = QuestionReviewData;
 
@@ -57,6 +58,7 @@ type Test = {
 
 export function TestStatsView({ test }: { test: Test }) {
   const [expandedStudent, setExpandedStudent] = useState<string | null>(null);
+  const [contentOpen, setContentOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const router = useRouter();
@@ -227,12 +229,38 @@ export function TestStatsView({ test }: { test: Test }) {
         />
       </form>
 
-      <section className="mb-8">
-        <h2 className="mb-2 text-lg font-semibold">Содержание теста</h2>
-        <p className="mb-4 text-sm text-text-secondary">
-          Нажмите на вопрос, чтобы увидеть все варианты ответа — так же, как у ученика.
-        </p>
-        <QuestionReviewAccordionList questions={test.questions} />
+      <section className="mb-8 overflow-hidden rounded-2xl border border-border bg-bg-card">
+        <button
+          type="button"
+          onClick={() => setContentOpen((open) => !open)}
+          className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left transition-colors hover:bg-bg-elevated/30"
+        >
+          <div>
+            <h2 className="text-lg font-semibold">Содержание теста</h2>
+            <p className="mt-0.5 text-sm text-text-secondary">
+              {test.questions.length}{" "}
+              {test.questions.length === 1
+                ? "вопрос"
+                : test.questions.length < 5
+                  ? "вопроса"
+                  : "вопросов"}
+              {" · "}
+              нажмите, чтобы {contentOpen ? "скрыть" : "открыть"}
+            </p>
+          </div>
+          <ChevronDown
+            className={chevronClass(contentOpen, "h-5 w-5 shrink-0 text-text-secondary")}
+          />
+        </button>
+
+        <Collapsible open={contentOpen}>
+          <div className="border-t border-border px-5 pb-5 pt-4">
+            <p className="mb-4 text-sm text-text-secondary">
+              Нажмите на вопрос, чтобы увидеть все варианты ответа — так же, как у ученика.
+            </p>
+            <QuestionReviewAccordionList questions={test.questions} />
+          </div>
+        </Collapsible>
       </section>
 
       {test.published && completedAttempts.length > 0 && (
@@ -347,24 +375,26 @@ export function TestStatsView({ test }: { test: Test }) {
                 </dl>
 
                 {canExpand && (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setExpandedStudent(expanded ? null : student.id)
-                    }
-                    className="mt-3 text-sm text-accent hover:underline"
-                  >
-                    {expanded ? "Скрыть" : "Подробнее"}
-                  </button>
-                )}
+                  <>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedStudent(expanded ? null : student.id)
+                      }
+                      className="mt-3 text-sm text-accent hover:underline"
+                    >
+                      {expanded ? "Скрыть" : "Подробнее"}
+                    </button>
 
-                {expanded && (
-                  <StudentAttemptDetails
-                    studentName={student.fullName}
-                    attempt={attempt}
-                    allAttempts={allAttempts}
-                    questions={test.questions}
-                  />
+                    <Collapsible open={expanded} scrollOnOpen>
+                      <StudentAttemptDetails
+                        studentName={student.fullName}
+                        attempt={attempt}
+                        allAttempts={allAttempts}
+                        questions={test.questions}
+                      />
+                    </Collapsible>
+                  </>
                 )}
               </div>
             );
@@ -447,18 +477,20 @@ export function TestStatsView({ test }: { test: Test }) {
                         )}
                       </td>
                     </tr>
-                    {expandedStudent === student.id && (
-                      <tr>
-                        <td colSpan={6} className="bg-bg-elevated/50 px-5 py-4">
-                          <StudentAttemptDetails
-                            studentName={student.fullName}
-                            attempt={attempt}
-                            allAttempts={allAttempts}
-                            questions={test.questions}
-                          />
-                        </td>
-                      </tr>
-                    )}
+                    <tr>
+                      <td colSpan={6} className="p-0">
+                        <Collapsible open={expandedStudent === student.id} scrollOnOpen>
+                          <div className="bg-bg-elevated/50 px-5 py-4">
+                            <StudentAttemptDetails
+                              studentName={student.fullName}
+                              attempt={attempt}
+                              allAttempts={allAttempts}
+                              questions={test.questions}
+                            />
+                          </div>
+                        </Collapsible>
+                      </td>
+                    </tr>
                   </Fragment>
                 );
               })}

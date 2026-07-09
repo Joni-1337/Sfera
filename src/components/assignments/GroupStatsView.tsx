@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { formatDateTime } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { Collapsible, chevronClass } from "@/components/ui/Collapsible";
 import {
   type GroupStatsData,
   type GroupStatsCell,
@@ -236,10 +237,7 @@ function StatsCollapsibleSection({
         className="flex w-full items-start gap-3 px-4 py-3.5 text-left transition-colors hover:bg-bg-elevated/40 sm:px-5"
       >
         <ChevronDown
-          className={cn(
-            "mt-0.5 h-4 w-4 shrink-0 text-text-muted transition-transform",
-            open && "rotate-180"
-          )}
+          className={chevronClass(open, "mt-0.5 h-4 w-4 shrink-0 text-text-muted")}
         />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
@@ -254,11 +252,11 @@ function StatsCollapsibleSection({
           )}
         </div>
       </button>
-      {open && (
+      <Collapsible open={open}>
         <div className="border-t border-border px-4 pb-4 pt-3 sm:px-5 sm:pb-5">
           {children}
         </div>
-      )}
+      </Collapsible>
     </section>
   );
 }
@@ -317,10 +315,7 @@ function WorkItemCard({
         className="flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-bg-elevated/50"
       >
         <ChevronDown
-          className={cn(
-            "mt-0.5 h-4 w-4 shrink-0 text-text-muted transition-transform",
-            open && "rotate-180"
-          )}
+          className={chevronClass(open, "mt-0.5 h-4 w-4 shrink-0 text-text-muted")}
         />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
@@ -348,7 +343,7 @@ function WorkItemCard({
         )}
       </button>
 
-      {open && (
+      <Collapsible open={open}>
         <div className="border-t border-border/80 px-2 pb-2 pt-1 sm:px-3 sm:pb-3">
           <div className="overflow-x-auto">
             <table className="w-full min-w-[480px]">
@@ -422,7 +417,7 @@ function WorkItemCard({
             </table>
           </div>
         </div>
-      )}
+      </Collapsible>
     </div>
   );
 }
