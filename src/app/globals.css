@@ -132,6 +132,41 @@
     font-weight: 600;
   }
 
+  .badge-status-ok {
+    border: 1px solid rgb(45 212 191 / 0.5);
+    background: rgb(20 184 166 / 0.22);
+    color: #ccfbf1;
+    font-weight: 600;
+  }
+
+  .badge-status-warn {
+    border: 1px solid rgb(251 191 36 / 0.5);
+    background: rgb(251 191 36 / 0.18);
+    color: #fde68a;
+    font-weight: 600;
+  }
+
+  .badge-status-error {
+    border: 1px solid rgb(248 113 113 / 0.5);
+    background: rgb(248 113 113 / 0.18);
+    color: #fecaca;
+    font-weight: 600;
+  }
+
+  .badge-status-done {
+    border: 1px solid rgb(45 212 191 / 0.5);
+    background: rgb(20 184 166 / 0.22);
+    color: #99f6e4;
+    font-weight: 600;
+  }
+
+  .badge-status-progress {
+    border: 1px solid rgb(251 191 36 / 0.5);
+    background: rgb(251 191 36 / 0.18);
+    color: #fde68a;
+    font-weight: 600;
+  }
+
   .contact-link {
     color: #5eead4;
     font-weight: 500;

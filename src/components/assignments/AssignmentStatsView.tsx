@@ -14,20 +14,13 @@ import { formatDateTime, RESULT_CATEGORIES } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { CheckboxRow } from "@/components/ui/Checkbox";
 import { AssignmentContentPreview } from "@/components/assignments/AssignmentContentPreview";
+import {
+  QuestionReviewCard,
+  errorRateBadgeClass,
+  type QuestionReviewData,
+} from "@/components/assignments/QuestionReviewCard";
 
-type Question = {
-  id: string;
-  orderIndex: number;
-  type: string;
-  prompt: string;
-  optionA: string;
-  optionB: string;
-  optionC: string;
-  optionD: string;
-  answerOptions?: string;
-  correctOption: string;
-  explanation: string;
-};
+type Question = QuestionReviewData;
 
 type Answer = {
   questionId: string;
@@ -248,18 +241,14 @@ export function AssignmentStatsView({ assignment }: { assignment: Assignment }) 
               className="rounded-xl border border-border bg-bg-card p-4"
             >
               <div className="mb-2 flex items-start justify-between gap-4">
-                <p className="text-sm">
-                  <span className="text-text-muted">#{i + 1} </span>
+                <p className="text-sm text-text-primary">
+                  <span className="font-semibold text-teal-200">#{i + 1} </span>
                   {question.prompt}
                 </p>
                 <span
                   className={cn(
-                    "shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium",
-                    pct > 50
-                      ? "bg-red-500/10 text-red-400"
-                      : pct > 0
-                        ? "bg-yellow-500/10 text-yellow-400"
-                        : "bg-green-500/10 text-green-400"
+                    "shrink-0 rounded-full px-2.5 py-0.5 text-xs",
+                    errorRateBadgeClass(pct)
                   )}
                 >
                   {total ? `${wrong}/${total} ошибок` : "—"}
@@ -269,15 +258,15 @@ export function AssignmentStatsView({ assignment }: { assignment: Assignment }) 
                 <div
                   className={cn(
                     "h-full rounded-full transition-all",
-                    pct > 50 ? "bg-red-400" : pct > 0 ? "bg-yellow-400" : "bg-green-400"
+                    pct > 50 ? "bg-red-400" : pct > 0 ? "bg-amber-400" : "bg-teal-400"
                   )}
                   style={{ width: `${pct}%` }}
                 />
               </div>
-              {question.explanation && pct > 0 && (
-                <p className="mt-2 text-xs text-text-muted">
-                  Правильный ответ: {question.correctOption}. {question.explanation}
-                </p>
+              {pct > 0 && (
+                <div className="mt-4">
+                  <QuestionReviewCard question={question} index={i} compact />
+                </div>
               )}
             </div>
           ))}
@@ -305,9 +294,13 @@ export function AssignmentStatsView({ assignment }: { assignment: Assignment }) 
                   {!attempt ? (
                     <span className="shrink-0 text-xs text-text-muted">Не начинал</span>
                   ) : attempt.status === "completed" ? (
-                    <span className="shrink-0 text-xs text-green-400">Выполнено</span>
+                    <span className="badge-status-done shrink-0 rounded-full px-2.5 py-0.5 text-xs">
+                      Выполнено
+                    </span>
                   ) : (
-                    <span className="shrink-0 text-xs text-yellow-400">В процессе</span>
+                    <span className="badge-status-progress shrink-0 rounded-full px-2.5 py-0.5 text-xs">
+                      В процессе
+                    </span>
                   )}
                 </div>
 
@@ -363,7 +356,7 @@ export function AssignmentStatsView({ assignment }: { assignment: Assignment }) 
                     studentName={student.fullName}
                     attempt={attempt}
                     allAttempts={allAttempts}
-                    wrongAnswers={wrongAnswers}
+                    questions={assignment.questions}
                   />
                 )}
               </div>
@@ -398,9 +391,13 @@ export function AssignmentStatsView({ assignment }: { assignment: Assignment }) 
                         {!attempt ? (
                           <span className="text-xs text-text-muted">Не начинал</span>
                         ) : attempt.status === "completed" ? (
-                          <span className="text-xs text-green-400">Выполнено</span>
+                          <span className="badge-status-done rounded-full px-2.5 py-0.5 text-xs">
+                            Выполнено
+                          </span>
                         ) : (
-                          <span className="text-xs text-yellow-400">В процессе</span>
+                          <span className="badge-status-progress rounded-full px-2.5 py-0.5 text-xs">
+                            В процессе
+                          </span>
                         )}
                       </td>
                       <td className="px-5 py-3.5">
@@ -450,7 +447,7 @@ export function AssignmentStatsView({ assignment }: { assignment: Assignment }) 
                             studentName={student.fullName}
                             attempt={attempt}
                             allAttempts={allAttempts}
-                            wrongAnswers={wrongAnswers}
+                            questions={assignment.questions}
                           />
                         </td>
                       </tr>
@@ -471,19 +468,23 @@ function StudentAttemptDetails({
   studentName,
   attempt,
   allAttempts,
-  wrongAnswers,
+  questions,
 }: {
   studentName: string;
   attempt: Attempt | undefined;
   allAttempts: Attempt[];
-  wrongAnswers: Answer[];
+  questions: Question[];
 }) {
+  const answerByQuestionId = new Map(
+    (attempt?.answers ?? []).map((answer) => [answer.questionId, answer])
+  );
+
   return (
     <div className="mt-4 border-t border-border pt-4 md:mt-0 md:border-0 md:pt-0">
-      <p className="mb-3 text-xs font-medium uppercase text-text-muted">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-text-secondary">
         История попыток — {studentName}
       </p>
-      <ul className="mb-4 space-y-2">
+      <ul className="mb-6 space-y-2">
         {allAttempts.map((at) => (
           <li
             key={at.id}
@@ -495,9 +496,9 @@ function StudentAttemptDetails({
             )}
           >
             <span>
-              <span className="font-medium text-accent">Попытка #{at.attemptNumber}</span>
+              <span className="font-medium text-teal-200">Попытка #{at.attemptNumber}</span>
               {at.id === attempt?.id && (
-                <span className="ml-2 text-xs text-text-muted">(лучший)</span>
+                <span className="ml-2 text-xs text-text-secondary">(лучший)</span>
               )}
             </span>
             <span className="text-text-secondary">
@@ -511,40 +512,32 @@ function StudentAttemptDetails({
                   )}
                 </>
               ) : (
-                <span className="text-yellow-400">В процессе</span>
+                <span className="text-amber-200">В процессе</span>
               )}
             </span>
           </li>
         ))}
       </ul>
 
-      {wrongAnswers.length > 0 && (
+      {attempt && (
         <>
-          <p className="mb-3 text-xs font-medium uppercase text-text-muted">
-            Ошибки (лучшая попытка №{attempt?.attemptNumber})
+          <p className="mb-4 text-xs font-semibold uppercase tracking-wide text-text-secondary">
+            Ответы ученика (лучшая попытка №{attempt.attemptNumber})
           </p>
-          <ul className="space-y-3">
-            {wrongAnswers.map((ans) => (
-              <li
-                key={ans.questionId}
-                className="rounded-lg border border-red-500/20 bg-red-500/5 p-3 text-sm"
-              >
-                <p className="mb-1 break-words">{ans.question.prompt}</p>
-                <p className="text-xs text-text-muted break-words">
-                  Ответ ученика:{" "}
-                  <span className="text-red-400">{ans.chosenOption || "—"}</span>
-                  {" · "}
-                  Правильно:{" "}
-                  <span className="text-green-400">{ans.question.correctOption}</span>
-                </p>
-                {ans.question.explanation && (
-                  <p className="mt-1 text-xs text-text-secondary break-words">
-                    {ans.question.explanation}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul>
+          <div className="space-y-4">
+            {questions.map((question, index) => {
+              const answer = answerByQuestionId.get(question.id);
+              return (
+                <QuestionReviewCard
+                  key={question.id}
+                  question={question}
+                  index={index}
+                  chosenOption={answer?.chosenOption ?? null}
+                  compact
+                />
+              );
+            })}
+          </div>
         </>
       )}
     </div>
