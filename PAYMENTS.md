@@ -12,6 +12,8 @@
 
 ### Чеклист перед запуском оплаты
 
+- [ ] Страницы для модерации ЮKassa: `/pricing`, `/offer`, `/requisites` (с ИНН)
+- [ ] В Vercel: `NEXT_PUBLIC_LEGAL_NAME`, `NEXT_PUBLIC_LEGAL_INN`
 - [ ] Код оплаты задеплоен (`git push`)
 - [ ] `npx prisma db push` — таблица `SubscriptionPayment` создана
 - [ ] Самозанятость зарегистрирована

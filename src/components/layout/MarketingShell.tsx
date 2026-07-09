@@ -67,6 +67,12 @@ export function MarketingShell({
             <Link href="/pricing" className="hover:text-accent">
               Тарифы
             </Link>
+            <Link href="/offer" className="hover:text-accent">
+              Оферта
+            </Link>
+            <Link href="/requisites" className="hover:text-accent">
+              Реквизиты
+            </Link>
             <Link href="/login" className="hover:text-accent">
               Вход
             </Link>
