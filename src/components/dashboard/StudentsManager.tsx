@@ -6,6 +6,7 @@ import { ArrowLeft, Plus, Copy, Check, Trash2, KeyRound } from "lucide-react";
 import { createStudent, deleteStudent, resetStudentAccessKey } from "@/lib/student-actions";
 import { useRouter } from "next/navigation";
 import { SearchInput } from "@/components/ui/SearchInput";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 type Student = {
   id: string;
@@ -24,6 +25,11 @@ type CreatedStudent = {
   accessKey: string;
 };
 
+type PendingCreate = {
+  fullName: string;
+  accessKey: string;
+};
+
 type CreateStudentResult = Awaited<ReturnType<typeof createStudent>>;
 
 function normalizeStudentName(name: string) {
@@ -37,19 +43,10 @@ function findDuplicateInGroup(students: Student[], fullName: string) {
   );
 }
 
-function duplicateConfirmMessage(fullName: string) {
-  return (
-    `Ученик «${fullName}» уже есть в группе.\n\n` +
-    "Создать повторную учётную запись с отдельным ключом доступа?\n\n" +
-    "У каждой записи будет свой ключ — при входе ученик указывает имя и свой ключ."
-  );
-}
-
 function applyCreateResult(
   result: CreateStudentResult | undefined,
-  fullName: string,
   onSuccess: (created: CreatedStudent) => void
-): "success" | "duplicate" | "cancelled" | "error" {
+): "success" | "duplicate" | "error" {
   if (!result) {
     return "error";
   }
@@ -74,6 +71,7 @@ export function StudentsManager({ group }: { group: Group }) {
   const [showForm, setShowForm] = useState(false);
   const [created, setCreated] = useState<CreatedStudent | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [duplicateDialog, setDuplicateDialog] = useState<PendingCreate | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [pending, startTransition] = useTransition();
@@ -90,43 +88,33 @@ export function StudentsManager({ group }: { group: Group }) {
   function onCreateSuccess(next: CreatedStudent) {
     setCreated(next);
     setShowForm(false);
+    setDuplicateDialog(null);
     router.refresh();
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setError(null);
-
-    const form = e.currentTarget;
-    const formData = new FormData(form);
-    const fullName = String(formData.get("fullName") ?? "").trim();
-
-    if (!fullName) {
-      setError("Введите ФИО ученика");
-      return;
+  function runCreate(data: PendingCreate, allowDuplicate: boolean) {
+    const formData = new FormData();
+    formData.set("groupId", group.id);
+    formData.set("fullName", data.fullName);
+    if (data.accessKey) {
+      formData.set("accessKey", data.accessKey);
     }
-
-    const duplicate = findDuplicateInGroup(group.students, fullName);
-    if (duplicate && formData.get("allowDuplicate") !== "true") {
-      const confirmed = window.confirm(duplicateConfirmMessage(fullName));
-      if (!confirmed) return;
+    if (allowDuplicate) {
       formData.set("allowDuplicate", "true");
     }
 
     startTransition(async () => {
       try {
-        let result = await createStudent(formData);
-        let outcome = applyCreateResult(result, fullName, onCreateSuccess);
+        const result = await createStudent(formData);
+        const outcome = applyCreateResult(result, onCreateSuccess);
 
         if (outcome === "duplicate") {
-          const duplicateName =
-            (result && "fullName" in result && result.fullName) || fullName;
-          if (!window.confirm(duplicateConfirmMessage(duplicateName))) {
-            return;
-          }
-          formData.set("allowDuplicate", "true");
-          result = await createStudent(formData);
-          outcome = applyCreateResult(result, fullName, onCreateSuccess);
+          setDuplicateDialog({
+            fullName:
+              (result && "fullName" in result && result.fullName) || data.fullName,
+            accessKey: data.accessKey,
+          });
+          return;
         }
 
         if (outcome === "error") {
@@ -140,6 +128,34 @@ export function StudentsManager({ group }: { group: Group }) {
         setError("Не удалось создать учётную запись. Попробуйте ещё раз.");
       }
     });
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+
+    const formData = new FormData(e.currentTarget);
+    const fullName = String(formData.get("fullName") ?? "").trim();
+    const accessKey = String(formData.get("accessKey") ?? "").trim();
+
+    if (!fullName) {
+      setError("Введите ФИО ученика");
+      return;
+    }
+
+    const pending: PendingCreate = { fullName, accessKey };
+
+    if (findDuplicateInGroup(group.students, fullName)) {
+      setDuplicateDialog(pending);
+      return;
+    }
+
+    runCreate(pending, false);
+  }
+
+  function handleDuplicateConfirm() {
+    if (!duplicateDialog) return;
+    runCreate(duplicateDialog, true);
   }
 
   function handleDelete(studentId: string) {
@@ -184,6 +200,33 @@ export function StudentsManager({ group }: { group: Group }) {
 
   return (
     <div>
+      <ConfirmDialog
+        open={duplicateDialog !== null}
+        tone="warning"
+        title="Ученик уже есть в группе"
+        description={
+          duplicateDialog ? (
+            <>
+              <p>
+                Ученик <strong className="text-text-primary">«{duplicateDialog.fullName}»</strong>{" "}
+                уже есть в группе.
+              </p>
+              <p className="mt-2">
+                Создать повторную учётную запись с отдельным ключом доступа?
+              </p>
+              <p className="mt-2 text-xs text-text-muted">
+                У каждой записи будет свой ключ — при входе ученик указывает имя и свой ключ.
+              </p>
+            </>
+          ) : null
+        }
+        confirmLabel="Создать повторную учётную запись"
+        cancelLabel="Отмена"
+        pending={pending}
+        onConfirm={handleDuplicateConfirm}
+        onCancel={() => setDuplicateDialog(null)}
+      />
+
       <Link
         href="/dashboard"
         className="mb-6 inline-flex items-center gap-2 text-sm text-text-secondary hover:text-accent"
@@ -202,6 +245,7 @@ export function StudentsManager({ group }: { group: Group }) {
             setShowForm(true);
             setCreated(null);
             setError(null);
+            setDuplicateDialog(null);
           }}
           className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-hover"
         >
@@ -282,7 +326,10 @@ export function StudentsManager({ group }: { group: Group }) {
             </button>
             <button
               type="button"
-              onClick={() => setShowForm(false)}
+              onClick={() => {
+                setShowForm(false);
+                setDuplicateDialog(null);
+              }}
               className="rounded-xl border border-border px-4 py-2.5 text-sm text-text-secondary"
             >
               Отмена
