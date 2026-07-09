@@ -23,13 +23,15 @@ export async function createStudent(formData: FormData) {
   });
   if (!group) return { error: "Группа не найдена" };
 
-  const duplicateInGroup = await prisma.student.findFirst({
-    where: {
-      groupId,
-      fullName: { equals: fullName, mode: "insensitive" },
-    },
+  const studentsInGroup = await prisma.student.findMany({
+    where: { groupId },
     select: { id: true, fullName: true },
   });
+  const normalizedInput = fullName.trim().replace(/\s+/g, " ").toLowerCase();
+  const duplicateInGroup = studentsInGroup.find(
+    (student) =>
+      student.fullName.trim().replace(/\s+/g, " ").toLowerCase() === normalizedInput
+  );
 
   if (duplicateInGroup && !allowDuplicate) {
     return {

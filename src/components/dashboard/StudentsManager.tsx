@@ -24,23 +24,56 @@ type CreatedStudent = {
   accessKey: string;
 };
 
+type CreateStudentResult = Awaited<ReturnType<typeof createStudent>>;
+
 function normalizeStudentName(name: string) {
-  return name.trim().toLowerCase();
+  return name.trim().replace(/\s+/g, " ").toLowerCase();
 }
 
 function findDuplicateInGroup(students: Student[], fullName: string) {
   const normalized = normalizeStudentName(fullName);
-  return students.find((student) => normalizeStudentName(student.fullName) === normalized);
+  return students.find(
+    (student) => normalizeStudentName(student.fullName) === normalized
+  );
+}
+
+function duplicateConfirmMessage(fullName: string) {
+  return (
+    `Ученик «${fullName}» уже есть в группе.\n\n` +
+    "Создать повторную учётную запись с отдельным ключом доступа?\n\n" +
+    "У каждой записи будет свой ключ — при входе ученик указывает имя и свой ключ."
+  );
+}
+
+function applyCreateResult(
+  result: CreateStudentResult | undefined,
+  fullName: string,
+  onSuccess: (created: CreatedStudent) => void
+): "success" | "duplicate" | "cancelled" | "error" {
+  if (!result) {
+    return "error";
+  }
+
+  if ("error" in result && result.error) {
+    return "error";
+  }
+
+  if ("duplicateName" in result && result.duplicateName) {
+    return "duplicate";
+  }
+
+  if ("accessKey" in result && result.accessKey && "fullName" in result && result.fullName) {
+    onSuccess({ fullName: result.fullName, accessKey: result.accessKey });
+    return "success";
+  }
+
+  return "error";
 }
 
 export function StudentsManager({ group }: { group: Group }) {
   const [showForm, setShowForm] = useState(false);
   const [created, setCreated] = useState<CreatedStudent | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [duplicatePrompt, setDuplicatePrompt] = useState<{
-    fullName: string;
-    message: string;
-  } | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [pending, startTransition] = useTransition();
@@ -54,51 +87,59 @@ export function StudentsManager({ group }: { group: Group }) {
     );
   }, [group.students, search]);
 
-  function handleSubmit(formData: FormData, allowDuplicate = false) {
+  function onCreateSuccess(next: CreatedStudent) {
+    setCreated(next);
+    setShowForm(false);
+    router.refresh();
+  }
+
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
     setError(null);
 
+    const form = e.currentTarget;
+    const formData = new FormData(form);
     const fullName = String(formData.get("fullName") ?? "").trim();
-    if (!allowDuplicate && findDuplicateInGroup(group.students, fullName)) {
-      setDuplicatePrompt({
-        fullName,
-        message:
-          "Ученик с таким именем уже есть в группе. Создать повторную учётную запись с отдельным ключом доступа?",
-      });
+
+    if (!fullName) {
+      setError("Введите ФИО ученика");
       return;
     }
 
-    setDuplicatePrompt(null);
-    if (allowDuplicate) {
+    const duplicate = findDuplicateInGroup(group.students, fullName);
+    if (duplicate && formData.get("allowDuplicate") !== "true") {
+      const confirmed = window.confirm(duplicateConfirmMessage(fullName));
+      if (!confirmed) return;
       formData.set("allowDuplicate", "true");
     }
 
     startTransition(async () => {
-      const result = await createStudent(formData);
-      if (result?.error) {
-        setError(result.error);
-      } else if ("duplicateName" in result && result.duplicateName) {
-        setDuplicatePrompt({
-          fullName: result.fullName ?? fullName,
-          message:
-            result.message ??
-            "Ученик с таким именем уже есть в группе. Создать повторную учётную запись с отдельным ключом доступа?",
-        });
-      } else if (result?.accessKey && result?.fullName) {
-        setCreated({ fullName: result.fullName, accessKey: result.accessKey });
-        setShowForm(false);
-        router.refresh();
+      try {
+        let result = await createStudent(formData);
+        let outcome = applyCreateResult(result, fullName, onCreateSuccess);
+
+        if (outcome === "duplicate") {
+          const duplicateName =
+            (result && "fullName" in result && result.fullName) || fullName;
+          if (!window.confirm(duplicateConfirmMessage(duplicateName))) {
+            return;
+          }
+          formData.set("allowDuplicate", "true");
+          result = await createStudent(formData);
+          outcome = applyCreateResult(result, fullName, onCreateSuccess);
+        }
+
+        if (outcome === "error") {
+          const message =
+            result && "error" in result && typeof result.error === "string"
+              ? result.error
+              : "Не удалось создать учётную запись. Попробуйте ещё раз.";
+          setError(message);
+        }
+      } catch {
+        setError("Не удалось создать учётную запись. Попробуйте ещё раз.");
       }
     });
-  }
-
-  function onFormSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    handleSubmit(new FormData(e.currentTarget), false);
-  }
-
-  function confirmDuplicateSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    handleSubmit(new FormData(e.currentTarget), true);
   }
 
   function handleDelete(studentId: string) {
@@ -161,7 +202,6 @@ export function StudentsManager({ group }: { group: Group }) {
             setShowForm(true);
             setCreated(null);
             setError(null);
-            setDuplicatePrompt(null);
           }}
           className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-hover"
         >
@@ -209,7 +249,7 @@ export function StudentsManager({ group }: { group: Group }) {
 
       {showForm && (
         <form
-          onSubmit={duplicatePrompt ? confirmDuplicateSubmit : onFormSubmit}
+          onSubmit={handleSubmit}
           className="mb-6 space-y-3 rounded-2xl border border-border bg-bg-card p-4"
         >
           <input type="hidden" name="groupId" value={group.id} />
@@ -220,7 +260,6 @@ export function StudentsManager({ group }: { group: Group }) {
               required
               autoFocus
               placeholder="ФИО ученика (как при входе)"
-              onChange={() => setDuplicatePrompt(null)}
               className="rounded-xl border border-border bg-bg-elevated px-4 py-2.5 text-sm outline-none focus:border-accent"
             />
             <input
@@ -233,35 +272,17 @@ export function StudentsManager({ group }: { group: Group }) {
           <p className="text-xs text-text-muted">
             Если ключ не указан — сгенерируется автоматически (8 символов).
           </p>
-
-          {duplicatePrompt && (
-            <div className="rounded-xl border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
-              <p className="font-medium">Ученик «{duplicatePrompt.fullName}» уже есть в группе</p>
-              <p className="mt-1 text-amber-100/90">{duplicatePrompt.message}</p>
-              <p className="mt-2 text-xs text-amber-100/75">
-                У каждой учётной записи будет свой ключ — при входе ученик указывает имя и свой ключ.
-              </p>
-            </div>
-          )}
-
           <div className="flex gap-2">
             <button
               type="submit"
               disabled={pending}
               className="rounded-xl bg-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
             >
-              {pending
-                ? "..."
-                : duplicatePrompt
-                  ? "Создать повторную учётную запись"
-                  : "Создать учётную запись"}
+              {pending ? "..." : "Создать учётную запись"}
             </button>
             <button
               type="button"
-              onClick={() => {
-                setShowForm(false);
-                setDuplicatePrompt(null);
-              }}
+              onClick={() => setShowForm(false)}
               className="rounded-xl border border-border px-4 py-2.5 text-sm text-text-secondary"
             >
               Отмена
