@@ -38,9 +38,6 @@ export function ThemeSelector({ currentTheme }: { currentTheme: UiTheme }) {
 
   return (
     <div>
-      <p className="mb-4 text-sm text-text-secondary">
-        Тема применяется для вас и всех учеников ваших групп.
-      </p>
       <div className="grid grid-cols-2 gap-3">
         {THEMES.map(({ id, label, icon: Icon }) => (
           <button
