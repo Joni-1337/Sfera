@@ -14,6 +14,7 @@ export async function createStudent(formData: FormData) {
   const fullName = String(formData.get("fullName") ?? "").trim();
   const groupId = String(formData.get("groupId") ?? "");
   const customKey = String(formData.get("accessKey") ?? "").trim().toUpperCase();
+  const allowDuplicate = formData.get("allowDuplicate") === "true";
 
   if (!fullName || !groupId) return { error: "Заполните все поля" };
 
@@ -21,6 +22,23 @@ export async function createStudent(formData: FormData) {
     where: { id: groupId, teacherId: session.id },
   });
   if (!group) return { error: "Группа не найдена" };
+
+  const duplicateInGroup = await prisma.student.findFirst({
+    where: {
+      groupId,
+      fullName: { equals: fullName, mode: "insensitive" },
+    },
+    select: { id: true, fullName: true },
+  });
+
+  if (duplicateInGroup && !allowDuplicate) {
+    return {
+      duplicateName: true,
+      fullName: duplicateInGroup.fullName,
+      message:
+        "Ученик с таким именем уже есть в группе. Создать повторную учётную запись с отдельным ключом доступа?",
+    };
+  }
 
   const limit = await assertCanAddStudent(session.id);
   if (limit.error) return { error: limit.error };

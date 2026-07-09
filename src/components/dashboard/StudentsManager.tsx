@@ -24,10 +24,23 @@ type CreatedStudent = {
   accessKey: string;
 };
 
+function normalizeStudentName(name: string) {
+  return name.trim().toLowerCase();
+}
+
+function findDuplicateInGroup(students: Student[], fullName: string) {
+  const normalized = normalizeStudentName(fullName);
+  return students.find((student) => normalizeStudentName(student.fullName) === normalized);
+}
+
 export function StudentsManager({ group }: { group: Group }) {
   const [showForm, setShowForm] = useState(false);
   const [created, setCreated] = useState<CreatedStudent | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [duplicatePrompt, setDuplicatePrompt] = useState<{
+    fullName: string;
+    message: string;
+  } | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [pending, startTransition] = useTransition();
@@ -41,12 +54,35 @@ export function StudentsManager({ group }: { group: Group }) {
     );
   }, [group.students, search]);
 
-  function handleSubmit(formData: FormData) {
+  function handleSubmit(formData: FormData, allowDuplicate = false) {
     setError(null);
+
+    const fullName = String(formData.get("fullName") ?? "").trim();
+    if (!allowDuplicate && findDuplicateInGroup(group.students, fullName)) {
+      setDuplicatePrompt({
+        fullName,
+        message:
+          "Ученик с таким именем уже есть в группе. Создать повторную учётную запись с отдельным ключом доступа?",
+      });
+      return;
+    }
+
+    setDuplicatePrompt(null);
+    if (allowDuplicate) {
+      formData.set("allowDuplicate", "true");
+    }
+
     startTransition(async () => {
       const result = await createStudent(formData);
       if (result?.error) {
         setError(result.error);
+      } else if ("duplicateName" in result && result.duplicateName) {
+        setDuplicatePrompt({
+          fullName: result.fullName ?? fullName,
+          message:
+            result.message ??
+            "Ученик с таким именем уже есть в группе. Создать повторную учётную запись с отдельным ключом доступа?",
+        });
       } else if (result?.accessKey && result?.fullName) {
         setCreated({ fullName: result.fullName, accessKey: result.accessKey });
         setShowForm(false);
@@ -57,7 +93,12 @@ export function StudentsManager({ group }: { group: Group }) {
 
   function onFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    handleSubmit(new FormData(e.currentTarget));
+    handleSubmit(new FormData(e.currentTarget), false);
+  }
+
+  function confirmDuplicateSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    handleSubmit(new FormData(e.currentTarget), true);
   }
 
   function handleDelete(studentId: string) {
@@ -120,6 +161,7 @@ export function StudentsManager({ group }: { group: Group }) {
             setShowForm(true);
             setCreated(null);
             setError(null);
+            setDuplicatePrompt(null);
           }}
           className="inline-flex items-center gap-2 rounded-xl bg-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-hover"
         >
@@ -167,7 +209,7 @@ export function StudentsManager({ group }: { group: Group }) {
 
       {showForm && (
         <form
-          onSubmit={onFormSubmit}
+          onSubmit={duplicatePrompt ? confirmDuplicateSubmit : onFormSubmit}
           className="mb-6 space-y-3 rounded-2xl border border-border bg-bg-card p-4"
         >
           <input type="hidden" name="groupId" value={group.id} />
@@ -178,6 +220,7 @@ export function StudentsManager({ group }: { group: Group }) {
               required
               autoFocus
               placeholder="ФИО ученика (как при входе)"
+              onChange={() => setDuplicatePrompt(null)}
               className="rounded-xl border border-border bg-bg-elevated px-4 py-2.5 text-sm outline-none focus:border-accent"
             />
             <input
@@ -190,17 +233,35 @@ export function StudentsManager({ group }: { group: Group }) {
           <p className="text-xs text-text-muted">
             Если ключ не указан — сгенерируется автоматически (8 символов).
           </p>
+
+          {duplicatePrompt && (
+            <div className="rounded-xl border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
+              <p className="font-medium">Ученик «{duplicatePrompt.fullName}» уже есть в группе</p>
+              <p className="mt-1 text-amber-100/90">{duplicatePrompt.message}</p>
+              <p className="mt-2 text-xs text-amber-100/75">
+                У каждой учётной записи будет свой ключ — при входе ученик указывает имя и свой ключ.
+              </p>
+            </div>
+          )}
+
           <div className="flex gap-2">
             <button
               type="submit"
               disabled={pending}
               className="rounded-xl bg-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-accent-hover disabled:opacity-50"
             >
-              {pending ? "..." : "Создать учётную запись"}
+              {pending
+                ? "..."
+                : duplicatePrompt
+                  ? "Создать повторную учётную запись"
+                  : "Создать учётную запись"}
             </button>
             <button
               type="button"
-              onClick={() => setShowForm(false)}
+              onClick={() => {
+                setShowForm(false);
+                setDuplicatePrompt(null);
+              }}
               className="rounded-xl border border-border px-4 py-2.5 text-sm text-text-secondary"
             >
               Отмена
