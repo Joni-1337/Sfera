@@ -42,6 +42,7 @@ npm run db:seed
 | `SUBSCRIPTION_STUB` | `true` (только для теста без ЮKassa) |
 | `YOOKASSA_SHOP_ID` | shopId из [ЮKassa](https://yookassa.ru) (когда подключите) |
 | `YOOKASSA_SECRET_KEY` | Секретный ключ ЮKassa |
+| `NEXT_PUBLIC_JIVO_WIDGET_ID` | ID виджета Jivo (чат поддержки), напр. `3nsMY9KqtP` |
 
 Подробная настройка оплаты: [PAYMENTS.md](./PAYMENTS.md)
 
