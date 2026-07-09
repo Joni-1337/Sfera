@@ -95,7 +95,7 @@ export function TeacherDashboard({
     : "/tasks";
 
   return (
-    <div className="space-y-8">
+    <div className="min-w-0 space-y-8">
       {subscription && !showArchived && <SubscriptionBanner sub={subscription} />}
 
       {/* Шапка */}
@@ -236,7 +236,7 @@ export function TeacherDashboard({
           </section>
 
           {/* Внимание + активность */}
-          <div className="grid gap-4 lg:grid-cols-2 lg:gap-6">
+          <div className="grid min-w-0 gap-4 lg:grid-cols-2 lg:gap-6">
             <Panel
               title="Требует внимания"
               badge={attention.length > 0 ? attention.length : undefined}
@@ -255,7 +255,7 @@ export function TeacherDashboard({
                       <li key={item.id}>
                         <Link
                           href={item.href}
-                          className="flex items-center gap-3 rounded-xl bg-bg-elevated/80 px-3 py-2.5 transition-colors hover:bg-bg-elevated"
+                          className="flex items-center gap-3 rounded-xl bg-bg-elevated/80 px-4 py-3 transition-colors hover:bg-bg-elevated"
                         >
                           <div
                             className={cn(
@@ -271,7 +271,7 @@ export function TeacherDashboard({
                               {item.subtitle}
                             </p>
                           </div>
-                          <ChevronRight className="h-4 w-4 shrink-0 text-text-muted" />
+                          <ChevronRight className="h-4 w-4 shrink-0 text-text-muted opacity-80" />
                         </Link>
                       </li>
                     );
@@ -299,7 +299,7 @@ export function TeacherDashboard({
                   {recentActivity.map((a) => (
                     <li
                       key={a.id}
-                      className="flex items-center gap-3 rounded-xl bg-bg-elevated/80 px-3 py-2.5"
+                      className="flex items-center gap-3 rounded-xl bg-bg-elevated/80 px-4 py-3"
                     >
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">{a.studentName}</p>
@@ -400,9 +400,9 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-border bg-bg-card p-4 sm:p-5">
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
+    <section className="min-w-0 rounded-2xl border border-border bg-bg-card p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-2">
           <h2 className="font-semibold">{title}</h2>
           {badge !== undefined && (
             <span className="rounded-full bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
@@ -410,7 +410,7 @@ function Panel({
             </span>
           )}
         </div>
-        {action}
+        {action ? <div className="shrink-0">{action}</div> : null}
       </div>
       {children}
     </section>
