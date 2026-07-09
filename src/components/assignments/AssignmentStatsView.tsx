@@ -13,11 +13,18 @@ import {
 import { formatDateTime, RESULT_CATEGORIES } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { CheckboxRow } from "@/components/ui/Checkbox";
+import { AssignmentContentPreview } from "@/components/assignments/AssignmentContentPreview";
 
 type Question = {
   id: string;
   orderIndex: number;
+  type: string;
   prompt: string;
+  optionA: string;
+  optionB: string;
+  optionC: string;
+  optionD: string;
+  answerOptions?: string;
   correctOption: string;
   explanation: string;
 };
@@ -224,9 +231,16 @@ export function AssignmentStatsView({ assignment }: { assignment: Assignment }) 
       </form>
 
       <section className="mb-8">
-        <h2 className="mb-4 text-lg font-semibold">
-          {assignment.published ? "Где чаще всего ошибаются" : "Вопросы"}
-        </h2>
+        <h2 className="mb-4 text-lg font-semibold">Содержание задания</h2>
+        <p className="mb-4 text-sm text-text-secondary">
+          Так ученики видят вопросы, варианты ответов и пояснения после проверки.
+        </p>
+        <AssignmentContentPreview questions={assignment.questions} />
+      </section>
+
+      {assignment.published && completedAttempts.length > 0 && (
+      <section className="mb-8">
+        <h2 className="mb-4 text-lg font-semibold">Где чаще всего ошибаются</h2>
         <div className="space-y-3">
           {questionStats.map(({ question, wrong, total, pct }, i) => (
             <div
@@ -269,6 +283,7 @@ export function AssignmentStatsView({ assignment }: { assignment: Assignment }) 
           ))}
         </div>
       </section>
+      )}
 
       <section>
         <h2 className="mb-4 text-lg font-semibold">Результаты учеников</h2>

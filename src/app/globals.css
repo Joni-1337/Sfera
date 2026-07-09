@@ -117,4 +117,28 @@
     color: #99f6e4;
     font-weight: 600;
   }
+
+  .badge-published {
+    border: 1px solid rgb(45 212 191 / 0.5);
+    background: rgb(20 184 166 / 0.22);
+    color: #ccfbf1;
+    font-weight: 600;
+  }
+
+  .badge-draft {
+    border: 1px solid rgb(234 179 8 / 0.45);
+    background: rgb(234 179 8 / 0.15);
+    color: #fde68a;
+    font-weight: 600;
+  }
+
+  .contact-link {
+    color: #5eead4;
+    font-weight: 500;
+  }
+
+  .contact-link:hover {
+    color: #99f6e4;
+    text-decoration: underline;
+  }
 }

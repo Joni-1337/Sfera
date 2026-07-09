@@ -131,10 +131,8 @@ export function TeacherTestsView({
                           <div className="flex flex-wrap items-center gap-2">
                             <span className="font-semibold">{test.title}</span>
                             <span
-                              className={`rounded-full px-2 py-0.5 text-xs ${
-                                test.published
-                                  ? "bg-green-500/10 text-green-400"
-                                  : "bg-yellow-500/10 text-yellow-400"
+                              className={`rounded-full px-2.5 py-0.5 text-xs ${
+                                test.published ? "badge-published" : "badge-draft"
                               }`}
                             >
                               {test.published ? (

@@ -94,10 +94,8 @@ export function AssignmentsList({
                       {a.title}
                     </Link>
                     <span
-                      className={`rounded-full px-2 py-0.5 text-xs ${
-                        a.published
-                          ? "bg-green-500/10 text-green-400"
-                          : "bg-yellow-500/10 text-yellow-400"
+                      className={`rounded-full px-2.5 py-0.5 text-xs ${
+                        a.published ? "badge-published" : "badge-draft"
                       }`}
                     >
                       {a.published ? "Опубликовано" : "Черновик"}
@@ -120,7 +118,7 @@ export function AssignmentsList({
                     href={`/dashboard/group/${group.id}/assignments/${a.id}`}
                     className="rounded-lg border border-border px-3 py-2 text-sm text-text-secondary hover:border-accent/30 hover:text-accent"
                   >
-                    Статистика
+                    Открыть
                   </Link>
                   {a.published ? (
                     <button

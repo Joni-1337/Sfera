@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { APP_NAME } from "@/lib/branding";
+import { APP_NAME, SUPPORT_EMAIL } from "@/lib/branding";
 
 export const metadata = {
   title: `Политика обработки персональных данных — ${APP_NAME}`,
@@ -106,8 +106,8 @@ export default function PrivacyPage() {
             </h2>
             <p>
               По вопросам обработки персональных данных:{" "}
-              <a href="mailto:support@russkii100.ru" className="text-accent hover:underline">
-                support@russkii100.ru
+              <a href={`mailto:${SUPPORT_EMAIL}`} className="contact-link hover:underline">
+                {SUPPORT_EMAIL}
               </a>
             </p>
           </section>
