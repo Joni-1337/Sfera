@@ -139,8 +139,8 @@ export function TeacherDashboard({
 
       {!showArchived && (
         <>
-          {/* Быстрые действия */}
-          <section>
+          {/* Быстрые действия — на телефоне дублируют меню */}
+          <section className="hidden md:block">
             <SectionTitle>Быстрые действия</SectionTitle>
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-5 sm:gap-3">
               {QUICK_ACTIONS.map(({ href, label, icon: Icon }) => (

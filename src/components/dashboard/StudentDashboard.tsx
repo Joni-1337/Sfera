@@ -202,7 +202,7 @@ export function StudentDashboard({
 
       <DailyWordTeaser state={dailyState ?? null} />
 
-      <section className="mb-8 hidden sm:block">
+      <section className="mb-8 hidden md:block">
         <h2 className="mb-3 text-lg font-semibold">Быстрые действия</h2>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5 sm:gap-3">
           {QUICK_ACTIONS.map(({ href, label, icon: Icon }) => (
