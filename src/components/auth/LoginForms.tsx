@@ -7,6 +7,7 @@ import { GraduationCap, User } from "lucide-react";
 import { loginStudentFormAction, loginTeacherFormAction } from "@/lib/actions";
 import { cn } from "@/lib/utils";
 import { CheckboxField } from "@/components/ui/Checkbox";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 export function LoginForms({
   verifyNotice = null,
@@ -180,12 +181,10 @@ export function LoginForms({
                   Забыли пароль?
                 </Link>
               </div>
-              <input
+              <PasswordInput
                 name="password"
-                type="password"
                 required
                 placeholder="••••••••"
-                className="w-full rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent"
               />
             </div>
 

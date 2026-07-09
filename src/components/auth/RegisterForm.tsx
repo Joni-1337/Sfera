@@ -6,6 +6,7 @@ import Link from "next/link";
 import { registerTeacherFormAction } from "@/lib/actions";
 import { SUBSCRIPTION_PRICE_RUB } from "@/lib/subscription-shared";
 import { CheckboxField } from "@/components/ui/Checkbox";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 
 export function RegisterForm({ localVerify = false }: { localVerify?: boolean }) {
   const router = useRouter();
@@ -66,13 +67,11 @@ export function RegisterForm({ localVerify = false }: { localVerify?: boolean })
           <label className="mb-1.5 block text-sm text-text-secondary">
             Пароль
           </label>
-          <input
+          <PasswordInput
             name="password"
-            type="password"
             required
             minLength={6}
             placeholder="Минимум 6 символов"
-            className="w-full rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent"
           />
         </div>
 
@@ -80,13 +79,11 @@ export function RegisterForm({ localVerify = false }: { localVerify?: boolean })
           <label className="mb-1.5 block text-sm text-text-secondary">
             Подтверждение пароля
           </label>
-          <input
+          <PasswordInput
             name="confirmPassword"
-            type="password"
             required
             minLength={6}
             placeholder="Повторите пароль"
-            className="w-full rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none transition-colors focus:border-accent focus:ring-1 focus:ring-accent"
           />
         </div>
 
