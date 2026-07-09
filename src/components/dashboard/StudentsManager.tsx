@@ -7,6 +7,7 @@ import { createStudent, deleteStudent, resetStudentAccessKey } from "@/lib/stude
 import { useRouter } from "next/navigation";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { cn } from "@/lib/utils";
 
 type Student = {
   id: string;
@@ -188,6 +189,12 @@ export function StudentsManager({ group }: { group: Group }) {
         router.refresh();
       }
     });
+  }
+
+  function copyAccessKey(accessKey: string) {
+    navigator.clipboard.writeText(accessKey);
+    setCopied(accessKey);
+    setTimeout(() => setCopied(null), 2000);
   }
 
   function copyCredentials(fullName: string, accessKey: string) {
@@ -377,8 +384,27 @@ export function StudentsManager({ group }: { group: Group }) {
                       {student.fullName}
                     </Link>
                   </td>
-                  <td className="px-5 py-3.5 font-mono text-sm text-accent">
-                    {student.accessKey}
+                  <td className="px-5 py-3.5">
+                    <button
+                      type="button"
+                      onClick={() => copyAccessKey(student.accessKey)}
+                      title="Нажмите, чтобы скопировать ключ"
+                      className={cn(
+                        "inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 font-mono text-sm transition-colors",
+                        copied === student.accessKey
+                          ? "text-green-400"
+                          : "text-accent hover:bg-accent/10 hover:underline"
+                      )}
+                    >
+                      {copied === student.accessKey ? (
+                        <>
+                          <Check className="h-3.5 w-3.5" />
+                          {student.accessKey}
+                        </>
+                      ) : (
+                        student.accessKey
+                      )}
+                    </button>
                   </td>
                   <td className="px-5 py-3.5">
                     <div className="flex items-center gap-2">
