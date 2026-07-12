@@ -127,7 +127,7 @@ export default function HomeLanding() {
         </div>
       </section>
 
-      <section id="features" className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+      <section id="features" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="mb-10 text-center">
           <h2 className="text-2xl font-bold sm:text-3xl">Всё для подготовки к экзамену</h2>
           <p className="mt-2 text-text-secondary">
@@ -152,19 +152,25 @@ export default function HomeLanding() {
 
       <section className="border-y border-border/60 bg-bg-card/30 py-16">
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="mb-10 text-center">
+          <div className="mb-12 text-center">
             <h2 className="text-2xl font-bold sm:text-3xl">Как начать</h2>
             <p className="mt-2 text-text-secondary">Три шага до первой группы</p>
           </div>
-          <div className="grid gap-6 md:grid-cols-3">
+
+          <div className="relative grid gap-10 md:grid-cols-3 md:gap-6">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute left-[16.67%] right-[16.67%] top-7 hidden h-px bg-gradient-to-r from-transparent via-accent/40 to-transparent md:block"
+            />
             {STEPS.map(({ step, title, text }) => (
-              <div
-                key={step}
-                className="relative rounded-2xl border border-border bg-bg-card p-6"
-              >
-                <span className="step-number text-3xl font-bold">{step}</span>
-                <h3 className="mt-2 text-lg font-semibold">{title}</h3>
-                <p className="mt-1 text-sm text-text-secondary">{text}</p>
+              <div key={step} className="relative text-center md:px-2">
+                <div className="relative z-10 mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full border-2 border-accent/40 bg-bg-primary shadow-[0_0_24px_-6px_rgba(20,184,166,0.45)]">
+                  <span className="step-number text-lg font-bold">{step}</span>
+                </div>
+                <h3 className="text-lg font-semibold">{title}</h3>
+                <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-text-secondary">
+                  {text}
+                </p>
               </div>
             ))}
           </div>
@@ -172,22 +178,24 @@ export default function HomeLanding() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div className="grid gap-4 sm:grid-cols-3">
-          <HighlightCard
-            icon={FileSpreadsheet}
-            title="Excel-импорт"
-            text="Загружайте вопросы и слова из таблиц — не набирайте вручную."
-          />
-          <HighlightCard
-            icon={Bell}
-            title="Уведомления"
-            text="Ученики видят новые задания и дедлайны в колокольчике."
-          />
-          <HighlightCard
-            icon={BarChart3}
-            title="Аналитика группы"
-            text="Кто сдал, средний балл, кто давно не заходил — на одном экране."
-          />
+        <div className="overflow-hidden rounded-3xl border border-border/80 bg-gradient-to-r from-bg-card/80 via-bg-card/40 to-bg-card/80">
+          <div className="grid divide-y divide-border/70 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+            <BenefitItem
+              icon={FileSpreadsheet}
+              title="Excel-импорт"
+              text="Загружайте вопросы и слова из таблиц — не набирайте вручную."
+            />
+            <BenefitItem
+              icon={Bell}
+              title="Уведомления"
+              text="Ученики видят новые задания и дедлайны в колокольчике."
+            />
+            <BenefitItem
+              icon={BarChart3}
+              title="Аналитика группы"
+              text="Кто сдал, средний балл, кто давно не заходил — на одном экране."
+            />
+          </div>
         </div>
       </section>
 
@@ -225,7 +233,7 @@ export default function HomeLanding() {
   );
 }
 
-function HighlightCard({
+function BenefitItem({
   icon: Icon,
   title,
   text,
@@ -235,14 +243,12 @@ function HighlightCard({
   text: string;
 }) {
   return (
-    <div className="flex gap-4 rounded-2xl border border-border bg-bg-card/50 p-5">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-bg-elevated">
-        <Icon className="h-5 w-5 text-accent" />
+    <div className="flex flex-col items-center px-6 py-8 text-center sm:items-start sm:text-left">
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/10">
+        <Icon className="h-6 w-6 text-accent" />
       </div>
-      <div>
-        <h3 className="font-semibold">{title}</h3>
-        <p className="mt-1 text-sm text-text-secondary">{text}</p>
-      </div>
+      <h3 className="font-semibold">{title}</h3>
+      <p className="mt-2 text-sm leading-relaxed text-text-secondary">{text}</p>
     </div>
   );
 }

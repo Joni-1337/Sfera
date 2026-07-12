@@ -55,6 +55,16 @@
     min-height: 100vh;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   /* Ноутбук: чуть крупнее интерфейс. Телефон и широкий монитор без изменений. */
   @media (min-width: 768px) and (max-width: 1439px) {
     html {
