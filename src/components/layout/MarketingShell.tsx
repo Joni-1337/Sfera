@@ -10,7 +10,7 @@ export function MarketingShell({
   activeNav?: "home" | "pricing";
 }) {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-bg-primary">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-bg-primary">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -left-40 top-0 h-[28rem] w-[28rem] rounded-full bg-accent/10 blur-3xl" />
         <div className="absolute -right-32 bottom-0 h-96 w-96 rounded-full bg-teal-400/5 blur-3xl" />
@@ -53,9 +53,9 @@ export function MarketingShell({
         </div>
       </header>
 
-      <main className="relative">{children}</main>
+      <main className="relative flex-1">{children}</main>
 
-      <footer className="relative mt-20 border-t border-border">
+      <footer className="relative mt-auto border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-8 text-center sm:flex-row sm:px-6 sm:text-left">
           <div>
             <p className="text-sm font-semibold">{APP_NAME}</p>
