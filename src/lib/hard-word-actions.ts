@@ -5,6 +5,7 @@ import { requireTeacher, getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { HARD_WORD_TOPICS } from "@/lib/hard-word-constants";
 import { cleanHardWordAnswer, prepareHardWordFields } from "@/lib/hard-words-utils";
+import { assertHasFullAccess } from "@/lib/subscription";
 
 function parseTopic(topic: string) {
   return HARD_WORD_TOPICS.some((t) => t.id === topic) ? topic : null;
@@ -13,6 +14,9 @@ function parseTopic(topic: string) {
 export async function importHardWordsFromExcel(formData: FormData) {
   const session = await requireTeacher();
   if (!session) return { error: "Необходима авторизация преподавателя" };
+
+  const access = await assertHasFullAccess(session.id);
+  if (access.error) return { error: access.error };
 
   const file = formData.get("excelFile") as File | null;
   if (!file || file.size === 0) return { error: "Выберите файл Excel" };
@@ -76,6 +80,9 @@ export async function importHardWordsFromExcel(formData: FormData) {
 export async function createHardWord(formData: FormData) {
   const session = await requireTeacher();
   if (!session) return { error: "Необходима авторизация преподавателя" };
+
+  const access = await assertHasFullAccess(session.id);
+  if (access.error) return { error: access.error };
 
   const topic = parseTopic(String(formData.get("topic") ?? ""));
   const rawWord = String(formData.get("word") ?? "").trim();

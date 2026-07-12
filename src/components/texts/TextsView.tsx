@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { DeleteTextButton } from "@/components/texts/DeleteTextButton";
 import { CheckboxFilterItem } from "@/components/ui/Checkbox";
+import { SubscriptionCreateGate } from "@/components/subscription/SubscriptionCreateGate";
 import { btnPrimary, btnSecondary } from "@/lib/button-styles";
 
 type Text = {
@@ -47,12 +48,14 @@ export function TextsView({
   activeFilters,
   isTeacher = false,
   teacherId = null,
+  canCreate = true,
 }: {
   texts: Text[];
   filters: Filters;
   activeFilters: ActiveFilters;
   isTeacher?: boolean;
   teacherId?: string | null;
+  canCreate?: boolean;
 }) {
   const router = useRouter();
 
@@ -170,15 +173,15 @@ export function TextsView({
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            {isTeacher && (
-              <Link
-                href="/texts/new"
-                className={btnPrimary}
-              >
-                <Plus className="h-4 w-4" />
-                Добавить текст
-              </Link>
-            )}
+            {isTeacher &&
+              (canCreate ? (
+                <Link href="/texts/new" className={btnPrimary}>
+                  <Plus className="h-4 w-4" />
+                  Добавить текст
+                </Link>
+              ) : (
+                <SubscriptionCreateGate canCreate={false} />
+              ))}
             <button
               type="button"
               onClick={() => setMobileFiltersOpen(true)}

@@ -7,6 +7,7 @@ import { TeacherHardWordsProgress } from "@/components/hard-words/TeacherHardWor
 import { StudentHardWordsView } from "@/components/hard-words/StudentHardWordsView";
 import { ensureDefaultHardWords } from "@/lib/default-hard-words";
 import { getDailyWordState } from "@/lib/daily-words";
+import { getTeacherSubscription, hasFullAccess } from "@/lib/subscription";
 
 export default async function HardWordsPage({
   searchParams,
@@ -21,7 +22,7 @@ export default async function HardWordsPage({
   if (session.role === "teacher") {
     await ensureDefaultHardWords(session.id);
 
-    const [words, students, totalWords] = await Promise.all([
+    const [words, students, totalWords, subscription] = await Promise.all([
       prisma.hardWord.findMany({
         where: { teacherId: session.id },
         orderBy: [{ topic: "asc" }, { word: "asc" }],
@@ -56,7 +57,10 @@ export default async function HardWordsPage({
         },
       }),
       prisma.hardWord.count({ where: { teacherId: session.id } }),
+      getTeacherSubscription(session.id),
     ]);
+
+    const canCreate = subscription ? hasFullAccess(subscription.plan) : false;
 
     const progressStudents = students.map((student) => {
       const lastFromProgress = student.hardWordProgress[0]?.learnedAt ?? null;
@@ -82,7 +86,11 @@ export default async function HardWordsPage({
     return (
       <AppShell>
         <TeacherHardWordsProgress students={progressStudents} totalWords={totalWords} />
-        <TeacherHardWordsManager words={words} initialTopic={topic} />
+        <TeacherHardWordsManager
+          words={words}
+          initialTopic={topic}
+          canCreate={canCreate}
+        />
       </AppShell>
     );
   }

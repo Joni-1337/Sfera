@@ -57,7 +57,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
           notifications={notifications}
           subscriptionPlan={subscriptionPlan}
         />
-        <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
+        <main className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-10 lg:px-8">{children}</main>
       </div>
     </ThemeProvider>
   );

@@ -27,6 +27,7 @@ import {
   type WordSort,
 } from "@/lib/hard-words-utils";
 import { HardWordsBulkImport } from "@/components/hard-words/HardWordsBulkImport";
+import { SubscriptionCreateGate } from "@/components/subscription/SubscriptionCreateGate";
 import { btnPrimary, btnSecondary } from "@/lib/button-styles";
 import { cn } from "@/lib/utils";
 
@@ -41,9 +42,11 @@ type HardWord = {
 export function TeacherHardWordsManager({
   words,
   initialTopic,
+  canCreate = true,
 }: {
   words: HardWord[];
   initialTopic?: string;
+  canCreate?: boolean;
 }) {
   const [topicFilter, setTopicFilter] = useState(initialTopic ?? "all");
   const [search, setSearch] = useState("");
@@ -122,32 +125,38 @@ export function TeacherHardWordsManager({
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              setShowImport(true);
-              setShowForm(false);
-              setEditing(null);
-              setError(null);
-            }}
-            className={btnSecondary}
-          >
-            <FileSpreadsheet className="h-4 w-4" />
-            Импорт из Excel
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setShowForm(true);
-              setShowImport(false);
-              setEditing(null);
-              setError(null);
-            }}
-            className={btnPrimary}
-          >
-            <Plus className="h-4 w-4" />
-            Добавить слово
-          </button>
+          {canCreate ? (
+            <>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowImport(true);
+                  setShowForm(false);
+                  setEditing(null);
+                  setError(null);
+                }}
+                className={btnSecondary}
+              >
+                <FileSpreadsheet className="h-4 w-4" />
+                Импорт из Excel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowForm(true);
+                  setShowImport(false);
+                  setEditing(null);
+                  setError(null);
+                }}
+                className={btnPrimary}
+              >
+                <Plus className="h-4 w-4" />
+                Добавить слово
+              </button>
+            </>
+          ) : (
+            <SubscriptionCreateGate canCreate={false} />
+          )}
         </div>
       </div>
 

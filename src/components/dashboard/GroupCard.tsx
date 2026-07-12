@@ -30,13 +30,13 @@ export function GroupCard({
     <div
       className={
         compact
-          ? "flex h-full min-w-[280px] snap-start flex-col rounded-2xl border border-border bg-bg-card p-4 sm:min-w-0"
+          ? "flex h-full min-w-[280px] snap-start flex-col rounded-2xl border border-border bg-bg-card p-4 md:min-w-0 md:p-5 lg:p-6"
           : "relative flex h-full flex-col rounded-2xl border border-border bg-bg-card p-5 transition-all hover:border-accent/30 hover:shadow-lg hover:shadow-accent/5"
       }
     >
       <div className="mb-3 flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-base font-semibold sm:text-lg">{group.name}</h3>
+          <h3 className="truncate text-base font-semibold md:text-lg lg:text-xl">{group.name}</h3>
           {stats && !archived && (
             <div className="mt-2 flex flex-wrap gap-1.5">
               <StatBadge>{group._count.students} уч.</StatBadge>
@@ -74,7 +74,7 @@ export function GroupCard({
           <li key={href}>
             <Link
               href={href}
-              className="flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm text-text-secondary transition-colors hover:bg-bg-elevated hover:text-text-primary"
+              className="flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm text-text-secondary transition-colors hover:bg-bg-elevated hover:text-text-primary md:gap-3 md:px-3 md:py-2.5 md:text-base"
             >
               <link.icon className="h-4 w-4 shrink-0 text-accent/70" />
               <span className="truncate">{link.label}</span>
@@ -109,8 +109,8 @@ function StatBadge({
     <span
       className={
         accent
-          ? "rounded-md bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent"
-          : "rounded-md bg-bg-elevated px-2 py-0.5 text-[10px] text-text-muted"
+          ? "rounded-md bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent md:text-xs"
+          : "rounded-md bg-bg-elevated px-2 py-0.5 text-[10px] text-text-muted md:text-xs"
       }
     >
       {children}

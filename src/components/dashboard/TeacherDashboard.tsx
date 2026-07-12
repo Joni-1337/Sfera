@@ -95,14 +95,14 @@ export function TeacherDashboard({
     : "/tasks";
 
   return (
-    <div className="min-w-0 space-y-8">
+    <div className="min-w-0 space-y-8 md:space-y-10">
       {subscription && !showArchived && <SubscriptionBanner sub={subscription} />}
 
       {/* Шапка */}
       <header className="space-y-4">
         <div>
-          <h1 className="text-2xl font-bold sm:text-3xl">Дашборд ЕГЭ</h1>
-          <p className="mt-1 text-sm text-text-secondary sm:text-base">
+          <h1 className="text-2xl font-bold md:text-3xl lg:text-4xl">Дашборд ЕГЭ</h1>
+          <p className="mt-1 text-sm text-text-secondary md:text-base lg:text-lg">
             {fullName}
             {showArchived && (
               <span className="ml-2 rounded-full bg-yellow-500/10 px-2 py-0.5 text-xs text-yellow-400">
@@ -126,7 +126,7 @@ export function TeacherDashboard({
             <Link
               href="/hard-words"
               className={cn(
-                "inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-text-secondary hover:border-accent/30 hover:text-accent",
+                "inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-text-secondary hover:border-accent/30 hover:text-accent md:px-5 md:py-3 md:text-base",
                 !firstGroupId && "col-span-2 sm:col-span-1"
               )}
             >
@@ -142,17 +142,17 @@ export function TeacherDashboard({
           {/* Быстрые действия — на телефоне дублируют меню */}
           <section className="hidden md:block">
             <SectionTitle>Быстрые действия</SectionTitle>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-5 sm:gap-3">
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4 xl:grid-cols-5">
               {QUICK_ACTIONS.map(({ href, label, icon: Icon }) => (
                 <Link
                   key={href}
                   href={href}
-                  className="flex flex-col items-center gap-1.5 rounded-xl border border-border bg-bg-card px-2 py-3 text-center transition-all hover:border-accent/30 sm:gap-2 sm:rounded-2xl sm:px-4 sm:py-4"
+                  className="flex flex-col items-center gap-2 rounded-xl border border-border bg-bg-card px-3 py-4 text-center transition-all hover:border-accent/30 md:gap-3 md:rounded-2xl md:px-5 md:py-5"
                 >
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/10 sm:h-10 sm:w-10 sm:rounded-xl">
-                    <Icon className="h-4 w-4 text-accent sm:h-5 sm:w-5" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 md:h-12 md:w-12">
+                    <Icon className="h-5 w-5 text-accent md:h-6 md:w-6" />
                   </div>
-                  <span className="text-[11px] font-medium leading-tight sm:text-sm">
+                  <span className="text-xs font-medium leading-tight md:text-sm lg:text-base">
                     {label}
                   </span>
                 </Link>
@@ -197,7 +197,7 @@ export function TeacherDashboard({
           {/* Сводка */}
           <section>
             <SectionTitle>Сводка</SectionTitle>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 sm:gap-3">
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4 xl:grid-cols-5">
               <StatCard
                 icon={Users}
                 label="Учеников"
@@ -230,7 +230,7 @@ export function TeacherDashboard({
                 icon={Activity}
                 label="За неделю"
                 value={String(stats.weeklySubmissions)}
-                className="col-span-2 sm:col-span-1"
+                className="col-span-2 md:col-span-1"
               />
             </div>
           </section>
@@ -266,8 +266,8 @@ export function TeacherDashboard({
                             <Icon className="h-3.5 w-3.5" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium">{item.title}</p>
-                            <p className="truncate text-xs text-text-muted">
+                            <p className="truncate text-sm font-medium md:text-base">{item.title}</p>
+                            <p className="truncate text-xs text-text-muted md:text-sm">
                               {item.subtitle}
                             </p>
                           </div>
@@ -302,15 +302,15 @@ export function TeacherDashboard({
                       className="flex items-center gap-3 rounded-xl bg-bg-elevated/80 px-4 py-3"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">{a.studentName}</p>
-                        <p className="truncate text-xs text-text-muted">
+                        <p className="truncate text-sm font-medium md:text-base">{a.studentName}</p>
+                        <p className="truncate text-xs text-text-muted md:text-sm">
                           {a.groupName} · {a.taskName}
                         </p>
-                        <p className="text-[10px] text-text-muted">
+                        <p className="text-[10px] text-text-muted md:text-xs">
                           {formatDateTime(a.completedAt)}
                         </p>
                       </div>
-                      <span className="shrink-0 rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-semibold tabular-nums text-accent">
+                      <span className="shrink-0 rounded-full bg-accent/10 px-2.5 py-0.5 text-xs font-semibold tabular-nums text-accent md:px-3 md:py-1 md:text-sm">
                         {a.score}/{a.maxScore}
                       </span>
                     </li>
@@ -343,9 +343,9 @@ function GroupsGrid({
   }
 
   return (
-    <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 sm:mx-0 sm:grid sm:snap-none sm:grid-cols-2 sm:overflow-visible lg:grid-cols-3">
+    <div className="-mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-1 md:mx-0 md:grid md:snap-none md:grid-cols-2 md:overflow-visible xl:grid-cols-3">
       {groups.map((group) => (
-        <div key={group.id} className="w-[85vw] max-w-[320px] shrink-0 sm:w-auto sm:max-w-none">
+        <div key={group.id} className="w-[85vw] max-w-[320px] shrink-0 md:w-auto md:max-w-none">
           <GroupCard
             compact
             group={{
@@ -365,8 +365,8 @@ function GroupsGrid({
       ))}
 
       {showAddGroup && (
-        <div className="flex w-[85vw] max-w-[320px] shrink-0 snap-start sm:w-auto sm:max-w-none">
-          <div className="flex h-full min-h-[200px] w-full flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-bg-card/50 p-6">
+        <div className="flex w-[85vw] max-w-[320px] shrink-0 snap-start md:w-auto md:max-w-none">
+          <div className="flex h-full min-h-[220px] w-full flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-border bg-bg-card/50 p-6 md:min-h-[240px] md:p-8">
             <AddGroupForm />
           </div>
         </div>
@@ -383,9 +383,9 @@ function SectionTitle({
   inline?: boolean;
 }) {
   if (inline) {
-    return <h2 className="text-lg font-semibold">{children}</h2>;
+    return <h2 className="text-lg font-semibold md:text-xl">{children}</h2>;
   }
-  return <h2 className="mb-3 text-lg font-semibold">{children}</h2>;
+  return <h2 className="mb-3 text-lg font-semibold md:mb-4 md:text-xl">{children}</h2>;
 }
 
 function Panel({
@@ -400,12 +400,12 @@ function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className="min-w-0 rounded-2xl border border-border bg-bg-card p-5">
-      <div className="mb-4 flex items-center justify-between gap-3">
+    <section className="min-w-0 rounded-2xl border border-border bg-bg-card p-5 md:p-6">
+      <div className="mb-4 flex items-center justify-between gap-3 md:mb-5">
         <div className="flex min-w-0 items-center gap-2">
-          <h2 className="font-semibold">{title}</h2>
+          <h2 className="font-semibold md:text-lg">{title}</h2>
           {badge !== undefined && (
-            <span className="rounded-full bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
+            <span className="rounded-full bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent md:text-sm">
               {badge}
             </span>
           )}
@@ -451,17 +451,17 @@ function StatCard({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 rounded-xl border border-border bg-bg-card p-3 sm:flex-col sm:items-start sm:gap-0 sm:p-4",
+        "flex items-center gap-3 rounded-xl border border-border bg-bg-card p-3 md:gap-4 md:p-5 md:flex-col md:items-start",
         className
       )}
     >
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent/10 sm:mb-2 sm:h-10 sm:w-10 sm:rounded-xl">
-        <Icon className="h-4 w-4 text-accent sm:h-5 sm:w-5" />
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/10 md:mb-3 md:h-12 md:w-12">
+        <Icon className="h-5 w-5 text-accent md:h-6 md:w-6" />
       </div>
-      <div className="min-w-0 flex-1 sm:flex-none">
-        <p className="text-[11px] text-text-secondary sm:text-xs">{label}</p>
-        <p className="text-lg font-bold tabular-nums sm:text-xl">{value}</p>
-        {hint && <p className="text-[10px] text-text-muted">{hint}</p>}
+      <div className="min-w-0 flex-1 md:flex-none">
+        <p className="text-xs text-text-secondary md:text-sm">{label}</p>
+        <p className="text-xl font-bold tabular-nums md:text-2xl">{value}</p>
+        {hint && <p className="text-[10px] text-text-muted md:text-xs">{hint}</p>}
       </div>
     </div>
   );

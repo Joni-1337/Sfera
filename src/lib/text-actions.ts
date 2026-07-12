@@ -6,6 +6,7 @@ import { requireTeacher } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { TEXT_TYPES } from "@/lib/text-constants";
 import { normalizeTextContent } from "@/lib/text-format";
+import { assertHasFullAccess } from "@/lib/subscription";
 
 function parseTextForm(formData: FormData) {
   const title = String(formData.get("title") ?? "").trim();
@@ -46,6 +47,9 @@ async function verifyTextOwnership(textId: string, teacherId: string) {
 export async function createText(formData: FormData) {
   const session = await requireTeacher();
   if (!session) return { error: "Необходима авторизация преподавателя" };
+
+  const access = await assertHasFullAccess(session.id);
+  if (access.error) return { error: access.error };
 
   const parsed = parseTextForm(formData);
   if ("error" in parsed && parsed.error) return { error: parsed.error };

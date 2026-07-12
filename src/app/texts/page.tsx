@@ -4,6 +4,7 @@ import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { AppShell } from "@/components/layout/AppShell";
 import { TextsView } from "@/components/texts/TextsView";
+import { getTeacherSubscription, hasFullAccess } from "@/lib/subscription";
 
 export default async function TextsPage({
   searchParams,
@@ -66,6 +67,9 @@ export default async function TextsPage({
   const years = [...new Set(allTexts.map((t) => t.year))].sort((a, b) => b - a);
   const topics = [...new Set(allTexts.map((t) => t.topic))].sort();
 
+  const subscription = isTeacher ? await getTeacherSubscription(session.id) : null;
+  const canCreate = subscription ? hasFullAccess(subscription.plan) : false;
+
   return (
     <AppShell>
       <Suspense fallback={<div className="py-20 text-center text-text-muted">Загрузка...</div>}>
@@ -81,6 +85,7 @@ export default async function TextsPage({
           }}
           isTeacher={isTeacher}
           teacherId={teacherId}
+          canCreate={canCreate}
         />
       </Suspense>
     </AppShell>
