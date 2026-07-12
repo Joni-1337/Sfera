@@ -41,7 +41,7 @@ export function CreateAssignmentForm({
   groupName: string;
 }) {
   const [mode, setMode] = useState<QuestionSourceMode>("template");
-  const [category, setCategory] = useState(RESULT_CATEGORIES[0].id);
+  const [category, setCategory] = useState<string>(RESULT_CATEGORIES[0].id);
   const [templateCount, setTemplateCount] = useState(DEFAULT_TEMPLATE_COUNT);
   const [questions, setQuestions] = useState([{ ...emptyQuestion }]);
   const [error, setError] = useState<string | null>(null);
