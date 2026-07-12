@@ -22,17 +22,21 @@ export function SettingsSubscriptionCard({
   const styles = {
     trial: {
       icon: Sparkles,
-      badge: "bg-accent/10 text-accent",
+      iconWrap: "bg-accent/10",
+      iconClass: "text-accent",
       border: "border-accent/30",
     },
     pro: {
       icon: Crown,
-      badge: "bg-green-500/10 text-green-400",
-      border: "border-green-500/30",
+      iconWrap:
+        "bg-gradient-to-br from-amber-400 to-accent shadow-sm shadow-amber-500/25",
+      iconClass: "text-white",
+      border: "border-amber-400/30",
     },
     expired: {
       icon: AlertTriangle,
-      badge: "bg-yellow-500/10 text-yellow-400",
+      iconWrap: "bg-yellow-500/10",
+      iconClass: "text-yellow-400",
       border: "border-yellow-500/30",
     },
   }[sub.plan];
@@ -56,10 +60,10 @@ export function SettingsSubscriptionCard({
         <div
           className={cn(
             "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
-            styles.badge
+            styles.iconWrap
           )}
         >
-          <Icon className="h-5 w-5" />
+          <Icon className={cn("h-5 w-5", styles.iconClass)} />
         </div>
         <div>
           <h2 className="font-semibold">{planLabel(sub.plan)}</h2>
