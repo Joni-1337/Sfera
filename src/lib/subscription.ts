@@ -43,27 +43,29 @@ export {
 
 
 export async function syncExpiredSubscription(teacherId: string) {
-
   const teacher = await prisma.teacher.findUnique({ where: { id: teacherId } });
-
   if (!teacher) return;
 
+  const now = new Date();
+  const hasPaidAccess =
+    teacher.subscriptionEndsAt && teacher.subscriptionEndsAt > now;
 
+  if (hasPaidAccess && teacher.subscriptionStatus !== "active") {
+    await prisma.teacher.update({
+      where: { id: teacherId },
+      data: { subscriptionStatus: "active" },
+    });
+    return;
+  }
 
   const plan = computePlan(teacher);
 
   if (plan === "expired" && teacher.subscriptionStatus !== "expired") {
-
     await prisma.teacher.update({
-
       where: { id: teacherId },
-
       data: { subscriptionStatus: "expired" },
-
     });
-
   }
-
 }
 
 

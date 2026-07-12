@@ -118,11 +118,10 @@ export async function syncTeacherPaymentOnReturn(teacherId: string) {
   }
 
   const latest = await getLatestSubscriptionPayment(teacherId);
-  if (!latest || latest.status !== "pending" || latest.yookassaId.startsWith("pending_")) {
-    return latest;
+  if (latest?.status === "pending" && !latest.yookassaId.startsWith("pending_")) {
+    await processYookassaWebhookPayment(latest.yookassaId);
   }
 
-  await processYookassaWebhookPayment(latest.yookassaId);
   return getLatestSubscriptionPayment(teacherId);
 }
 
@@ -166,14 +165,17 @@ export async function processYookassaWebhookPayment(yookassaId: string) {
   }
 
   const paidAmountRub = parsePaidAmountRub(remote.data.amount);
+  if (paidAmountRub === null || paidAmountRub <= 0) {
+    return { error: "Некорректная сумма платежа" as const };
+  }
+
   if (paidAmountRub !== existing.amountRub) {
-    console.error(
-      "[yookassa] amount mismatch:",
+    console.warn(
+      "[yookassa] amount mismatch, accepting succeeded payment:",
       paidAmountRub,
       existing.amountRub,
       yookassaId
     );
-    return { error: "Сумма платежа не совпадает" as const };
   }
 
   const teacherId = existing.teacherId;
@@ -212,6 +214,7 @@ export async function processYookassaWebhookPayment(yookassaId: string) {
 
   revalidatePath("/dashboard");
   revalidatePath("/pricing");
+  revalidatePath("/settings");
 
   return { succeeded: true as const, teacherId };
 }

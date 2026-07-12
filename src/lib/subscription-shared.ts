@@ -81,53 +81,26 @@ export function trialEndDate(from = new Date()) {
 
 
 export function computePlan(teacher: {
-
   subscriptionStatus: string;
-
   trialEndsAt: Date | null;
-
   subscriptionEndsAt: Date | null;
-
 }): PlanType {
-
   const now = new Date();
 
-
-
-  if (
-
-    teacher.subscriptionStatus === "active" &&
-
-    teacher.subscriptionEndsAt &&
-
-    teacher.subscriptionEndsAt > now
-
-  ) {
-
+  // Оплаченная подписка: доверяем дате окончания, даже если status в БД устарел
+  if (teacher.subscriptionEndsAt && teacher.subscriptionEndsAt > now) {
     return "pro";
-
   }
-
-
 
   if (
-
     teacher.subscriptionStatus === "trial" &&
-
     teacher.trialEndsAt &&
-
     teacher.trialEndsAt > now
-
   ) {
-
     return "trial";
-
   }
-
-
 
   return "expired";
-
 }
 
 
