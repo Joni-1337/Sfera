@@ -243,12 +243,14 @@ function BenefitItem({
   text: string;
 }) {
   return (
-    <div className="flex flex-col items-center px-6 py-8 text-center sm:items-start sm:text-left">
-      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-accent/10">
-        <Icon className="h-6 w-6 text-accent" />
+    <div className="flex items-start gap-3 px-5 py-4 sm:px-6 sm:py-5">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent/10">
+        <Icon className="h-4 w-4 text-accent" />
       </div>
-      <h3 className="font-semibold">{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-text-secondary">{text}</p>
+      <div className="min-w-0">
+        <h3 className="text-sm font-semibold leading-snug">{title}</h3>
+        <p className="mt-1 text-xs leading-relaxed text-text-secondary sm:text-sm">{text}</p>
+      </div>
     </div>
   );
 }
