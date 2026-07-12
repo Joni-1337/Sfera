@@ -88,7 +88,9 @@ export default async function PricingPage({
 
       {success === "1" && (
         <div className="notice-success mb-6 rounded-xl px-4 py-3 text-sm">
-          Подписка активирована на 30 дней. Спасибо!
+          {subscriptionAfterPayment?.plan === "pro"
+            ? "Подписка продлена на 30 дней. Спасибо!"
+            : "Подписка активирована на 30 дней. Спасибо!"}
         </div>
       )}
 

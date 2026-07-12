@@ -11,6 +11,10 @@ import {
   type TeacherSubscription,
 } from "@/lib/subscription-shared";
 import { cn } from "@/lib/utils";
+import { btnPrimary } from "@/lib/button-styles";
+
+const btnRenewal =
+  "w-full rounded-xl bg-gradient-to-r from-amber-400 to-accent py-3 text-sm font-semibold text-white shadow-md shadow-amber-500/25 ring-1 ring-amber-400/40 transition-all hover:brightness-110 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50";
 
 const PRO_FEATURES = [
   "Неограниченное число групп",
@@ -72,10 +76,18 @@ export function PricingView({
             </p>
           )}
           {subscription.plan === "pro" && subscription.subscriptionEndsAt && (
-            <p className="mt-1 text-sm text-text-muted">
-              Активна до{" "}
-              {subscription.subscriptionEndsAt.toLocaleDateString("ru-RU")}
-            </p>
+            <>
+              <p className="mt-1 text-sm text-text-muted">
+                Активна до{" "}
+                {subscription.subscriptionEndsAt.toLocaleDateString("ru-RU")}
+              </p>
+              {subscription.daysLeftPro !== null && subscription.daysLeftPro <= 7 && (
+                <p className="mt-1 text-sm font-medium text-amber-300">
+                  Осталось {subscription.daysLeftPro}{" "}
+                  {subscription.daysLeftPro === 1 ? "день" : "дн."} — можно продлить заранее
+                </p>
+              )}
+            </>
           )}
           {subscription.plan === "expired" && (
             <p className="mt-1 text-sm text-yellow-400">
@@ -102,12 +114,34 @@ export function PricingView({
           current={currentPlan === "pro" || currentPlan === "trial"}
           footer={
             isLoggedIn ? (
-              currentPlan !== "pro" ? (
+              currentPlan === "pro" ? (
+                <div className="mt-6">
+                  <button
+                    type="button"
+                    onClick={handleSubscribe}
+                    disabled={pending || !paymentsEnabled}
+                    className={btnRenewal}
+                  >
+                    {pending
+                      ? "Обработка..."
+                      : !paymentsEnabled
+                        ? "Оплата скоро будет доступна"
+                        : `Продлить · ${SUBSCRIPTION_PRICE_RUB.toLocaleString("ru-RU")} ₽/мес`}
+                  </button>
+                  <p className="mt-2 text-center text-xs text-text-muted">
+                    {paymentsEnabled
+                      ? yookassaEnabled
+                        ? "Оплата картой через ЮKassa · +30 дней к текущему сроку"
+                        : "Тестовое продление · +30 дней к текущему сроку"
+                      : "Продление появится после подключения ЮKassa"}
+                  </p>
+                </div>
+              ) : (
                 <button
                   type="button"
                   onClick={handleSubscribe}
                   disabled={pending || !paymentsEnabled}
-                  className="mt-6 w-full rounded-xl bg-accent py-3 text-sm font-semibold text-white hover:bg-accent-hover disabled:cursor-not-allowed disabled:opacity-50"
+                  className={cn(btnPrimary, "mt-6 w-full py-3")}
                 >
                   {pending
                     ? "Обработка..."
@@ -115,10 +149,6 @@ export function PricingView({
                       ? "Оплата скоро будет доступна"
                       : `Оформить · ${SUBSCRIPTION_PRICE_RUB.toLocaleString("ru-RU")} ₽/мес`}
                 </button>
-              ) : (
-                <p className="mt-6 text-sm font-medium text-teal-300">
-                  Подписка активна. Спасибо!
-                </p>
               )
             ) : (
               <Link
