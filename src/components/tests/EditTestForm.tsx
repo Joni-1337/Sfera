@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Trash2, Shuffle } from "lucide-react";
+import { ArrowLeft, Trash2, Shuffle, CalendarDays } from "lucide-react";
 import { updateTest } from "@/lib/test-actions";
 import { QUESTION_TYPES } from "@/lib/scoring";
 import { DateInput, formatDateInputValue } from "@/components/ui/DateInput";
@@ -132,29 +132,48 @@ export function EditTestForm({
           />
         </div>
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
-          <div>
-            <label className="mb-1.5 block text-sm text-text-secondary">Срок</label>
-            <DateInput name="dueAt" defaultValue={formatDateInput(test.dueAt)} />
+        <section className="rounded-2xl border border-border bg-bg-card p-5">
+          <h2 className="mb-4 text-sm font-semibold text-text-primary">Параметры</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="min-w-0">
+              <div className="h-full rounded-xl border border-border bg-bg-elevated/50 p-4">
+                <div className="mb-3 flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4 text-accent" />
+                  <div>
+                    <p className="text-sm font-medium text-text-primary">Срок сдачи</p>
+                    <p className="text-xs text-text-muted">Необязательно</p>
+                  </div>
+                </div>
+                <DateInput name="dueAt" defaultValue={formatDateInput(test.dueAt)} />
+              </div>
+            </div>
+
+            <div className="min-w-0">
+              <CheckboxCard
+                name="allowRetake"
+                defaultChecked={test.allowRetake}
+                className="h-full"
+                title="Разрешить пересдачу"
+                description="Ученик сможет пройти заново"
+              />
+            </div>
+
+            <div className="min-w-0 sm:col-span-2 lg:col-span-1">
+              <CheckboxCard
+                name="shuffleQuestions"
+                defaultChecked={test.shuffleQuestions}
+                className="h-full"
+                title={
+                  <span className="flex items-center gap-2">
+                    <Shuffle className="h-4 w-4 text-accent" />
+                    Перемешать вопросы
+                  </span>
+                }
+                description="У каждого ученика — случайный порядок"
+              />
+            </div>
           </div>
-          <CheckboxCard
-            name="allowRetake"
-            defaultChecked={test.allowRetake}
-            title="Разрешить пересдачу"
-            description="Ученик сможет пройти заново"
-          />
-          <CheckboxCard
-            name="shuffleQuestions"
-            defaultChecked={test.shuffleQuestions}
-            title={
-              <span className="flex items-center gap-2">
-                <Shuffle className="h-4 w-4 text-accent" />
-                Перемешать вопросы
-              </span>
-            }
-            description="У каждого ученика — случайный порядок"
-          />
-        </div>
+        </section>
 
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Вопросы</h2>
