@@ -73,7 +73,7 @@ export function CheckboxCard({
   return (
     <label
       className={cn(
-        "flex min-w-[220px] flex-1 cursor-pointer items-center gap-3.5 rounded-xl border p-4 transition-all duration-200",
+        "flex w-full min-w-0 cursor-pointer items-center gap-3.5 rounded-xl border p-4 transition-all duration-200",
         "border-border/80 bg-bg-card hover:border-accent/25 hover:bg-bg-elevated/50",
         "has-[:checked]:border-accent/45 has-[:checked]:bg-accent/[0.08]",
         "has-[:checked]:shadow-[inset_0_0_0_1px_rgba(45,212,191,0.14)]",

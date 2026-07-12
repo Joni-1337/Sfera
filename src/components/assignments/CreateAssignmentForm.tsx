@@ -138,36 +138,42 @@ export function CreateAssignmentForm({
 
         <section className="rounded-2xl border border-border bg-bg-card p-5">
           <h2 className="mb-4 text-sm font-semibold text-text-primary">Параметры</h2>
-          <div className="grid gap-3 md:grid-cols-3">
-            <div className="rounded-xl border border-border bg-bg-elevated/50 p-4">
-              <div className="mb-3 flex items-center gap-2">
-                <CalendarDays className="h-4 w-4 text-accent" />
-                <div>
-                  <p className="text-sm font-medium text-text-primary">Срок сдачи</p>
-                  <p className="text-xs text-text-muted">Необязательно</p>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="min-w-0">
+              <div className="h-full rounded-xl border border-border bg-bg-elevated/50 p-4">
+                <div className="mb-3 flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4 text-accent" />
+                  <div>
+                    <p className="text-sm font-medium text-text-primary">Срок сдачи</p>
+                    <p className="text-xs text-text-muted">Необязательно</p>
+                  </div>
                 </div>
+                <DateInput name="dueAt" />
               </div>
-              <DateInput name="dueAt" />
             </div>
 
-            <CheckboxCard
-              name="allowRetake"
-              className="h-full min-w-0"
-              title="Разрешить пересдачу"
-              description="Ученик сможет решить заново"
-            />
+            <div className="min-w-0">
+              <CheckboxCard
+                name="allowRetake"
+                className="h-full"
+                title="Разрешить пересдачу"
+                description="Ученик сможет решить заново"
+              />
+            </div>
 
-            <CheckboxCard
-              name="shuffleQuestions"
-              className="h-full min-w-0"
-              title={
-                <span className="flex items-center gap-2">
-                  <Shuffle className="h-4 w-4 text-accent" />
-                  Перемешать вопросы
-                </span>
-              }
-              description="У каждого ученика — случайный порядок"
-            />
+            <div className="min-w-0 sm:col-span-2 lg:col-span-1">
+              <CheckboxCard
+                name="shuffleQuestions"
+                className="h-full"
+                title={
+                  <span className="flex items-center gap-2">
+                    <Shuffle className="h-4 w-4 text-accent" />
+                    Перемешать вопросы
+                  </span>
+                }
+                description="У каждого ученика — случайный порядок"
+              />
+            </div>
           </div>
         </section>
 

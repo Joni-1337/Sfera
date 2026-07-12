@@ -176,7 +176,7 @@ export function CreateTestForm({
             <label className="mb-1.5 block text-sm text-text-secondary">Срок</label>
             <DateInput name="dueAt" />
           </div>
-          <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <div className="flex min-w-0 flex-1 flex-col gap-4 sm:flex-row">
             <CheckboxCard
               name="allowRetake"
               title="Разрешить пересдачу"
