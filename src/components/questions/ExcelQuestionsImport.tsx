@@ -306,11 +306,13 @@ export function QuestionSourceTabs({
   onChange,
   templateLabel,
   templateHint,
+  templateContent,
 }: {
   mode: QuestionSourceMode;
   onChange: (mode: QuestionSourceMode) => void;
   templateLabel: string;
-  templateHint: string;
+  templateHint?: string;
+  templateContent?: React.ReactNode;
 }) {
   const tabs = [
     { id: "template" as const, label: templateLabel, hint: "Готовый набор" },
@@ -338,10 +340,10 @@ export function QuestionSourceTabs({
           </button>
         ))}
       </div>
-      {mode === "template" && (
-        <p className="rounded-xl border border-border bg-bg-elevated/50 px-4 py-3 text-sm text-text-secondary">
-          {templateHint}
-        </p>
+      {mode === "template" && (templateContent ?? templateHint) && (
+        <div className="rounded-xl border border-border bg-bg-elevated/50 px-4 py-3 text-sm text-text-secondary">
+          {templateContent ?? templateHint}
+        </div>
       )}
     </div>
   );

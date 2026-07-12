@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getSession, requireTeacher } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getTemplatesForCategory } from "@/lib/question-templates";
+import { getTemplatesForCategory, normalizeTemplateCount } from "@/lib/question-templates";
 import { parseQuestionsFromExcel } from "@/lib/excel-import";
 import { checkAnswer, normalizeCorrectAnswer } from "@/lib/scoring";
 import { normalizeChoiceLetter, optionsToFields, parseOptionsList } from "@/lib/question-options";
@@ -104,7 +104,8 @@ export async function createAssignment(formData: FormData) {
     }
     questions = parsed.questions;
   } else if (useTemplate) {
-    questions = getTemplatesForCategory(category);
+    const templateCount = normalizeTemplateCount(formData.get("templateCount"));
+    questions = getTemplatesForCategory(category, templateCount);
   } else {
     questions = parseQuestionsFromForm(formData);
   }

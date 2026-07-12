@@ -23,7 +23,10 @@ export const QUESTION_TEMPLATES: Record<string, QuestionTemplate[]> = {
   "task-7-8": task78 as QuestionTemplate[],
 };
 
-const DEFAULT_TEMPLATE_COUNT = 3;
+export const DEFAULT_TEMPLATE_COUNT = 3;
+
+export const TEMPLATE_COUNT_PRESETS = [3, 5, 7, 10, 15] as const;
+export const MAX_TEMPLATE_COUNT = 30;
 
 function pickRandom<T>(pool: T[], count: number): T[] {
   const shuffled = [...pool];
@@ -34,10 +37,25 @@ function pickRandom<T>(pool: T[], count: number): T[] {
   return shuffled.slice(0, Math.min(count, shuffled.length));
 }
 
+export function getTemplateBankSize(category: string): number {
+  const pool = QUESTION_TEMPLATES[category] ?? QUESTION_TEMPLATES.orthography;
+  return pool.length;
+}
+
+export function normalizeTemplateCount(raw: unknown): number {
+  const parsed =
+    typeof raw === "number"
+      ? raw
+      : Number.parseInt(String(raw ?? DEFAULT_TEMPLATE_COUNT), 10);
+
+  if (!Number.isFinite(parsed)) return DEFAULT_TEMPLATE_COUNT;
+  return Math.min(Math.max(parsed, 1), MAX_TEMPLATE_COUNT);
+}
+
 export function getTemplatesForCategory(
   category: string,
   count = DEFAULT_TEMPLATE_COUNT
 ): QuestionTemplate[] {
   const pool = QUESTION_TEMPLATES[category] ?? QUESTION_TEMPLATES.orthography;
-  return pickRandom(pool, count);
+  return pickRandom(pool, normalizeTemplateCount(count));
 }

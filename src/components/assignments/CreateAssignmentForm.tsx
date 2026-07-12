@@ -1,12 +1,18 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Trash2, Shuffle } from "lucide-react";
+import { ArrowLeft, CalendarDays, Trash2, Shuffle } from "lucide-react";
 import { createAssignment } from "@/lib/assignment-actions";
 import { RESULT_CATEGORIES } from "@/lib/utils";
 import { QUESTION_TYPES } from "@/lib/scoring";
+import {
+  DEFAULT_TEMPLATE_COUNT,
+  getTemplateBankSize,
+  MAX_TEMPLATE_COUNT,
+  TEMPLATE_COUNT_PRESETS,
+} from "@/lib/question-templates";
 import { DateInput } from "@/components/ui/DateInput";
 import { CheckboxCard } from "@/components/ui/Checkbox";
 import {
@@ -14,6 +20,7 @@ import {
   QuestionSourceTabs,
   type QuestionSourceMode,
 } from "@/components/questions/ExcelQuestionsImport";
+import { cn } from "@/lib/utils";
 
 const emptyQuestion = {
   type: "multiple_choice",
@@ -34,10 +41,21 @@ export function CreateAssignmentForm({
   groupName: string;
 }) {
   const [mode, setMode] = useState<QuestionSourceMode>("template");
+  const [category, setCategory] = useState(RESULT_CATEGORIES[0].id);
+  const [templateCount, setTemplateCount] = useState(DEFAULT_TEMPLATE_COUNT);
   const [questions, setQuestions] = useState([{ ...emptyQuestion }]);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const router = useRouter();
+
+  const bankSize = useMemo(() => getTemplateBankSize(category), [category]);
+  const effectiveTemplateCount = Math.min(templateCount, bankSize, MAX_TEMPLATE_COUNT);
+
+  function handleTemplateCountChange(raw: string) {
+    const parsed = Number.parseInt(raw, 10);
+    if (!Number.isFinite(parsed)) return;
+    setTemplateCount(Math.min(Math.max(parsed, 1), MAX_TEMPLATE_COUNT));
+  }
 
   function handleSubmit(formData: FormData) {
     setError(null);
@@ -45,6 +63,7 @@ export function CreateAssignmentForm({
 
     if (mode === "template") {
       formData.set("useTemplate", "on");
+      formData.set("templateCount", String(effectiveTemplateCount));
     } else if (mode === "manual") {
       questions.forEach((q, i) => {
         Object.entries(q).forEach(([key, val]) => {
@@ -102,6 +121,8 @@ export function CreateAssignmentForm({
           <select
             name="category"
             required
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
             className="w-full rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none focus:border-accent"
           >
             {RESULT_CATEGORIES.map((c) => (
@@ -115,33 +136,107 @@ export function CreateAssignmentForm({
           <textarea name="description" rows={2} className="w-full rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none focus:border-accent" />
         </div>
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end">
-          <div>
-            <label className="mb-1.5 block text-sm text-text-secondary">Срок</label>
-            <DateInput name="dueAt" />
+        <section className="rounded-2xl border border-border bg-bg-card p-5">
+          <h2 className="mb-4 text-sm font-semibold text-text-primary">Параметры</h2>
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="rounded-xl border border-border bg-bg-elevated/50 p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <CalendarDays className="h-4 w-4 text-accent" />
+                <div>
+                  <p className="text-sm font-medium text-text-primary">Срок сдачи</p>
+                  <p className="text-xs text-text-muted">Необязательно</p>
+                </div>
+              </div>
+              <DateInput name="dueAt" />
+            </div>
+
+            <CheckboxCard
+              name="allowRetake"
+              className="h-full min-w-0"
+              title="Разрешить пересдачу"
+              description="Ученик сможет решить заново"
+            />
+
+            <CheckboxCard
+              name="shuffleQuestions"
+              className="h-full min-w-0"
+              title={
+                <span className="flex items-center gap-2">
+                  <Shuffle className="h-4 w-4 text-accent" />
+                  Перемешать вопросы
+                </span>
+              }
+              description="У каждого ученика — случайный порядок"
+            />
           </div>
-          <CheckboxCard
-            name="allowRetake"
-            title="Разрешить пересдачу"
-            description="Ученик сможет решить заново"
-          />
-          <CheckboxCard
-            name="shuffleQuestions"
-            title={
-              <span className="flex items-center gap-2">
-                <Shuffle className="h-4 w-4 text-accent" />
-                Перемешать вопросы
-              </span>
-            }
-            description="У каждого ученика — случайный порядок"
-          />
-        </div>
+        </section>
 
         <QuestionSourceTabs
           mode={mode}
           onChange={setMode}
           templateLabel="Готовые"
-          templateHint="Подставятся 3 случайных вопроса из банка по выбранной категории."
+          templateContent={
+            <div className="space-y-4">
+              <p>
+                Случайные вопросы из банка по выбранной категории. В банке сейчас{" "}
+                <span className="font-medium text-text-primary">{bankSize}</span>{" "}
+                {bankSize === 1 ? "вопрос" : bankSize < 5 ? "вопроса" : "вопросов"}.
+              </p>
+
+              <div>
+                <p className="mb-2 text-sm font-medium text-text-primary">
+                  Сколько вопросов сгенерировать
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {TEMPLATE_COUNT_PRESETS.map((count) => (
+                    <button
+                      key={count}
+                      type="button"
+                      disabled={count > bankSize}
+                      onClick={() => setTemplateCount(count)}
+                      className={cn(
+                        "rounded-lg border px-3.5 py-2 text-sm font-medium transition-all",
+                        effectiveTemplateCount === count
+                          ? "border-accent bg-accent/15 text-accent"
+                          : "border-border text-text-secondary hover:border-accent/30",
+                        count > bankSize && "cursor-not-allowed opacity-40"
+                      )}
+                    >
+                      {count}
+                    </button>
+                  ))}
+                </div>
+                <div className="mt-3 flex items-center gap-3">
+                  <label className="text-sm text-text-secondary" htmlFor="templateCount">
+                    Другое число
+                  </label>
+                  <input
+                    id="templateCount"
+                    type="number"
+                    min={1}
+                    max={Math.min(bankSize, MAX_TEMPLATE_COUNT)}
+                    value={templateCount}
+                    onChange={(e) => handleTemplateCountChange(e.target.value)}
+                    className="w-24 rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm outline-none focus:border-accent"
+                  />
+                </div>
+                {templateCount > bankSize && (
+                  <p className="mt-2 text-xs text-amber-300">
+                    В банке только {bankSize} — будет подставлено {bankSize}{" "}
+                    {bankSize === 1 ? "вопрос" : bankSize < 5 ? "вопроса" : "вопросов"}.
+                  </p>
+                )}
+                <p className="mt-2 text-xs text-text-muted">
+                  Будет создано: {effectiveTemplateCount}{" "}
+                  {effectiveTemplateCount === 1
+                    ? "вопрос"
+                    : effectiveTemplateCount < 5
+                      ? "вопроса"
+                      : "вопросов"}
+                </p>
+              </div>
+            </div>
+          }
         />
 
         {mode === "excel" && <ExcelQuestionsImport disabled={pending} />}
