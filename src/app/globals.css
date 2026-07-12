@@ -55,6 +55,13 @@
     min-height: 100vh;
   }
 
+  /* Ноутбук: чуть крупнее интерфейс. Телефон и широкий монитор без изменений. */
+  @media (min-width: 768px) and (max-width: 1439px) {
+    html {
+      font-size: 17.5px;
+    }
+  }
+
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]) {
     touch-action: manipulation;
