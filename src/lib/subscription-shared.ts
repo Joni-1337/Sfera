@@ -1,6 +1,28 @@
-export const SUBSCRIPTION_PRICE_RUB = 1990;
+export const SUBSCRIPTION_PRICE_RUB_DEFAULT = 1990;
 
 export const TRIAL_DAYS = 3;
+
+function parseSubscriptionPriceRub(raw?: string | null): number {
+  if (!raw?.trim()) return SUBSCRIPTION_PRICE_RUB_DEFAULT;
+  const parsed = Number.parseInt(raw.trim(), 10);
+  return Number.isFinite(parsed) && parsed > 0
+    ? parsed
+    : SUBSCRIPTION_PRICE_RUB_DEFAULT;
+}
+
+/** Актуальная цена подписки (сервер, в т.ч. ЮKassa). */
+export function getSubscriptionPriceRub(): number {
+  return parseSubscriptionPriceRub(
+    process.env.SUBSCRIPTION_PRICE_RUB ??
+      process.env.NEXT_PUBLIC_SUBSCRIPTION_PRICE_RUB
+  );
+}
+
+/** Для UI. Берётся из NEXT_PUBLIC_SUBSCRIPTION_PRICE_RUB при сборке. */
+export const SUBSCRIPTION_PRICE_RUB = parseSubscriptionPriceRub(
+  process.env.NEXT_PUBLIC_SUBSCRIPTION_PRICE_RUB ??
+    process.env.SUBSCRIPTION_PRICE_RUB
+);
 
 
 

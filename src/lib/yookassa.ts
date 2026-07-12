@@ -2,7 +2,7 @@ import "server-only";
 
 import { randomUUID } from "crypto";
 import { APP_NAME } from "@/lib/branding";
-import { SUBSCRIPTION_PRICE_RUB } from "@/lib/subscription-shared";
+import { getSubscriptionPriceRub } from "@/lib/subscription-shared";
 
 const YOOKASSA_API = "https://api.yookassa.ru/v3";
 
@@ -107,5 +107,5 @@ export function yookassaPaymentDescription() {
 }
 
 export function yookassaAmountRub() {
-  return SUBSCRIPTION_PRICE_RUB;
+  return getSubscriptionPriceRub();
 }

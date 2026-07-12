@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireTeacher } from "@/lib/auth";
-import { SUBSCRIPTION_PRICE_RUB } from "@/lib/subscription-shared";
+import { getSubscriptionPriceRub as getPrice } from "@/lib/subscription-shared";
 import {
   activateTeacherSubscription,
   createSubscriptionCheckout,
@@ -50,5 +50,5 @@ export async function startSubscriptionCheckout(): Promise<SubscriptionCheckoutR
 }
 
 export async function getSubscriptionPriceRub() {
-  return SUBSCRIPTION_PRICE_RUB;
+  return getPrice();
 }
