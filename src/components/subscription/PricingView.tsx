@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Check, Sparkles, GraduationCap, User } from "lucide-react";
 import { startSubscriptionCheckout } from "@/lib/subscription-actions";
@@ -32,6 +33,13 @@ const STUDENT_FEATURES = [
   "Уведомления о дедлайнах",
 ];
 
+function formatSubscriptionDate(value: Date | string | null | undefined) {
+  if (!value) return null;
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleDateString("ru-RU");
+}
+
 export function PricingView({
   subscription,
   isLoggedIn,
@@ -45,12 +53,26 @@ export function PricingView({
 }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const router = useRouter();
 
   function handleSubscribe() {
     setError(null);
     startTransition(async () => {
-      const result = await startSubscriptionCheckout();
-      if (result?.error) setError(result.error);
+      try {
+        const result = await startSubscriptionCheckout();
+        if ("error" in result) {
+          setError(result.error);
+          return;
+        }
+        if (result.redirectTo.startsWith("http")) {
+          window.location.href = result.redirectTo;
+        } else {
+          router.push(result.redirectTo);
+          router.refresh();
+        }
+      } catch {
+        setError("Не удалось оформить подписку. Попробуйте ещё раз.");
+      }
     });
   }
 
@@ -78,8 +100,7 @@ export function PricingView({
           {subscription.plan === "pro" && subscription.subscriptionEndsAt && (
             <>
               <p className="mt-1 text-sm text-text-muted">
-                Активна до{" "}
-                {subscription.subscriptionEndsAt.toLocaleDateString("ru-RU")}
+                Активна до {formatSubscriptionDate(subscription.subscriptionEndsAt)}
               </p>
               {subscription.daysLeftPro !== null && subscription.daysLeftPro <= 7 && (
                 <p className="mt-1 text-sm font-medium text-amber-300">

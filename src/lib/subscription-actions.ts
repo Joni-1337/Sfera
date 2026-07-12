@@ -1,6 +1,5 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireTeacher } from "@/lib/auth";
 import { SUBSCRIPTION_PRICE_RUB } from "@/lib/subscription-shared";
@@ -10,8 +9,12 @@ import {
 } from "@/lib/subscription-payments";
 import { isYookassaConfigured } from "@/lib/yookassa";
 
+export type SubscriptionCheckoutResult =
+  | { error: string }
+  | { redirectTo: string };
+
 /** Оформление подписки: ЮKassa или тестовая активация (SUBSCRIPTION_STUB). */
-export async function startSubscriptionCheckout() {
+export async function startSubscriptionCheckout(): Promise<SubscriptionCheckoutResult> {
   const session = await requireTeacher();
   if (!session) return { error: "Необходима авторизация" };
 
@@ -20,7 +23,7 @@ export async function startSubscriptionCheckout() {
     if ("error" in checkout && checkout.error) {
       return { error: checkout.error };
     }
-    redirect(checkout.confirmationUrl!);
+    return { redirectTo: checkout.confirmationUrl! };
   }
 
   const allowStub =
@@ -41,7 +44,9 @@ export async function startSubscriptionCheckout() {
 
   revalidatePath("/dashboard");
   revalidatePath("/pricing");
-  redirect("/pricing?success=1");
+  revalidatePath("/settings");
+
+  return { redirectTo: "/pricing?success=1" };
 }
 
 export async function getSubscriptionPriceRub() {
