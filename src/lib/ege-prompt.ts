@@ -45,12 +45,11 @@ export function formatQuestionLabel(
 }
 
 const READING_REF_RE = /^Текст для задан/i;
-const OPTIONS_SPLIT_RE = /\n+(?=1[\).]\s)/;
 
 export type EgeQuestionParts = {
   reference: string | null;
   question: string;
-  options: string | null;
+  body: string | null;
   context: string | null;
 };
 
@@ -58,16 +57,20 @@ function stripTaskPrefix(text: string): string {
   return text.replace(/^Задание\s+\d+\.\s*/i, "").trim();
 }
 
-function splitQuestionAndOptions(text: string): { question: string; options: string | null } {
+function splitQuestionAndBody(text: string): { question: string; body: string | null } {
   const stripped = stripTaskPrefix(text);
-  const match = stripped.match(OPTIONS_SPLIT_RE);
-  if (!match || match.index == null) {
-    return { question: stripped, options: null };
+  const splitIndex = stripped.indexOf("\n\n");
+
+  if (splitIndex === -1) {
+    return { question: stripped, body: null };
   }
 
+  const question = stripped.slice(0, splitIndex).trim();
+  const body = stripped.slice(splitIndex).trim();
+
   return {
-    question: stripped.slice(0, match.index).trim(),
-    options: stripped.slice(match.index).trim(),
+    question,
+    body: body || null,
   };
 }
 
@@ -110,13 +113,13 @@ export function splitEgeQuestionDisplay(prompt: string): {
 /** Части задания для отображения: ссылка, вопрос, варианты, текст для чтения. */
 export function parseEgeQuestionParts(prompt: string): EgeQuestionParts {
   const { instruction, context } = splitEgeQuestionDisplay(prompt);
-  const { reference, body } = splitReference(instruction);
-  const { question, options } = splitQuestionAndOptions(body);
+  const { reference, body: instructionBody } = splitReference(instruction);
+  const { question, body } = splitQuestionAndBody(instructionBody);
 
   return {
     reference,
     question,
-    options,
+    body,
     context,
   };
 }

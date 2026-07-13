@@ -5,12 +5,12 @@ function SectionDivider() {
 }
 
 export function EgeQuestionPrompt({ prompt }: { prompt: string }) {
-  const { reference, question, options, context } = parseEgeQuestionParts(prompt);
+  const { reference, question, body, context } = parseEgeQuestionParts(prompt);
 
   return (
     <div className="mb-4 space-y-4">
       {reference && (
-        <p className="text-sm leading-relaxed text-text-primary/85">{reference}</p>
+        <p className="text-sm leading-relaxed text-text-primary/90">{reference}</p>
       )}
 
       {question && (
@@ -19,11 +19,11 @@ export function EgeQuestionPrompt({ prompt }: { prompt: string }) {
         </p>
       )}
 
-      {options && (
+      {body && (
         <div className="space-y-3 pt-1">
           <SectionDivider />
           <div className="whitespace-pre-wrap pt-3 text-sm leading-relaxed text-text-primary">
-            {options}
+            {body}
           </div>
         </div>
       )}
