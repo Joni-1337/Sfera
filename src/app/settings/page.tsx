@@ -37,8 +37,8 @@ export default async function SettingsPage() {
           <p className="mt-1 text-text-secondary">Аккаунт преподавателя</p>
         </header>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
-          <div className="space-y-6">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-stretch">
+          <div className="flex flex-col gap-6">
             <SettingsSection
               title="Профиль"
               description="Имя отображается на дашборде и в интерфейсе"
@@ -57,7 +57,7 @@ export default async function SettingsPage() {
             </SettingsSection>
           </div>
 
-          <aside className="space-y-6">
+          <aside className="flex h-full flex-col gap-6">
             {subscription && <SettingsSubscriptionCard sub={subscription} />}
 
             <section id="payments" className="scroll-mt-24">
@@ -72,6 +72,7 @@ export default async function SettingsPage() {
             <SettingsSection
               title="Оформление"
               description="Тема для вас и учеников ваших групп"
+              className="mt-auto"
             >
               <ThemeSelector currentTheme={uiTheme} />
             </SettingsSection>
