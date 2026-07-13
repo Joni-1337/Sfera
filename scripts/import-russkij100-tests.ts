@@ -4,6 +4,7 @@ import {
   parseAnswerKey,
   parseFolderTests,
   parseTestPage,
+  validateVariantQuestions,
   type ParsedRusskij100Variant,
 } from "./russkij100-parser";
 
@@ -152,12 +153,19 @@ async function importFolder(folderId: string, email: string, password: string) {
       continue;
     }
 
-    variants.push({
+    const candidate = {
       sourceId: ref.sourceId,
       title: ref.title,
       questions,
-    });
-    console.log(`${questions.length} questions`);
+    };
+    const validationErrors = validateVariantQuestions(candidate);
+    if (validationErrors.length > 0) {
+      console.log(`WARN: ${validationErrors.join(", ")}`);
+    } else {
+      console.log("ok");
+    }
+
+    variants.push(candidate);
   }
 
   return variants;

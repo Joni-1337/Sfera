@@ -102,24 +102,96 @@ export function parseAnswerKey(html: string): Map<number, string> {
   return answers;
 }
 
-export function parseTestPage(html: string, answerKey: Map<number, string>): ParsedRusskij100Question[] {
-  const $ = cheerio.load(html);
-  const passages = new Map<number, string>();
+type PassageGroup = {
+  passage: string;
+  numbers: number[];
+};
+
+function buildPassageGroups($: cheerio.CheerioAPI): PassageGroup[] {
+  const groups: PassageGroup[] = [];
 
   $(".extraTextBefore-cont").each((_, block) => {
     const numbersRaw = $(block).attr("data-question-numbers") ?? "";
     const numbers = numbersRaw
       .split(",")
       .map((part) => Number.parseInt(part.trim(), 10))
-      .filter((n) => Number.isFinite(n));
+      .filter((n) => Number.isFinite(n))
+      .sort((a, b) => a - b);
     const passage = htmlToPlain(
       $(block).find(".bigTextMessage, .freebirdFormviewerComponentsQuestionBaseDescription").html() ?? ""
     );
     if (!passage || numbers.length === 0) return;
-    for (const number of numbers) {
-      passages.set(number, passage);
-    }
+    groups.push({ passage, numbers });
   });
+
+  return groups;
+}
+
+function passageIntroForQuestion(number: number, groups: PassageGroup[]): string {
+  for (const group of groups) {
+    if (!group.numbers.includes(number)) continue;
+
+    const first = group.numbers[0];
+    const last = group.numbers[group.numbers.length - 1];
+
+    if (number === first) {
+      return group.passage;
+    }
+
+    if (first === last) {
+      return `Текст для задания ${first} — см. выше.`;
+    }
+
+    return `Текст для заданий ${first}–${last} — см. задание ${first}.`;
+  }
+
+  return "";
+}
+
+export function validateVariantQuestions(
+  variant: ParsedRusskij100Variant
+): string[] {
+  const errors: string[] = [];
+  const numbers = variant.questions.map((q) => q.orderIndex + 1);
+  const uniqueNumbers = new Set(numbers);
+
+  if (uniqueNumbers.size !== numbers.length) {
+    errors.push("duplicate question numbers");
+  }
+
+  if (variant.questions.length !== 26) {
+    errors.push(`expected 26 questions, got ${variant.questions.length}`);
+  }
+
+  const bodies = variant.questions.map((q) => {
+    const taskMatch = q.prompt.match(/Задание\s+\d+\.\s*([\s\S]*)$/i);
+    return (taskMatch?.[1] ?? q.prompt).replace(/\s+/g, " ").trim();
+  });
+  const bodySet = new Set<string>();
+  for (const body of bodies) {
+    if (bodySet.has(body)) {
+      errors.push("duplicate question body");
+      break;
+    }
+    bodySet.add(body);
+  }
+
+  const fullPrompts = variant.questions.map((q) => q.prompt.replace(/\s+/g, " ").trim());
+  const promptSet = new Set<string>();
+  for (const prompt of fullPrompts) {
+    if (promptSet.has(prompt)) {
+      errors.push("duplicate full prompt");
+      break;
+    }
+    promptSet.add(prompt);
+  }
+
+  return errors;
+}
+
+export function parseTestPage(html: string, answerKey: Map<number, string>): ParsedRusskij100Question[] {
+  const $ = cheerio.load(html);
+  const passageGroups = buildPassageGroups($);
 
   const questions: ParsedRusskij100Question[] = [];
 
@@ -131,13 +203,11 @@ export function parseTestPage(html: string, answerKey: Map<number, string>): Par
     const title = $(el).find(".question-title-cont").first().text().trim();
     const messageHtml = $(el).find(".question-message").first().html() ?? "";
     const message = htmlToPlain(messageHtml);
-    const passage = passages.get(number);
+    const passageIntro = passageIntroForQuestion(number, passageGroups);
 
     let prompt = `Задание ${number}. ${title}`.trim();
-    if (passage) {
-      prompt = `${passage}\n\n${prompt}`;
-    } else if (number > 1 && passages.has(1) && number <= 3) {
-      prompt = `(Используйте текст из задания 1.)\n\n${prompt}`;
+    if (passageIntro) {
+      prompt = `${passageIntro}\n\n${prompt}`;
     }
     if (message) {
       prompt = `${prompt}\n\n${message}`;
