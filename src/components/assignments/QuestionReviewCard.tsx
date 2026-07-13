@@ -2,6 +2,7 @@ import { CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { questionTypeLabel } from "@/lib/scoring";
 import { getChoiceOptions, getOptionText } from "@/lib/question-options";
+import { EgeQuestionPrompt } from "@/components/questions/EgeQuestionPrompt";
 
 export type QuestionReviewData = {
   id: string;
@@ -66,9 +67,7 @@ export function QuestionReviewCard({
         )}
       </div>
 
-      <p className="mb-4 whitespace-pre-wrap text-sm leading-relaxed text-text-primary">
-        {question.prompt}
-      </p>
+      <EgeQuestionPrompt prompt={question.prompt} />
 
       {options.length > 0 ? (
         <ul className="space-y-2">

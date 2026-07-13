@@ -9,6 +9,7 @@ import { cn, formatDateTime } from "@/lib/utils";
 import { questionTypeLabel } from "@/lib/scoring";
 import { getChoiceOptions } from "@/lib/question-options";
 import { TakeFormProgress } from "@/components/assignments/TakeFormProgress";
+import { EgeQuestionPrompt } from "@/components/questions/EgeQuestionPrompt";
 
 type Question = {
   id: string;
@@ -196,10 +197,10 @@ export function TakeAssignmentForm({
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
         {assignment.questions.map((q, i) => (
           <fieldset key={q.id} className="rounded-2xl border border-border bg-bg-card p-5">
-            <legend className="mb-1 text-sm font-medium">
-              <span className="mr-2 text-accent">#{i + 1}</span>
-              {q.prompt}
+            <legend className="mb-3 text-sm font-semibold text-accent">
+              Задание {i + 1}
             </legend>
+            <EgeQuestionPrompt prompt={q.prompt} />
             <p className="mb-4 text-xs text-text-muted">{questionTypeLabel(q.type)}</p>
 
             {q.type === "multiple_choice" ? (

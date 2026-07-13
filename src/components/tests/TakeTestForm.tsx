@@ -19,6 +19,7 @@ import { questionTypeLabel } from "@/lib/scoring";
 import { getChoiceOptions } from "@/lib/question-options";
 
 import { TakeFormProgress } from "@/components/assignments/TakeFormProgress";
+import { EgeQuestionPrompt } from "@/components/questions/EgeQuestionPrompt";
 
 import { resolveTestVariantLabel } from "@/lib/test-templates";
 
@@ -419,9 +420,7 @@ export function TakeTestForm({
               Задание {q.orderIndex + 1}
             </legend>
 
-            <div className="mb-4 whitespace-pre-wrap text-sm leading-relaxed text-text-primary">
-              {q.prompt}
-            </div>
+            <EgeQuestionPrompt prompt={q.prompt} />
 
             <p className="mb-4 text-xs text-text-muted">{questionTypeLabel(q.type)}</p>
 

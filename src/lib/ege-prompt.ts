@@ -43,3 +43,30 @@ export function formatQuestionLabel(
     text: parsed.text,
   };
 }
+
+const READING_REF_RE = /^Текст для задан/i;
+
+/** Разделяет формулировку задания и текст для чтения (как в вариантах ЕГЭ). */
+export function splitEgeQuestionDisplay(prompt: string): {
+  instruction: string;
+  context: string | null;
+} {
+  const normalized = prompt.trim();
+  const taskIndex = normalized.search(/Задание\s+\d+\./);
+
+  if (taskIndex === -1) {
+    return { instruction: normalized, context: null };
+  }
+
+  const before = normalized.slice(0, taskIndex).trim();
+  const instruction = normalized.slice(taskIndex).trim();
+
+  if (!before || READING_REF_RE.test(before)) {
+    return {
+      instruction: before ? `${before}\n\n${instruction}` : instruction,
+      context: null,
+    };
+  }
+
+  return { instruction, context: before };
+}
