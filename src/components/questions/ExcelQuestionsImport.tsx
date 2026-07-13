@@ -115,22 +115,41 @@ export function ExcelQuestionsImport({
       </div>
 
       {/* Шаги */}
-      <ol className="grid gap-2 sm:grid-cols-3">
+      <ol className="grid gap-2 sm:grid-cols-3 sm:items-stretch">
         {EXCEL_IMPORT_STEPS.map(({ step, title, description }) => (
           <li
             key={step}
-            className="flex gap-3 rounded-xl border border-border/80 bg-bg-elevated/50 px-3 py-3"
+            className="flex h-full gap-3 rounded-xl border border-border/80 bg-bg-elevated/50 px-3 py-3"
           >
             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/15 text-xs font-bold text-accent">
               {step}
             </span>
-            <div className="min-w-0">
-              <p className="text-sm font-medium">{title}</p>
-              <p className="text-xs text-text-muted">{description}</p>
+            <div className="flex min-h-[3.25rem] flex-1 flex-col">
+              <p className="text-sm font-medium leading-snug">{title}</p>
+              <p className="mt-1 flex-1 text-xs leading-relaxed text-text-muted">{description}</p>
             </div>
           </li>
         ))}
       </ol>
+
+      <div className="rounded-xl border border-border/80 bg-bg-elevated/40 px-4 py-3 text-xs leading-relaxed text-text-secondary">
+        <p className="font-medium text-text-primary">С чего начать в Excel?</p>
+        <ul className="mt-2 space-y-1.5 text-text-muted">
+          <li>
+            <span className="text-text-secondary">Строка 1</span> — заголовки колонок, не удаляйте и
+            не переименовывайте.
+          </li>
+          <li>
+            <span className="text-text-secondary">Строки 2–5</span> — примеры. Замените их своими
+            заданиями или удалите, иначе они попадут в тест.
+          </li>
+          <li>
+            <span className="text-text-secondary">Строки 6 и ниже</span> — пустые ячейки для новых
+            заданий. Можно копировать строку-пример и менять текст.
+          </li>
+          <li>Шпаргалка справа — только подсказка, импорт её не читает.</li>
+        </ul>
+      </div>
 
       {/* Скачать шаблон */}
       <a
@@ -292,8 +311,8 @@ export function ExcelQuestionsImport({
       )}
 
       <p className="text-xs text-text-muted">
-        Шаблон — один лист «Шаблон заданий»: слева задания (колонки A–E), справа шпаргалка.
-        Импорт читает только строки, где заполнена колонка «вопрос» — подсказки справа не мешают.
+        В шаблоне подсказка на листе: примеры в строках 2–5 можно заменить или удалить, новые задания —
+        в пустых строках ниже.
       </p>
     </div>
   );

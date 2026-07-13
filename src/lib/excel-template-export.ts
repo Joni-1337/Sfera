@@ -130,7 +130,7 @@ export async function generateExcelTemplate(): Promise<ArrayBuffer> {
     for (let col = 1; col <= 5; col++) {
       styleDataCell(row.getCell(col));
     }
-    row.height = index === 0 ? 72 : index === 1 ? 36 : 48;
+    row.height = 48;
   });
 
   sheet.mergeCells("I2:L2");
@@ -161,23 +161,38 @@ export async function generateExcelTemplate(): Promise<ArrayBuffer> {
   CHEAT_ROWS.forEach((guide, index) => {
     const rowNumber = 5 + index;
     const row = sheet.getRow(rowNumber);
-    row.height = index === 0 ? 88 : 64;
+    row.height = 72;
 
     const typeCell = row.getCell(9);
     typeCell.value = guide.type;
     typeCell.font = { name: "Calibri", size: 11, color: { argb: COLORS.typeBlue } };
     styleGuideCell(typeCell, false);
 
-    const hintCell = row.getCell(10);
-    hintCell.value = guide.hint;
-    styleGuideCell(hintCell);
+    const guideHintCell = row.getCell(10);
+    guideHintCell.value = guide.hint;
+    styleGuideCell(guideHintCell);
 
     const exampleCell = row.getCell(12);
     exampleCell.value = guide.example;
     styleGuideCell(exampleCell, false);
   });
 
-  for (let rowNumber = 8; rowNumber <= 14; rowNumber++) {
+  sheet.mergeCells("A6:E6");
+  const hintRow = sheet.getRow(6);
+  hintRow.height = 36;
+  const startHintCell = hintRow.getCell(1);
+  startHintCell.value =
+    "↓ Замените примеры выше (строки 2–5) или добавляйте новые задания начиная со строки 7. Строка 1 — не трогать.";
+  startHintCell.fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "FFFFF2CC" },
+  };
+  startHintCell.font = { name: "Calibri", size: 10, italic: true };
+  startHintCell.alignment = { vertical: "middle", wrapText: true };
+  startHintCell.border = border(COLORS.borderBlack);
+
+  for (let rowNumber = 7; rowNumber <= 20; rowNumber++) {
     const row = sheet.getRow(rowNumber);
     row.height = 28;
     for (let col = 1; col <= 5; col++) {
