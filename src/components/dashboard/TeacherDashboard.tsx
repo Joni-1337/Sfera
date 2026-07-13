@@ -197,42 +197,57 @@ export function TeacherDashboard({
       {!showArchived && (
         <>
           {/* Сводка */}
-          <section>
-            <SectionTitle>Сводка</SectionTitle>
-            <div className="grid grid-cols-2 gap-2 md:grid-cols-3 md:gap-4 xl:grid-cols-5">
+          <section className="rounded-2xl border border-border bg-bg-card p-4 md:p-5">
+            <h2 className="mb-3 text-sm font-semibold md:mb-4 md:text-base">Сводка</h2>
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 lg:gap-2.5">
               <StatCard
                 icon={Users}
                 label="Учеников"
                 value={String(stats.totalStudents)}
+                detail={
+                  groups.length > 0
+                    ? `в ${groups.length} ${groupCountLabel(groups.length)}`
+                    : undefined
+                }
               />
               <StatCard
                 icon={ClipboardList}
                 label="Задания"
                 value={String(stats.publishedAssignments)}
-                hint={
+                detail={
                   stats.draftAssignments > 0
-                    ? `+${stats.draftAssignments} черн.`
-                    : undefined
+                    ? `+${stats.draftAssignments} в черновике`
+                    : stats.publishedAssignments > 0
+                      ? "опубликовано"
+                      : undefined
                 }
               />
               <StatCard
                 icon={FlaskConical}
                 label="Тесты"
                 value={String(stats.publishedTests)}
-                hint={
-                  stats.draftTests > 0 ? `+${stats.draftTests} черн.` : undefined
+                detail={
+                  stats.draftTests > 0
+                    ? `+${stats.draftTests} в черновике`
+                    : stats.publishedTests > 0
+                      ? "опубликовано"
+                      : undefined
                 }
               />
               <StatCard
                 icon={BarChart3}
                 label="Средний балл"
                 value={stats.avgScore > 0 ? `${stats.avgScore}%` : "—"}
+                detail={
+                  stats.avgScore > 0 ? "по всем сдачам" : "пока нет результатов"
+                }
               />
               <StatCard
                 icon={Activity}
                 label="За неделю"
                 value={String(stats.weeklySubmissions)}
-                className="col-span-2 md:col-span-1"
+                detail="сдач за 7 дней"
+                className="col-span-2 sm:col-span-1"
               />
             </div>
           </section>
@@ -448,33 +463,44 @@ function EmptyState({
   );
 }
 
+function groupCountLabel(count: number) {
+  if (count % 10 === 1 && count % 100 !== 11) return "группе";
+  return "группах";
+}
+
 function StatCard({
   icon: Icon,
   label,
   value,
-  hint,
+  detail,
   className,
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
   value: string;
-  hint?: string;
+  detail?: string;
   className?: string;
 }) {
   return (
     <div
       className={cn(
-        "flex items-center gap-3 rounded-xl border border-border bg-bg-card p-3 md:gap-4 md:p-5 md:flex-col md:items-start",
+        "flex min-w-0 items-start gap-2.5 rounded-xl bg-bg-elevated/60 px-3 py-2.5 ring-1 ring-border/50",
         className
       )}
     >
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/10 md:mb-3 md:h-12 md:w-12">
-        <Icon className="h-5 w-5 text-accent md:h-6 md:w-6" />
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent/10">
+        <Icon className="h-4 w-4 text-accent" />
       </div>
-      <div className="min-w-0 flex-1 md:flex-none">
-        <p className="text-xs text-text-secondary md:text-sm">{label}</p>
-        <p className="text-xl font-bold tabular-nums md:text-2xl">{value}</p>
-        {hint && <p className="text-[10px] text-text-muted md:text-xs">{hint}</p>}
+      <div className="min-w-0">
+        <p className="text-lg font-bold tabular-nums leading-none md:text-xl">{value}</p>
+        <p className="mt-1 text-[11px] font-medium leading-tight text-text-secondary md:text-xs">
+          {label}
+        </p>
+        {detail ? (
+          <p className="mt-0.5 truncate text-[10px] leading-tight text-text-muted md:text-[11px]">
+            {detail}
+          </p>
+        ) : null}
       </div>
     </div>
   );
