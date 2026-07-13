@@ -85,6 +85,29 @@ export function normalizeChoiceLetter(raw: string): string | null {
   return CHOICE_ALIASES.get(first) ?? null;
 }
 
+/** Буква A/B/C… по тексту варианта или по букве/цифре в ячейке «правильный». */
+export function resolveMultipleChoiceCorrect(
+  options: string[],
+  correctRaw: string
+): string | null {
+  const trimmed = correctRaw.trim();
+  if (!trimmed) return null;
+
+  const letter = normalizeChoiceLetter(trimmed);
+  if (letter) {
+    const index = CHOICE_LETTERS.indexOf(letter as (typeof CHOICE_LETTERS)[number]);
+    if (index >= 0 && index < options.length) return letter;
+  }
+
+  const normalized = trimmed.toLowerCase();
+  const index = options.findIndex((option) => option.trim().toLowerCase() === normalized);
+  if (index >= 0) {
+    return CHOICE_LETTERS[index] ?? null;
+  }
+
+  return null;
+}
+
 export function normalizeCorrectAnswer(type: string, raw: string): string {
   const trimmed = raw.trim();
   if (!trimmed) return "";

@@ -1,5 +1,3 @@
-import { QUESTION_TYPES } from "@/lib/scoring";
-
 export const EXCEL_TEMPLATE_URL = "/api/template/questions";
 
 /** Описание колонок для подсказок в интерфейсе */
@@ -9,8 +7,8 @@ export const EXCEL_COLUMNS = [
     alt: "type",
     label: "Тип задания",
     required: false,
-    hint: "выбор · буква · текст. Если пусто — задание с выбором ответа",
-    example: "выбор",
+    hint: "multiple_choice · gap_fill · text. Если пусто — выбор из вариантов",
+    example: "multiple_choice",
   },
   {
     key: "вопрос",
@@ -18,23 +16,23 @@ export const EXCEL_COLUMNS = [
     label: "Текст вопроса",
     required: true,
     hint: "Формулировка задания для ученика",
-    example: "В каком слове пропущена буква А?",
+    example: "В каком слове пропущена буква И?",
   },
   {
-    key: "варианты",
+    key: "варианты_ответов",
     alt: "answer_options",
     label: "Варианты ответов",
     required: false,
-    hint: "Только для типа «выбор». Все варианты в одной ячейке через | — от 2 до 9 штук",
-    example: "слово1|слово2|слово3|слово4",
+    hint: "Только для multiple_choice. В одной ячейке через | (можно с пробелами)",
+    example: "пр...лестный | об...дать | п...сать",
   },
   {
     key: "правильный",
     alt: "correct",
     label: "Правильный ответ",
     required: true,
-    hint: "A = 1-й вариант, B = 2-й… Или буква/слово для других типов",
-    example: "A",
+    hint: "Для выбора: текст верного варианта или A, B, C… Для остальных — буква или слово",
+    example: "п...сать",
   },
   {
     key: "пояснение",
@@ -42,27 +40,27 @@ export const EXCEL_COLUMNS = [
     label: "Пояснение",
     required: false,
     hint: "Разбор — показывается ученику после сдачи",
-    example: "В корне -раст- пишется А",
+    example: "Писать — проверочное «пишет»",
   },
 ] as const;
 
 export const EXCEL_TYPE_HINTS = [
   {
-    id: "выбор",
+    id: "multiple_choice",
     label: "Ученик выбирает один из вариантов",
-    correctExample: "A, B, C или 1, 2, 3 (регистр не важен)",
+    correctExample: "п...сать или A, B, C",
     optionsNeeded: true,
   },
   {
-    id: "буква",
+    id: "gap_fill",
     label: "Ученик вводит одну пропущенную букву",
-    correctExample: "е (можно несколько через |)",
+    correctExample: "ы",
     optionsNeeded: false,
   },
   {
-    id: "текст",
+    id: "text",
     label: "Ученик вводит слово или короткую фразу",
-    correctExample: "безграмотный (можно несколько через |)",
+    correctExample: "ненастный или вариант1 | вариант2",
     optionsNeeded: false,
   },
 ] as const;
@@ -71,12 +69,12 @@ export const EXCEL_IMPORT_STEPS = [
   {
     step: 1,
     title: "Скачайте шаблон",
-    description: "В файле 14 примеров заданий — можно сразу копировать и менять",
+    description: "Один лист с примерами и шпаргалкой справа — как в вашем файле",
   },
   {
     step: 2,
-    title: "Заполните в Excel",
-    description: "Одна строка = одно задание. Варианты через | в одной ячейке",
+    title: "Заполните колонки A–E",
+    description: "Шпаргалка справа не мешает — импорт читает только левую часть",
   },
   {
     step: 3,

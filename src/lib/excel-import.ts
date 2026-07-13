@@ -2,11 +2,10 @@ import * as XLSX from "xlsx";
 
 import {
   CHOICE_LETTERS,
-  normalizeChoiceLetter,
   normalizeCorrectAnswer,
   optionsToFields,
   parseOptionsList,
-  serializeOptionsList,
+  resolveMultipleChoiceCorrect,
 } from "@/lib/question-options";
 import {
   QUESTION_TEMPLATES,
@@ -135,11 +134,10 @@ export function parseQuestionsFromExcel(buffer: ArrayBuffer): {
   const workbook = XLSX.read(buffer, { type: "array" });
 
   const sheetName =
-
     workbook.SheetNames.find((n) =>
-
-      ["вопросы", "questions", "лист1", "sheet1"].includes(n.toLowerCase())
-
+      ["вопросы", "questions", "лист1", "sheet1", "шаблон заданий"].includes(
+        n.toLowerCase()
+      )
     ) ?? workbook.SheetNames[0];
 
   const sheet = workbook.Sheets[sheetName];
@@ -245,39 +243,38 @@ export function parseQuestionsFromExcel(buffer: ArrayBuffer): {
 
 
 
-      const letter = normalizeChoiceLetter(correctRaw);
+      const letter = resolveMultipleChoiceCorrect(options, correctRaw);
 
       if (!letter) {
-
         errors.push(
-
-          `Строка ${line}: для типа «выбор» укажите букву, цифру или русскую букву (A, 1, А, а…)`
-
+          `Строка ${line}: для выбора укажите букву (A, B, C…) или точный текст правильного варианта`
         );
-
         return;
-
       }
-
-
 
       const letterIndex = CHOICE_LETTERS.indexOf(letter as (typeof CHOICE_LETTERS)[number]);
-
       if (letterIndex < 0 || letterIndex >= options.length) {
-
         errors.push(
-
           `Строка ${line}: правильный ответ «${correctRaw}» не подходит к числу вариантов (${options.length})`
-
         );
-
         return;
-
       }
 
+      const spread = optionsToFields(options);
+
+      questions.push({
+        type,
+        prompt,
+        answerOptions: spread.answerOptions,
+        optionA: spread.optionA,
+        optionB: spread.optionB,
+        optionC: spread.optionC,
+        optionD: spread.optionD,
+        correctOption: letter,
+        explanation: pick(row, ["explanation", "пояснение", "объяснение"]),
+      });
+      return;
     }
-
-
 
     const spread = optionsToFields(options);
 
@@ -349,174 +346,131 @@ function pick(row: Record<string, string>, keys: string[]): string {
 
 
 
-function typeToTeacherLabel(type?: string): string {
-  if (!type || type === "multiple_choice") return "выбор";
-  if (type === "gap_fill") return "буква";
-  if (type === "text") return "текст";
-  return type;
+const TEACHER_SHEET_EXAMPLES = [
+  {
+    type: "multiple_choice",
+    question: "В каком слове пропущена буква И?",
+    options: "пр...лестный | об...дать | с...грать | п...сать | к...рмить",
+    correct: "п...сать",
+    explanation:
+      "Прелестный (прелесть — Е), обедать (обед — Е), сиграть (после приставки на согласную И → Ы), писать (пишет — И).",
+  },
+  {
+    type: "gap_fill",
+    question: "Вставьте пропущенную букву в слове: ц...плёнок",
+    options: "",
+    correct: "ы",
+    explanation: "Слово «цыплёнок» — исключение из правила «И/Ы после Ц».",
+  },
+  {
+    type: "text",
+    question: "Напишите слово «(не)настный» без скобок, раскрыв орфограмму.",
+    options: "",
+    correct: "ненастный",
+    explanation:
+      "Прилагательное «ненастный» без «не» не употребляется, поэтому пишется слитно.",
+  },
+  {
+    type: "text",
+    question: "Раскройте скобки: по()одиночке",
+    options: "",
+    correct: "поодиночке | по одиночке",
+    explanation:
+      "Наречие «поодиночке» пишется слитно. Можно указать оба варианта через |.",
+  },
+] as const;
+
+function padTemplateRow(cells: string[], width = 13): string[] {
+  const row = [...cells];
+  while (row.length < width) row.push("");
+  return row;
 }
 
-/** Примеры заданий для скачиваемого шаблона (можно копировать и менять). */
-const TEACHER_TEMPLATE_EXAMPLES: Array<{
-  тип: string;
-  вопрос: string;
-  варианты: string;
-  правильный: string;
-  пояснение: string;
-}> = [
-  {
-    тип: "выбор",
-    вопрос: "В каком слове на месте пропуска пишется буква А?",
-    варианты: "р...стительный|р...сток|отр...сль|выр...щенный",
-    правильный: "A",
-    пояснение: "В корне -раст-/-ращ- перед -ст- и -щ- пишется А (растительный, выращенный).",
-  },
-  {
-    тип: "выбор",
-    вопрос: "В каком слове пропущена чередующаяся гласная О?",
-    варианты: "прил...гать|прил...жение|кас...ться|заг...рать",
-    правильный: "B",
-    пояснение: "Перед Ж пишется О (приложение), перед Г — А (прилагать).",
-  },
-  {
-    тип: "выбор",
-    вопрос: "В каком слове на месте пропуска пишется буква О?",
-    варианты: "з...рница|озарение|з...рька|з...ря",
-    правильный: "C",
-    пояснение: "Под ударением — та гласная, что слышится (зорька), без ударения — А.",
-  },
-  {
-    тип: "выбор",
-    вопрос: "Укажите слово с правильным написанием приставки без-/бес-:",
-    варианты: "бесграмотный|безответственный|бесвкусный|расжимать",
-    правильный: "B",
-    пояснение: "Приставка без- перед гласными и звонкими согласными.",
-  },
-  {
-    тип: "выбор",
-    вопрос: "В каком слове пишется ровно одна буква Н?",
-    варианты: "деревянный|стеклянный|оловянный|кожаный",
-    правильный: "D",
-    пояснение: "В суффиксе -ан-/-ян- одна Н (кожаный). Остальные — исключения с НН.",
-  },
-  {
-    тип: "выбор",
-    вопрос: "В каком предложении допущена грамматическая ошибка?",
-    варианты: "Пара носков|Около пятиста рублей|Поезжайте домой|Их вещи",
-    правильный: "B",
-    пояснение: "Род. падеж для «пятьсот» — пятисот, а не пятиста.",
-  },
-  {
-    тип: "выбор",
-    вопрос: "В каком предложении слово употреблено в переносном значении?",
-    варианты: "Ручка двери сломалась|Купи ручку для письма|Ручка речки извивается|Ребёнок протянул ручку",
-    правильный: "C",
-    пояснение: "«Ручка речки» — переносное значение (рукав, приток).",
-  },
-  {
-    тип: "выбор",
-    вопрос: "Укажите наречие, которое пишется раздельно:",
-    варианты: "навсегда|наверх|на ходу|направо",
-    правильный: "C",
-    пояснение: "«На ходу» — наречное сочетание, пишется раздельно.",
-  },
-  {
-    тип: "буква",
-    вопрос: "Вставьте пропущенную букву: пр...лестный",
-    варианты: "",
-    правильный: "е",
-    пояснение: "Корень -лест- (прелесть).",
-  },
-  {
-    тип: "буква",
-    вопрос: "Вставьте пропущенную букву: прик...снуться",
-    варианты: "",
-    правильный: "о",
-    пояснение: "Корень -кас-/-кос-: перед -ну- пишется О.",
-  },
-  {
-    тип: "буква",
-    вопрос: "Вставьте букву на стыке приставки и корня: под...тожить",
-    варианты: "",
-    правильный: "ы",
-    пояснение: "После приставки на согласный И → Ы.",
-  },
-  {
-    тип: "текст",
-    вопрос: "Напишите слово целиком, исправив ошибку в приставке: бисполезный",
-    варианты: "",
-    правильный: "бесполезный",
-    пояснение: "Перед глухим согласным — приставка бес-.",
-  },
-  {
-    тип: "текст",
-    вопрос: "Исправьте речевую ошибку (плеоназм): главная суть",
-    варианты: "",
-    правильный: "суть",
-    пояснение: "«Главная суть» — плеоназм, достаточно «суть».",
-  },
-  {
-    тип: "текст",
-    вопрос: "Как пишется: «(не)когда» — слитно или раздельно?",
-    варианты: "",
-    правильный: "некогда",
-    пояснение: "В значении «нет времени» — слитно.",
-  },
-];
+function buildTeacherTemplateSheet(): string[][] {
+  const [mc, gap, text1, text2] = TEACHER_SHEET_EXAMPLES;
 
-function teacherInstructionRows(): string[][] {
   return [
-    ["СФЕРА — шаблон для загрузки заданий"],
-    [""],
-    ["БЫСТРЫЙ СТАРТ"],
-    ["1. Откройте лист «Вопросы» (вкладка внизу окна Excel)."],
-    ["2. Каждая строка — одно задание. Примеры можно удалить или скопировать как образец."],
-    ["3. Заполните свои задания и сохраните файл (.xlsx)."],
-    ["4. В СФЕРА: Новое задание → «Из Excel» → загрузите файл → «Создать»."],
-    [""],
-    ["КОЛОНКИ НА ЛИСТЕ «ВОПРОСЫ» (первую строку не удаляйте и не переименовывайте)"],
-    ["Колонка", "Нужно?", "Что писать", "Пример"],
-    [
+    padTemplateRow(["тип", "вопрос", "варианты_ответов", "правильный", "пояснение"]),
+    padTemplateRow([
+      mc.type,
+      mc.question,
+      mc.options,
+      mc.correct,
+      mc.explanation,
+      "",
+      "",
+      "",
+      "Шпаргалка по заполнению шаблона для учителя:",
+    ]),
+    padTemplateRow([gap.type, gap.question, gap.options, gap.correct, gap.explanation]),
+    padTemplateRow([
+      text1.type,
+      text1.question,
+      text1.options,
+      text1.correct,
+      text1.explanation,
+      "",
+      "",
+      "",
       "тип",
-      "нет",
-      "выбор — ученик выбирает из списка; буква — вводит одну букву; текст — вводит слово. Пусто = выбор",
-      "выбор",
-    ],
-    ["вопрос", "ДА", "Формулировка задания для ученика", "В каком слове пропущена буква А?"],
-    [
-      "варианты",
-      "для выбора",
-      "Все варианты в одной ячейке через символ | (вертикальная черта). От 2 до 9 вариантов",
-      "слово1|слово2|слово3|слово4",
-    ],
-    [
-      "правильный",
-      "ДА",
-      "Для «выбор»: A — 1-й вариант, B — 2-й, C — 3-й… (можно А, а, 1, 2). Для «буква» и «текст» — сам ответ",
-      "A",
-    ],
-    ["пояснение", "нет", "Разбор — ученик увидит после сдачи", "В корне -раст- пишется А"],
-    [""],
-    ["КАК ПИСАТЬ ВАРИАНТЫ (колонка «варианты»)"],
-    ["  В одной ячейке, через | :  пр…лестный|об…дать|с…грать|п…сать"],
-    ["  Символ | на клавиатуре: Shift + \\ (или отдельная клавиша на цифровом блоке)."],
-    [""],
-    ["ТИПЫ ЗАДАНИЙ (колонка «тип»)"],
-    ["  выбор  — ученик отмечает один из вариантов (самый частый тип для орфографии)"],
-    ["  буква  — ученик вводит одну пропущенную букву (колонку «варианты» оставьте пустой)"],
-    ["  текст  — ученик вводит слово или короткую фразу (колонку «варианты» оставьте пустой)"],
-    [""],
-    ["НЕСКОЛЬКО ДОПУСТИМЫХ ОТВЕТОВ"],
-    ["  Для типов «буква» и «текст» можно указать:  слово1|слово2"],
-    [""],
-    ["ПРИМЕРЫ"],
-    ["  На листе «Вопросы» уже есть 14 готовых заданий по разным темам ЕГЭ."],
-    ["  Скопируйте строку, измените текст — и добавьте своё задание."],
+      "Что писать в эту колонку?",
+      "",
+      "Пример",
+    ]),
+    padTemplateRow([
+      text2.type,
+      text2.question,
+      text2.options,
+      text2.correct,
+      text2.explanation,
+      "",
+      "",
+      "",
+      "multiple_choice",
+      "Тест с выбором ответа. Варианты — в колонку «варианты_ответов» через | (можно с пробелами). В «правильный» — точный текст верного варианта или буква A, B, C…",
+      "",
+      "п...сать",
+    ]),
+    padTemplateRow([
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "gap_fill",
+      "Вставка буквы. В «правильный» — только буква. Колонку «варианты_ответов» оставьте пустой.",
+      "",
+      "ы",
+    ]),
+    padTemplateRow([
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "text",
+      "Открытый ответ. Несколько допустимых написаний — через | в колонке «правильный».",
+      "",
+      "ненастный",
+    ]),
   ];
 }
 
-function instructionRows(): string[][] {
-  return teacherInstructionRows();
+function teacherInstructionRows(): string[][] {
+  return [
+    ["СФЕРА — как заполнить шаблон"],
+    [""],
+    ["1. Заполняйте только колонки A–E."],
+    ["2. Шпаргалка справа (колонки I–L) — подсказка, импорт её не читает."],
+    ["3. Каждая строка с текстом в «вопрос» — одно задание."],
+    ["4. Сохраните файл → СФЕРА → Новое задание → «Из Excel» → «Создать»."],
+  ];
 }
 
 /** Категории банка готовых заданий (файлы в templates/excel-bank/) */
@@ -561,41 +515,34 @@ export const QUESTION_BANK_CATEGORIES = [
 function templateToExcelRow(q: QuestionTemplate) {
   const options = [q.optionA, q.optionB, q.optionC, q.optionD].filter(Boolean);
   return {
-    тип: typeToTeacherLabel(q.type),
+    тип: q.type ?? "multiple_choice",
     вопрос: q.prompt,
-    варианты: options.join("|"),
+    варианты_ответов: options.join(" | "),
     правильный: q.correctOption,
     пояснение: q.explanation,
   };
 }
 
+type ExcelColWidth = { wch: number };
+
+function colWidths(...widths: number[]): ExcelColWidth[] {
+  return widths.map((wch) => ({ wch }));
+}
+
 function writeQuestionWorkbook(
   questions: ReturnType<typeof templateToExcelRow>[],
-  extraSheets: { name: string; rows: string[][]; cols?: number[] }[],
-  options?: { freezeHeader?: boolean }
+  extraSheets: { name: string; rows: string[][]; cols?: ExcelColWidth[] }[]
 ): ArrayBuffer {
   const questionSheet = XLSX.utils.json_to_sheet(questions);
-  questionSheet["!cols"] = [
-    { wch: 10 },
-    { wch: 52 },
-    { wch: 50 },
-    { wch: 14 },
-    { wch: 38 },
-  ];
-
-  if (options?.freezeHeader && questions.length > 0) {
-    questionSheet["!views"] = [{ state: "frozen", ySplit: 1, activeCell: "A2" }];
-    questionSheet["!autofilter"] = {
-      ref: `A1:E${questions.length + 1}`,
-    };
-  }
+  questionSheet["!cols"] = colWidths(16, 52, 48, 16, 38);
+  questionSheet["!views"] = [{ state: "frozen", ySplit: 1, activeCell: "A2" }];
 
   const book = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(book, questionSheet, "Вопросы");
 
   for (const sheet of extraSheets) {
     const ws = XLSX.utils.aoa_to_sheet(sheet.rows);
-    ws["!cols"] = sheet.cols ?? [{ wch: 72 }];
+    ws["!cols"] = sheet.cols ?? colWidths(72);
     XLSX.utils.book_append_sheet(book, ws, sheet.name);
   }
 
@@ -628,7 +575,11 @@ export function generateCategoryBankWorkbook(
   const questions = templates.map(templateToExcelRow);
 
   return writeQuestionWorkbook(questions, [
-    { name: "Как пользоваться", rows: categoryInstructionRows(category), cols: [14, 12, 48, 40] },
+    {
+      name: "Как пользоваться",
+      rows: categoryInstructionRows(category),
+      cols: colWidths(14, 12, 48, 40),
+    },
   ]);
 }
 
@@ -647,22 +598,18 @@ export function generateEgeTestWorkbook(): ArrayBuffer {
         [""],
         ...teacherInstructionRows().slice(2),
       ],
-      cols: [14, 12, 48, 40],
+      cols: colWidths(14, 12, 48, 40),
     },
   ]);
 }
 
 export function generateExcelTemplate(): ArrayBuffer {
-  return writeQuestionWorkbook(
-    TEACHER_TEMPLATE_EXAMPLES,
-    [
-      {
-        name: "Как пользоваться",
-        rows: teacherInstructionRows(),
-        cols: [14, 12, 48, 40],
-      },
-    ],
-    { freezeHeader: true }
-  );
+  const ws = XLSX.utils.aoa_to_sheet(buildTeacherTemplateSheet());
+  ws["!cols"] = colWidths(16, 42, 48, 22, 36, 3, 3, 3, 18, 52, 3, 18);
+  ws["!views"] = [{ state: "frozen", ySplit: 1, activeCell: "A2" }];
+
+  const book = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(book, ws, "Шаблон заданий");
+  return XLSX.write(book, { type: "array", bookType: "xlsx" }) as ArrayBuffer;
 }
 
