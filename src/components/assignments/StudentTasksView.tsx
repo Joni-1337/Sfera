@@ -83,14 +83,21 @@ export function StudentTasksView({
             key={a.id}
             className={cn(
               "rounded-2xl border bg-bg-card p-6 transition-all",
-              done ? "border-green-500/20" : "border-border hover:border-accent/30"
+              done ? "border-green-500/35" : "border-border hover:border-accent/30"
             )}
           >
             <Link href={href} className="group block">
               <div className="mb-4 flex items-start justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-accent/10 group-hover:bg-accent/20">
+                <div
+                  className={cn(
+                    "flex h-12 w-12 items-center justify-center rounded-xl",
+                    done
+                      ? "bg-green-500/25"
+                      : "bg-accent/10 group-hover:bg-accent/20"
+                  )}
+                >
                   {done ? (
-                    <CheckCircle className="h-6 w-6 text-green-400" />
+                    <CheckCircle className="h-6 w-6 text-green-300" strokeWidth={2.25} />
                   ) : overdue ? (
                     <AlertCircle className="h-6 w-6 text-red-400" />
                   ) : (
@@ -98,7 +105,7 @@ export function StudentTasksView({
                   )}
                 </div>
                 {best && (
-                  <span className="rounded-full bg-green-500/10 px-2.5 py-0.5 text-xs text-green-400">
+                  <span className="rounded-full border border-green-500/40 bg-green-500/25 px-2.5 py-0.5 text-xs font-semibold text-green-200">
                     {best.score}/{best.maxScore}
                   </span>
                 )}
