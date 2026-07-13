@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { APP_NAME, APP_TITLE, APP_DESCRIPTION } from "@/lib/branding";
 import { Analytics } from "@/components/analytics/Analytics";
-import { JivoWidget } from "@/components/support/JivoWidget";
+import { TawkWidget } from "@/components/support/TawkWidget";
 import "./globals.css";
 
 const inter = Inter({
@@ -28,7 +28,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         {children}
         <Analytics />
-        <JivoWidget />
+        <TawkWidget />
       </body>
     </html>
   );

@@ -42,7 +42,8 @@ npm run db:seed
 | `SUBSCRIPTION_STUB` | `true` (только для теста без ЮKassa) |
 | `YOOKASSA_SHOP_ID` | shopId из [ЮKassa](https://yookassa.ru) (когда подключите) |
 | `YOOKASSA_SECRET_KEY` | Секретный ключ ЮKassa |
-| `NEXT_PUBLIC_JIVO_WIDGET_ID` | ID виджета Jivo (чат поддержки), напр. `3nsMY9KqtP` |
+| `NEXT_PUBLIC_TAWK_PROPERTY_ID` | Property ID из [Tawk.to](https://www.tawk.to) (чат поддержки) |
+| `NEXT_PUBLIC_TAWK_WIDGET_ID` | Widget ID (обычно `default`, см. Direct Chat Link) |
 | `NEXT_PUBLIC_YANDEX_METRIKA_ID` | Номер счётчика [Яндекс.Метрики](https://metrika.yandex.ru) |
 | `NEXT_PUBLIC_LEGAL_NAME` | ФИО самозанятого (как в «Мой налог») |
 | `NEXT_PUBLIC_LEGAL_INN` | ИНН самозанятого (12 цифр) |
