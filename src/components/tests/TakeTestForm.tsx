@@ -16,7 +16,7 @@ import { cn, formatDateTime } from "@/lib/utils";
 
 import { questionTypeLabel } from "@/lib/scoring";
 
-import { getChoiceOptions } from "@/lib/question-options";
+import { getChoiceOptionsForStudent } from "@/lib/question-options";
 
 import { TakeFormProgress } from "@/components/assignments/TakeFormProgress";
 import { EgeQuestionPrompt } from "@/components/questions/EgeQuestionPrompt";
@@ -314,7 +314,7 @@ export function TakeTestForm({
 
 
 
-  const mcOptions = (q: Question) => getChoiceOptions(q);
+  const mcOptions = (q: Question) => getChoiceOptionsForStudent(q, q.prompt);
 
 
 

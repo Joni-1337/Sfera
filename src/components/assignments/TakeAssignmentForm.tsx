@@ -7,7 +7,7 @@ import { ArrowLeft, AlertCircle } from "lucide-react";
 import { saveAttemptDraft, submitAttempt } from "@/lib/assignment-actions";
 import { cn, formatDateTime } from "@/lib/utils";
 import { questionTypeLabel } from "@/lib/scoring";
-import { getChoiceOptions } from "@/lib/question-options";
+import { getChoiceOptionsForStudent } from "@/lib/question-options";
 import { TakeFormProgress } from "@/components/assignments/TakeFormProgress";
 import { EgeQuestionPrompt } from "@/components/questions/EgeQuestionPrompt";
 
@@ -152,7 +152,7 @@ export function TakeAssignmentForm({
     }
   }
 
-  const mcOptions = (q: Question) => getChoiceOptions(q);
+  const mcOptions = (q: Question) => getChoiceOptionsForStudent(q, q.prompt);
 
   return (
     <div>

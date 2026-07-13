@@ -1,3 +1,5 @@
+import { maskOrthographyOptionIfNeeded } from "@/lib/mask-orthography-option";
+
 export const OPTION_SEPARATOR = "|";
 
 export const CHOICE_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I"] as const;
@@ -71,6 +73,16 @@ export function getChoiceOptions(fields: QuestionOptionFields) {
   return getQuestionOptions(fields).map((text, index) => ({
     key: CHOICE_LETTERS[index] ?? String(index + 1),
     text,
+  }));
+}
+
+export function getChoiceOptionsForStudent(
+  fields: QuestionOptionFields,
+  prompt?: string
+) {
+  return getChoiceOptions(fields).map((option) => ({
+    ...option,
+    text: maskOrthographyOptionIfNeeded(prompt ?? "", option.text),
   }));
 }
 
