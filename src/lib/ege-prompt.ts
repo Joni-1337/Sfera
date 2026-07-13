@@ -45,6 +45,42 @@ export function formatQuestionLabel(
 }
 
 const READING_REF_RE = /^Текст для задан/i;
+const OPTIONS_SPLIT_RE = /\n+(?=1[\).]\s)/;
+
+export type EgeQuestionParts = {
+  reference: string | null;
+  question: string;
+  options: string | null;
+  context: string | null;
+};
+
+function stripTaskPrefix(text: string): string {
+  return text.replace(/^Задание\s+\d+\.\s*/i, "").trim();
+}
+
+function splitQuestionAndOptions(text: string): { question: string; options: string | null } {
+  const stripped = stripTaskPrefix(text);
+  const match = stripped.match(OPTIONS_SPLIT_RE);
+  if (!match || match.index == null) {
+    return { question: stripped, options: null };
+  }
+
+  return {
+    question: stripped.slice(0, match.index).trim(),
+    options: stripped.slice(match.index).trim(),
+  };
+}
+
+function splitReference(instruction: string): { reference: string | null; body: string } {
+  const parts = instruction.split(/\n\n+/);
+  if (parts[0] && READING_REF_RE.test(parts[0].trim())) {
+    return {
+      reference: parts[0].trim(),
+      body: parts.slice(1).join("\n\n").trim(),
+    };
+  }
+  return { reference: null, body: instruction };
+}
 
 /** Разделяет формулировку задания и текст для чтения (как в вариантах ЕГЭ). */
 export function splitEgeQuestionDisplay(prompt: string): {
@@ -69,4 +105,18 @@ export function splitEgeQuestionDisplay(prompt: string): {
   }
 
   return { instruction, context: before };
+}
+
+/** Части задания для отображения: ссылка, вопрос, варианты, текст для чтения. */
+export function parseEgeQuestionParts(prompt: string): EgeQuestionParts {
+  const { instruction, context } = splitEgeQuestionDisplay(prompt);
+  const { reference, body } = splitReference(instruction);
+  const { question, options } = splitQuestionAndOptions(body);
+
+  return {
+    reference,
+    question,
+    options,
+    context,
+  };
 }
