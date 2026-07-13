@@ -286,21 +286,15 @@ export function TextsView({
                   className="flex items-center gap-4 rounded-2xl border border-border bg-bg-card p-5 transition-all hover:border-accent/20"
                 >
                   <Link href={textUrl} className="group min-w-0 flex-1">
-                    <h3 className="font-semibold transition-colors group-hover:text-accent">
+                    <h3 className="text-base font-semibold leading-snug transition-colors group-hover:text-teal-100 sm:text-lg">
                       {text.title}
                     </h3>
-                    <p className="mt-1 text-sm text-text-secondary">
+                    <p className="mt-1 text-sm leading-relaxed text-text-secondary">
                       {text.author} · {text.textType} · {text.year}
                     </p>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      <span className="inline-block rounded-full bg-accent/10 px-2.5 py-0.5 text-xs text-accent">
-                        {text.topic}
-                      </span>
-                      {isOwn && (
-                        <span className="inline-block rounded-full bg-yellow-500/10 px-2.5 py-0.5 text-xs text-yellow-400">
-                          Мой текст
-                        </span>
-                      )}
+                    <div className="mt-2.5 flex flex-wrap gap-2">
+                      <TextTag>{text.topic}</TextTag>
+                      {isOwn && <TextTag variant="own">Мой текст</TextTag>}
                     </div>
                   </Link>
 
@@ -515,6 +509,28 @@ function FilterChip({ label, onRemove }: { label: string; onRemove: () => void }
       <button type="button" onClick={onRemove} className="hover:text-accent-hover">
         <X className="h-3 w-3" />
       </button>
+    </span>
+  );
+}
+
+function TextTag({
+  children,
+  variant = "topic",
+}: {
+  children: React.ReactNode;
+  variant?: "topic" | "own";
+}) {
+  if (variant === "own") {
+    return (
+      <span className="inline-flex items-center rounded-full bg-amber-500/15 px-3 py-1 text-sm font-semibold leading-none text-amber-100 ring-1 ring-amber-400/30">
+        {children}
+      </span>
+    );
+  }
+
+  return (
+    <span className="inline-flex items-center rounded-full bg-teal-500/15 px-3 py-1 text-sm font-semibold leading-none text-teal-100 ring-1 ring-teal-400/35">
+      {children}
     </span>
   );
 }

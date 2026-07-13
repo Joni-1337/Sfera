@@ -42,11 +42,11 @@ export default async function TextDetailPage({
                 {text.author} · {text.textType} · {text.year}
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
-                <span className="inline-block rounded-full bg-accent/10 px-3 py-1 text-sm text-accent">
+                <span className="inline-flex items-center rounded-full bg-teal-500/15 px-3 py-1 text-sm font-semibold leading-none text-teal-100 ring-1 ring-teal-400/35">
                   {text.topic}
                 </span>
                 {canManage && (
-                  <span className="inline-block rounded-full bg-yellow-500/10 px-3 py-1 text-sm text-yellow-400">
+                  <span className="inline-flex items-center rounded-full bg-amber-500/15 px-3 py-1 text-sm font-semibold leading-none text-amber-100 ring-1 ring-amber-400/30">
                     Мой текст
                   </span>
                 )}
