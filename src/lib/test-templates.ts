@@ -1,19 +1,38 @@
+import russkij100Variants from "@/data/question-bank/russkij100-ege-variants.json";
 import egeVariants from "@/data/question-bank/ege-variants.json";
 import { type QuestionTemplate } from "@/lib/question-templates";
 import { normalizeEgePrompt, parseEgePrompt } from "@/lib/ege-prompt";
 
+type Russkij100Variant = {
+  sourceId: number;
+  title: string;
+  questions: QuestionTemplate[];
+};
+
 type EgeVariant = QuestionTemplate[];
 
-const variants = egeVariants as EgeVariant[];
+const russkij100Bank = russkij100Variants as Russkij100Variant[];
+const legacyVariants = egeVariants as EgeVariant[];
+
+const useRusskij100Bank = russkij100Bank.length > 0;
+const variants = useRusskij100Bank
+  ? russkij100Bank.map((entry) => entry.questions)
+  : legacyVariants;
 
 export type EgeTestTemplateResult = {
   questions: QuestionTemplate[];
   variantNumber: number | null;
+  variantTitle: string | null;
 };
 
 function variantNumberFromIndex(index: number, questions: QuestionTemplate[]): number {
   const fromPrompt = parseEgePrompt(questions[0]?.prompt ?? "").variantNumber;
   return fromPrompt ?? index + 1;
+}
+
+function variantTitleFromIndex(index: number): string | null {
+  if (!useRusskij100Bank) return null;
+  return russkij100Bank[index]?.title ?? null;
 }
 
 type EgeQuestionLike = {
@@ -46,16 +65,17 @@ function variantsMatch(
   );
 }
 
-/** Случайный пробный вариант ЕГЭ из загруженного банка (12 вопросов). */
+/** Случайный пробный вариант ЕГЭ из банка Russkij100 (приоритет) или legacy. */
 export function getEgeTestTemplate(): EgeTestTemplateResult {
   if (variants.length === 0) {
-    return { questions: [], variantNumber: null };
+    return { questions: [], variantNumber: null, variantTitle: null };
   }
   const index = Math.floor(Math.random() * variants.length);
   const questions = variants[index];
   return {
     questions,
     variantNumber: variantNumberFromIndex(index, questions),
+    variantTitle: variantTitleFromIndex(index),
   };
 }
 
@@ -84,10 +104,27 @@ export function detectEgeVariantNumber(
   return null;
 }
 
+export function detectEgeVariantTitle(
+  questions: EgeQuestionLike[]
+): string | null {
+  if (!useRusskij100Bank || questions.length === 0) return null;
+
+  for (const entry of russkij100Bank) {
+    if (variantsMatch(entry.questions, questions)) {
+      return entry.title;
+    }
+  }
+
+  return null;
+}
+
 export function resolveTestVariantLabel(
   egeVariantNumber: number | null | undefined,
   questions: EgeQuestionLike[]
 ): string | null {
+  const russkijTitle = detectEgeVariantTitle(questions);
+  if (russkijTitle) return russkijTitle;
+
   const number = egeVariantNumber ?? detectEgeVariantNumber(questions);
   return number != null ? `Вариант ${number}` : null;
 }

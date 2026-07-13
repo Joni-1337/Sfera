@@ -20,7 +20,6 @@ import { getChoiceOptions } from "@/lib/question-options";
 
 import { TakeFormProgress } from "@/components/assignments/TakeFormProgress";
 
-import { formatQuestionLabel } from "@/lib/ege-prompt";
 import { resolveTestVariantLabel } from "@/lib/test-templates";
 
 
@@ -408,22 +407,21 @@ export function TakeTestForm({
 
 
 
-      <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
+      <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
 
-        {test.questions.map((q, i) => {
-          const label = formatQuestionLabel(q.prompt, i + 1);
+        {test.questions.map((q) => {
 
           return (
 
           <fieldset key={q.id} className="rounded-2xl border border-border bg-bg-card p-5">
 
-            <legend className="mb-1 text-sm font-medium">
-
-              <span className="mr-2 text-accent">#{label.number}</span>
-
-              {label.text}
-
+            <legend className="mb-3 text-sm font-semibold text-accent">
+              Задание {q.orderIndex + 1}
             </legend>
+
+            <div className="mb-4 whitespace-pre-wrap text-sm leading-relaxed text-text-primary">
+              {q.prompt}
+            </div>
 
             <p className="mb-4 text-xs text-text-muted">{questionTypeLabel(q.type)}</p>
 
@@ -478,6 +476,31 @@ export function TakeTestForm({
                 ))}
 
               </div>
+
+            ) : q.type === "ege_numbers" ? (
+
+              <input
+
+                type="text"
+
+                inputMode="numeric"
+
+                pattern="[0-9 ]*"
+
+                value={answers[q.id] ?? ""}
+
+                onChange={(e) =>
+                  setAnswers((p) => ({
+                    ...p,
+                    [q.id]: e.target.value.replace(/[^\d ]+/g, ""),
+                  }))
+                }
+
+                placeholder="Например: 2 5"
+
+                className="w-full max-w-xs rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none focus:border-accent"
+
+              />
 
             ) : q.type === "gap_fill" ? (
 

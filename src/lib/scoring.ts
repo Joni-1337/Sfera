@@ -16,6 +16,8 @@ export const QUESTION_TYPES = [
 
   { id: "gap_fill", label: "Пропущенная буква" },
 
+  { id: "ege_numbers", label: "Номера ответов" },
+
   { id: "text", label: "Ввод текста" },
 
 ] as const;
@@ -34,30 +36,55 @@ export function normalizeAnswer(value: string): string {
 
 
 
+function splitAcceptableAnswers(correctRaw: string): string[] {
+  const trimmed = correctRaw.trim();
+  if (!trimmed) return [];
+
+  const fromPipe = parseOptionsList(trimmed);
+  if (fromPipe.length > 1) return fromPipe;
+
+  if (trimmed.includes("/")) {
+    return trimmed
+      .split("/")
+      .map((part) => part.trim())
+      .filter(Boolean);
+  }
+
+  return [trimmed];
+}
+
+function normalizeNumberSet(value: string): string {
+  return value
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => Number.parseInt(part, 10))
+    .filter((num) => Number.isFinite(num))
+    .sort((a, b) => a - b)
+    .join(" ");
+}
+
+function isNumberSetAnswer(raw: string): boolean {
+  const trimmed = raw.trim();
+  return trimmed.length > 0 && /^[\d\s]+$/.test(trimmed);
+}
+
 function matchesAnyAcceptable(student: string, correctRaw: string): boolean {
-
-  const acceptable = parseOptionsList(correctRaw);
-
-  const variants = acceptable.length > 0 ? acceptable : [correctRaw];
-
-
+  const variants = splitAcceptableAnswers(correctRaw);
 
   return variants.some((variant) => {
-
     const normalized = normalizeAnswer(variant);
 
+    if (isNumberSetAnswer(variant)) {
+      return normalizeNumberSet(student) === normalizeNumberSet(variant);
+    }
+
     return (
-
       student === normalized ||
-
       student.replace(/[^а-яёa-z0-9]/gi, "") ===
-
         normalized.replace(/[^а-яёa-z0-9]/gi, "")
-
     );
-
   });
-
 }
 
 
@@ -92,15 +119,15 @@ export function checkAnswer(
 
 
 
-  if (questionType === "gap_fill") {
-
+  if (
+    questionType === "gap_fill" ||
+    questionType === "text" ||
+    questionType === "ege_numbers"
+  ) {
     return matchesAnyAcceptable(student, correctAnswer);
-
   }
 
-
-
-  return matchesAnyAcceptable(student, correctAnswer);
+  return false;
 
 }
 

@@ -216,7 +216,7 @@ export function CreateTestForm({
           mode={mode}
           onChange={setMode}
           templateLabel="Вариант ЕГЭ"
-          templateHint="Подставится случайный пробный вариант из 10 загруженных (по 12 вопросов)."
+          templateHint="Подставится случайный полный вариант ЕГЭ из банка Russkij100 (26 заданий)."
         />
 
         {mode === "excel" && <ExcelQuestionsImport disabled={pending} />}

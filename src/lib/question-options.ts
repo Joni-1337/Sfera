@@ -93,6 +93,10 @@ export function normalizeCorrectAnswer(type: string, raw: string): string {
     return normalizeChoiceLetter(trimmed) ?? trimmed.toUpperCase();
   }
 
+  if (type === "ege_numbers") {
+    return trimmed.replace(/\s+/g, " ");
+  }
+
   if (trimmed.includes(OPTION_SEPARATOR)) {
     return serializeOptionsList(parseOptionsList(trimmed).map((part) => part.toLowerCase()));
   }
