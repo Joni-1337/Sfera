@@ -42,6 +42,8 @@ const groupLinks = [
   { label: "Статистика", icon: BarChart3, href: "stats" },
 ];
 
+const DASHBOARD_LIST_PREVIEW = 6;
+
 const QUICK_ACTIONS = [
   { href: "/tasks", label: "Задания", icon: ClipboardList },
   { href: "/tests", label: "Тесты", icon: FlaskConical },
@@ -248,7 +250,7 @@ export function TeacherDashboard({
                   subtitle="Нет черновиков, просрочек и неактивных учеников"
                 />
               ) : (
-                <ul className="space-y-2">
+                <ScrollableList>
                   {attention.map((item) => {
                     const Icon = ATTENTION_ICONS[item.type];
                     return (
@@ -276,7 +278,7 @@ export function TeacherDashboard({
                       </li>
                     );
                   })}
-                </ul>
+                </ScrollableList>
               )}
             </Panel>
 
@@ -295,7 +297,7 @@ export function TeacherDashboard({
                   subtitle="Результаты учеников появятся здесь"
                 />
               ) : (
-                <ul className="space-y-2">
+                <ScrollableList>
                   {recentActivity.map((a) => (
                     <li
                       key={a.id}
@@ -315,7 +317,7 @@ export function TeacherDashboard({
                       </span>
                     </li>
                   ))}
-                </ul>
+                </ScrollableList>
               )}
             </Panel>
           </div>
@@ -388,6 +390,17 @@ function SectionTitle({
   return <h2 className="mb-3 text-lg font-semibold md:mb-4 md:text-xl">{children}</h2>;
 }
 
+function ScrollableList({ children }: { children: React.ReactNode }) {
+  return (
+    <ul
+      className="space-y-2 overflow-y-auto pr-1 [scrollbar-color:rgb(20_184_166/0.35)_transparent] [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-accent/35 [&::-webkit-scrollbar-track]:bg-transparent"
+      style={{ maxHeight: `${DASHBOARD_LIST_PREVIEW * 3.75}rem` }}
+    >
+      {children}
+    </ul>
+  );
+}
+
 function Panel({
   title,
   badge,
@@ -405,7 +418,7 @@ function Panel({
         <div className="flex min-w-0 items-center gap-2">
           <h2 className="font-semibold md:text-lg">{title}</h2>
           {badge !== undefined && (
-            <span className="rounded-full bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent md:text-sm">
+            <span className="inline-flex min-h-6 min-w-6 items-center justify-center rounded-full bg-accent/20 px-2.5 text-sm font-bold tabular-nums leading-none text-teal-100 ring-1 ring-accent/30">
               {badge}
             </span>
           )}

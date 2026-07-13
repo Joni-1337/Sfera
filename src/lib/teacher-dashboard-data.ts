@@ -131,7 +131,7 @@ export async function getTeacherDashboardData(
           prisma.result.findMany({
             where: { student: { groupId: { in: groupIds } } },
             orderBy: { completedAt: "desc" },
-            take: 8,
+            take: 30,
             include: {
               student: {
                 select: {
@@ -306,12 +306,11 @@ export async function getTeacherDashboardData(
   }
 
   const dedupedAttention: AttentionItem[] = [];
-  const seenHrefs = new Set<string>();
+  const seenIds = new Set<string>();
   for (const item of attention.sort((a, b) => a.priority - b.priority)) {
-    if (seenHrefs.has(item.href)) continue;
-    seenHrefs.add(item.href);
+    if (seenIds.has(item.id)) continue;
+    seenIds.add(item.id);
     dedupedAttention.push(item);
-    if (dedupedAttention.length >= 10) break;
   }
 
   const avgScore =
