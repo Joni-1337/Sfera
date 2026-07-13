@@ -37,19 +37,37 @@ export default async function SettingsPage() {
           <p className="mt-1 text-text-secondary">Аккаунт преподавателя</p>
         </header>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-stretch">
-          <SettingsSection
-            title="Профиль"
-            description="Имя отображается на дашборде и в интерфейсе"
-          >
-            <ProfileSettingsForm
-              fullName={session.name}
-              email={session.email ?? ""}
-            />
-          </SettingsSection>
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+          <div className="space-y-6">
+            <SettingsSection
+              title="Профиль"
+              description="Имя отображается на дашборде и в интерфейсе"
+            >
+              <ProfileSettingsForm
+                fullName={session.name}
+                email={session.email ?? ""}
+              />
+            </SettingsSection>
+
+            <SettingsSection
+              title="Безопасность"
+              description="Регулярно обновляйте пароль для защиты аккаунта"
+            >
+              <PasswordSettingsForm />
+            </SettingsSection>
+          </div>
 
           <aside className="space-y-6">
             {subscription && <SettingsSubscriptionCard sub={subscription} />}
+
+            <section id="payments" className="scroll-mt-24">
+              <SettingsSection
+                title="История платежей"
+                description="Оплаты подписки"
+              >
+                <SettingsPaymentHistory payments={payments} />
+              </SettingsSection>
+            </section>
 
             <SettingsSection
               title="Оформление"
@@ -58,26 +76,6 @@ export default async function SettingsPage() {
               <ThemeSelector currentTheme={uiTheme} />
             </SettingsSection>
           </aside>
-
-          <SettingsSection
-            title="Безопасность"
-            description="Регулярно обновляйте пароль для защиты аккаунта"
-            className="flex h-full flex-col"
-          >
-            <PasswordSettingsForm />
-          </SettingsSection>
-
-          <section id="payments" className="scroll-mt-24 h-full">
-            <SettingsSection
-              title="История платежей"
-              description="Оплаты подписки"
-              className="flex h-full flex-col"
-            >
-              <div className="flex flex-1 flex-col">
-                <SettingsPaymentHistory payments={payments} />
-              </div>
-            </SettingsSection>
-          </section>
         </div>
 
         <div className="mt-6">

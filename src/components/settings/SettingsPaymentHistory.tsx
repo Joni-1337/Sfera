@@ -32,7 +32,7 @@ export function SettingsPaymentHistory({
 }) {
   if (payments.length === 0) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-border/70 bg-bg-elevated/50 px-4 py-6 text-center">
+      <div className="rounded-xl border border-border/70 bg-bg-elevated/50 px-4 py-6 text-center">
         <Receipt className="mx-auto mb-3 h-8 w-8 text-text-muted" />
         <p className="text-sm text-text-secondary">Платежей пока нет</p>
         <Link
@@ -46,7 +46,7 @@ export function SettingsPaymentHistory({
   }
 
   return (
-    <ul className="flex-1 divide-y divide-border/70 rounded-xl border border-border/70">
+    <ul className="divide-y divide-border/70 rounded-xl border border-border/70">
       {payments.map((payment) => {
         const when = payment.paidAt ?? payment.createdAt;
 
