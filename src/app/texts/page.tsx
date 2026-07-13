@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { AppShell } from "@/components/layout/AppShell";
 import { TextsView } from "@/components/texts/TextsView";
 import { getTeacherSubscription, hasFullAccess } from "@/lib/subscription";
+import { TEXT_FILTER_YEARS } from "@/lib/text-constants";
 
 export default async function TextsPage({
   searchParams,
@@ -64,7 +65,9 @@ export default async function TextsPage({
 
   const authors = [...new Set(allTexts.map((t) => t.author))].sort();
   const types = [...new Set(allTexts.map((t) => t.textType))].sort();
-  const years = [...new Set(allTexts.map((t) => t.year))].sort((a, b) => b - a);
+  const years = [...new Set([...allTexts.map((t) => t.year), ...TEXT_FILTER_YEARS])].sort(
+    (a, b) => b - a
+  );
   const topics = [...new Set(allTexts.map((t) => t.topic))].sort();
 
   const subscription = isTeacher ? await getTeacherSubscription(session.id) : null;
