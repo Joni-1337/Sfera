@@ -70,67 +70,6 @@ function mapQuestionToCreate(q: QuestionInput, i: number) {
   };
 }
 
-export async function createAssignment(formData: FormData) {
-  const session = await requireTeacher();
-  if (!session) return { error: "Необходима авторизация преподавателя" };
-
-  const access = await assertHasFullAccess(session.id);
-  if (access.error) return { error: access.error };
-
-  const groupId = String(formData.get("groupId") ?? "");
-  const title = String(formData.get("title") ?? "").trim();
-  const category = String(formData.get("category") ?? "").trim();
-  const description = String(formData.get("description") ?? "").trim();
-  const useTemplate = formData.get("useTemplate") === "on";
-  const allowRetake = formData.get("allowRetake") === "on";
-  const shuffleQuestions = formData.get("shuffleQuestions") === "on";
-  const dueAtRaw = String(formData.get("dueAt") ?? "").trim();
-
-  if (!groupId || !title || !category) {
-    return { error: "Заполните название и категорию" };
-  }
-
-  const group = await verifyGroupAccess(groupId, session.id);
-  if (!group) return { error: "Группа не найдена" };
-
-  let questions: QuestionInput[] = [];
-
-  const excelFile = formData.get("excelFile") as File | null;
-  if (excelFile && excelFile.size > 0) {
-    const buffer = await excelFile.arrayBuffer();
-    const parsed = parseQuestionsFromExcel(buffer);
-    if (parsed.errors.length && parsed.questions.length === 0) {
-      return { error: parsed.errors.join("; ") };
-    }
-    questions = parsed.questions;
-  } else if (useTemplate) {
-    const templateCount = normalizeTemplateCount(formData.get("templateCount"));
-    questions = getTemplatesForCategory(category, templateCount);
-  } else {
-    questions = parseQuestionsFromForm(formData);
-  }
-
-  if (questions.length === 0) {
-    return { error: "Добавьте хотя бы один вопрос" };
-  }
-
-  const assignment = await prisma.assignment.create({
-    data: {
-      title,
-      category,
-      description,
-      groupId,
-      allowRetake,
-      shuffleQuestions,
-      dueAt: dueAtRaw ? new Date(dueAtRaw) : null,
-      questions: { create: questions.map(mapQuestionToCreate) },
-    },
-  });
-
-  revalidatePath(`/dashboard/group/${groupId}/assignments`);
-  return { success: true, assignmentId: assignment.id };
-}
-
 function parseQuestionsFromForm(formData: FormData): QuestionInput[] {
   const questions: QuestionInput[] = [];
   let i = 0;
@@ -151,6 +90,104 @@ function parseQuestionsFromForm(formData: FormData): QuestionInput[] {
     i++;
   }
   return questions;
+}
+
+function parseGroupIds(formData: FormData): string[] {
+  const fromList = formData.getAll("groupIds").map(String).filter(Boolean);
+  if (fromList.length > 0) return fromList;
+
+  const single = String(formData.get("groupId") ?? "").trim();
+  return single ? [single] : [];
+}
+
+async function resolveAssignmentQuestions(
+  formData: FormData,
+  category: string
+): Promise<{ questions: QuestionInput[] } | { error: string }> {
+  const useTemplate = formData.get("useTemplate") === "on";
+  const excelFile = formData.get("excelFile") as File | null;
+
+  if (excelFile && excelFile.size > 0) {
+    const buffer = await excelFile.arrayBuffer();
+    const parsed = parseQuestionsFromExcel(buffer);
+    if (parsed.errors.length && parsed.questions.length === 0) {
+      return { error: parsed.errors.join("; ") };
+    }
+    return { questions: parsed.questions };
+  }
+
+  if (useTemplate) {
+    const templateCount = normalizeTemplateCount(formData.get("templateCount"));
+    return { questions: getTemplatesForCategory(category, templateCount) };
+  }
+
+  return { questions: parseQuestionsFromForm(formData) };
+}
+
+export async function createAssignment(formData: FormData) {
+  const session = await requireTeacher();
+  if (!session) return { error: "Необходима авторизация преподавателя" };
+
+  const access = await assertHasFullAccess(session.id);
+  if (access.error) return { error: access.error };
+
+  const groupIds = parseGroupIds(formData);
+  const title = String(formData.get("title") ?? "").trim();
+  const category = String(formData.get("category") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
+  const allowRetake = formData.get("allowRetake") === "on";
+  const shuffleQuestions = formData.get("shuffleQuestions") === "on";
+  const dueAtRaw = String(formData.get("dueAt") ?? "").trim();
+
+  if (!title || !category) {
+    return { error: "Заполните название и категорию" };
+  }
+
+  if (groupIds.length === 0) {
+    return { error: "Выберите хотя бы одну группу" };
+  }
+
+  const uniqueGroupIds = [...new Set(groupIds)];
+  for (const groupId of uniqueGroupIds) {
+    const group = await verifyGroupAccess(groupId, session.id);
+    if (!group) return { error: "Одна из выбранных групп не найдена" };
+  }
+
+  const resolved = await resolveAssignmentQuestions(formData, category);
+  if ("error" in resolved) return { error: resolved.error };
+  const { questions } = resolved;
+
+  if (questions.length === 0) {
+    return { error: "Добавьте хотя бы один вопрос" };
+  }
+
+  const assignmentIds: string[] = [];
+
+  for (const groupId of uniqueGroupIds) {
+    const assignment = await prisma.assignment.create({
+      data: {
+        title,
+        category,
+        description,
+        groupId,
+        allowRetake,
+        shuffleQuestions,
+        dueAt: dueAtRaw ? new Date(dueAtRaw) : null,
+        questions: { create: questions.map(mapQuestionToCreate) },
+      },
+    });
+    assignmentIds.push(assignment.id);
+    revalidatePath(`/dashboard/group/${groupId}/assignments`);
+  }
+
+  revalidatePath("/tasks");
+
+  return {
+    success: true,
+    assignmentId: assignmentIds[0],
+    assignmentIds,
+    createdCount: assignmentIds.length,
+  };
 }
 
 export async function updateAssignment(formData: FormData) {

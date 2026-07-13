@@ -14,15 +14,22 @@ export default async function NewAssignmentPage({
 
   const { id } = await params;
 
-  const group = await prisma.group.findFirst({
-    where: { id, teacherId: session.id },
+  const groups = await prisma.group.findMany({
+    where: { teacherId: session.id, archived: false },
+    orderBy: { createdAt: "desc" },
+    select: { id: true, name: true },
   });
 
-  if (!group) notFound();
+  if (groups.length === 0) notFound();
+
+  const groupExists = groups.some((group) => group.id === id);
+  if (!groupExists) notFound();
+
+  const preselectedGroupId = id;
 
   return (
     <AppShell>
-      <CreateAssignmentForm groupId={group.id} groupName={group.name} />
+      <CreateAssignmentForm groups={groups} preselectedGroupId={preselectedGroupId} />
     </AppShell>
   );
 }

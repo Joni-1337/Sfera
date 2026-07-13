@@ -3,7 +3,7 @@
 import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, CalendarDays, Trash2, Shuffle } from "lucide-react";
+import { ArrowLeft, CalendarDays, Trash2, Shuffle, Users } from "lucide-react";
 import { createAssignment } from "@/lib/assignment-actions";
 import { RESULT_CATEGORIES } from "@/lib/utils";
 import { QUESTION_TYPES } from "@/lib/scoring";
@@ -14,7 +14,7 @@ import {
   TEMPLATE_COUNT_PRESETS,
 } from "@/lib/question-templates";
 import { DateInput } from "@/components/ui/DateInput";
-import { CheckboxCard } from "@/components/ui/Checkbox";
+import { CheckboxCard, CheckboxOption } from "@/components/ui/Checkbox";
 import {
   ExcelQuestionsImport,
   QuestionSourceTabs,
@@ -41,14 +41,20 @@ const emptyQuestion = {
   explanation: "",
 };
 
+type GroupOption = {
+  id: string;
+  name: string;
+};
+
 export function CreateAssignmentForm({
-  groupId,
-  groupName,
+  groups,
+  preselectedGroupId,
 }: {
-  groupId: string;
-  groupName: string;
+  groups: GroupOption[];
+  preselectedGroupId: string;
 }) {
   const [mode, setMode] = useState<QuestionSourceMode>("template");
+  const [selectedGroupIds, setSelectedGroupIds] = useState<string[]>([preselectedGroupId]);
   const [category, setCategory] = useState<string>(RESULT_CATEGORIES[0].id);
   const [templateCount, setTemplateCount] = useState(DEFAULT_TEMPLATE_COUNT);
   const [questions, setQuestions] = useState([{ ...emptyQuestion }]);
@@ -65,9 +71,31 @@ export function CreateAssignmentForm({
     setTemplateCount(Math.min(Math.max(parsed, 1), MAX_TEMPLATE_COUNT));
   }
 
+  function toggleGroup(groupId: string) {
+    setSelectedGroupIds((current) => {
+      if (current.includes(groupId)) {
+        if (current.length === 1) return current;
+        return current.filter((id) => id !== groupId);
+      }
+      return [...current, groupId];
+    });
+  }
+
+  function selectAllGroups() {
+    setSelectedGroupIds(groups.map((group) => group.id));
+  }
+
   function handleSubmit(formData: FormData) {
     setError(null);
-    formData.set("groupId", groupId);
+
+    if (selectedGroupIds.length === 0) {
+      setError("Выберите хотя бы одну группу");
+      return;
+    }
+
+    selectedGroupIds.forEach((groupId) => {
+      formData.append("groupIds", groupId);
+    });
 
     if (mode === "template") {
       formData.set("useTemplate", "on");
@@ -89,8 +117,11 @@ export function CreateAssignmentForm({
     startTransition(async () => {
       const result = await createAssignment(formData);
       if (result?.error) setError(result.error);
-      else if (result?.assignmentId) {
-        router.push(`/dashboard/group/${groupId}/assignments/${result.assignmentId}`);
+      else if (result?.createdCount && result.createdCount > 1) {
+        router.push("/tasks");
+      } else if (result?.assignmentId) {
+        const targetGroupId = selectedGroupIds[0];
+        router.push(`/dashboard/group/${targetGroupId}/assignments/${result.assignmentId}`);
       }
     });
   }
@@ -103,7 +134,7 @@ export function CreateAssignmentForm({
   return (
     <div>
       <Link
-        href={`/dashboard/group/${groupId}/assignments`}
+        href="/tasks"
         className="mb-6 inline-flex items-center gap-2 text-sm text-text-secondary hover:text-accent"
       >
         <ArrowLeft className="h-4 w-4" />
@@ -111,9 +142,43 @@ export function CreateAssignmentForm({
       </Link>
 
       <h1 className="mb-1 text-2xl font-bold">Новое задание</h1>
-      <p className="mb-6 text-text-secondary">{groupName}</p>
+      <p className="mb-6 text-text-secondary">
+        Можно сразу назначить задание одной или нескольким группам
+      </p>
 
       <form action={handleSubmit} className="max-w-2xl space-y-5">
+        <div>
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <label className="block text-sm text-text-secondary">Группы</label>
+            {groups.length > 1 && (
+              <button
+                type="button"
+                onClick={selectAllGroups}
+                className="text-xs text-accent hover:underline"
+              >
+                Выбрать все
+              </button>
+            )}
+          </div>
+          <div className="space-y-2 rounded-xl border border-border/80 bg-bg-card/80 p-3">
+            {groups.map((group) => {
+              const selected = selectedGroupIds.includes(group.id);
+              return (
+                <CheckboxOption
+                  key={group.id}
+                  checked={selected}
+                  onChange={() => toggleGroup(group.id)}
+                >
+                  <Users className="h-4 w-4 shrink-0 text-accent" />
+                  <span className="text-sm font-medium">{group.name}</span>
+                </CheckboxOption>
+              );
+            })}
+          </div>
+          <p className="mt-1.5 text-xs text-text-muted">
+            Выбрано групп: {selectedGroupIds.length}
+          </p>
+        </div>
         <div>
           <label className="mb-1.5 block text-sm text-text-secondary">Название</label>
           <input
@@ -359,7 +424,11 @@ export function CreateAssignmentForm({
           disabled={pending}
           className="rounded-xl bg-accent px-6 py-3 text-sm font-semibold text-white hover:bg-accent-hover disabled:opacity-50"
         >
-          {pending ? "Создание..." : "Создать задание"}
+          {pending
+            ? "Создание..."
+            : selectedGroupIds.length > 1
+              ? `Создать задание для ${selectedGroupIds.length} групп`
+              : "Создать задание"}
         </button>
       </form>
     </div>
