@@ -25,6 +25,7 @@ type YookassaPayment = {
 
 export function isYookassaReceiptsEnabled() {
   if (process.env.YOOKASSA_SEND_RECEIPTS === "false") return false;
+  if (process.env.YOOKASSA_SEND_RECEIPTS !== "true") return false;
   return isYookassaConfigured();
 }
 

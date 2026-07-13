@@ -35,7 +35,7 @@ export function SettingsPaymentHistory({
       <div className="mb-4">
         <h2 className="text-lg font-semibold">История платежей</h2>
         <p className="mt-1 text-sm text-text-secondary">
-          Оплаты подписки и кассовые чеки по 54-ФЗ
+          Оплаты подписки
         </p>
       </div>
 
@@ -92,12 +92,8 @@ export function SettingsPaymentHistory({
                         className="inline-flex items-center gap-1.5 rounded-lg border border-accent/35 bg-accent/10 px-3 py-2 text-xs font-medium text-teal-100 transition-colors hover:bg-accent/15"
                       >
                         <ExternalLink className="h-3.5 w-3.5" />
-                        Открыть чек
+                        Документ
                       </a>
-                    ) : payment.status === "succeeded" ? (
-                      <p className="max-w-[14rem] text-xs leading-relaxed text-text-muted">
-                        Чек отправлен на email через ЮKassa
-                      </p>
                     ) : null}
                   </div>
                 </li>
@@ -106,11 +102,6 @@ export function SettingsPaymentHistory({
           </ul>
         </div>
       )}
-
-      <p className="mt-3 text-xs leading-relaxed text-text-muted">
-        Кассовые чеки формируются в личном кабинете ЮKassa (54-ФЗ для самозанятого).
-        Если чек не пришёл на почту — проверьте папку «Спам» или раздел «Чеки» в ЮKassa.
-      </p>
     </section>
   );
 }

@@ -178,7 +178,7 @@ export async function sendSubscriptionPaidEmail(input: {
         </a>
       </p>
       <p style="font-size: 13px; color: #71717a; line-height: 1.5;">
-        Кассовый чек по 54-ФЗ отправляется на этот email через ЮKassa. История оплат также доступна в настройках аккаунта.
+        История оплат — в настройках аккаунта.
       </p>
     </div>
   `;

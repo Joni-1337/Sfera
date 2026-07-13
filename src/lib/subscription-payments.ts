@@ -124,7 +124,7 @@ export async function activateTeacherSubscription(
 
 export async function createSubscriptionCheckout(teacherId: string) {
   if (!isYookassaConfigured()) {
-    return { error: "ЮKassa не настроена" as const };
+    return { error: "Онлайн-оплата временно недоступна" as const };
   }
 
   const teacher = await prisma.teacher.findUnique({

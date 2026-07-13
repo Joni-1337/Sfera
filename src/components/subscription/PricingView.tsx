@@ -44,12 +44,10 @@ export function PricingView({
   subscription,
   isLoggedIn,
   paymentsEnabled = false,
-  yookassaEnabled = false,
 }: {
   subscription: TeacherSubscription | null;
   isLoggedIn: boolean;
   paymentsEnabled?: boolean;
-  yookassaEnabled?: boolean;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -82,8 +80,7 @@ export function PricingView({
     <div className="space-y-8">
       {isLoggedIn && !paymentsEnabled && (
         <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-100">
-          Оплата скоро будет доступна — подключаем ЮKassa после регистрации
-          самозанятости. Пока можно пользоваться пробным периодом.
+          Оплата скоро будет доступна. Пока можно пользоваться пробным периодом.
         </div>
       )}
 
@@ -151,10 +148,8 @@ export function PricingView({
                   </button>
                   <p className="mt-2 text-center text-xs text-text-muted">
                     {paymentsEnabled
-                      ? yookassaEnabled
-                        ? "Оплата картой через ЮKassa · +30 дней к текущему сроку"
-                        : "Тестовое продление · +30 дней к текущему сроку"
-                      : "Продление появится после подключения ЮKassa"}
+                      ? "+30 дней к текущему сроку"
+                      : "Продление скоро будет доступно"}
                   </p>
                 </div>
               ) : (
@@ -219,13 +214,9 @@ export function PricingView({
         </p>
       )}
 
-      {isLoggedIn && (
+      {isLoggedIn && paymentsEnabled && (
         <p className="text-center text-xs text-text-secondary">
-          {yookassaEnabled
-            ? "Оплата банковской картой через ЮKassa. Подписка продлевается на 30 дней."
-            : paymentsEnabled
-              ? "Тестовая оплата активна (режим разработки)."
-              : "Реальная оплата появится после подключения ЮKassa."}
+          Подписка продлевается на 30 дней после оплаты.
         </p>
       )}
     </div>

@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { getTeacherSubscription } from "@/lib/subscription";
 import { syncTeacherPaymentOnReturn } from "@/lib/subscription-payments";
-import { isPaymentsEnabled, isYookassaConfigured } from "@/lib/yookassa";
+import { isPaymentsEnabled } from "@/lib/yookassa";
 import { AppShell } from "@/components/layout/AppShell";
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { PricingView } from "@/components/subscription/PricingView";
@@ -71,8 +71,6 @@ export default async function PricingPage({
       ? await getTeacherSubscription(session.id)
       : subscription;
 
-  const yookassaEnabled = isYookassaConfigured();
-
   const content = (
     <>
       <div className="mb-10 text-center sm:text-left">
@@ -112,7 +110,6 @@ export default async function PricingPage({
         subscription={subscriptionAfterPayment}
         isLoggedIn={!!session}
         paymentsEnabled={isPaymentsEnabled()}
-        yookassaEnabled={yookassaEnabled}
       />
     </>
   );

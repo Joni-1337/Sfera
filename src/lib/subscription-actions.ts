@@ -33,7 +33,7 @@ export async function startSubscriptionCheckout(): Promise<SubscriptionCheckoutR
   if (!allowStub) {
     return {
       error:
-        "Онлайн-оплата скоро будет доступна. Мы подключаем ЮKassa — попробуйте позже или напишите нам.",
+        "Онлайн-оплата скоро будет доступна. Попробуйте позже или напишите нам.",
     };
   }
 
