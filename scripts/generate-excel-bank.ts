@@ -1,20 +1,19 @@
 import fs from "fs";
 import path from "path";
 import {
-  generateExcelTemplate,
   generateCategoryBankWorkbook,
   generateEgeTestWorkbook,
   QUESTION_BANK_CATEGORIES,
 } from "../src/lib/excel-import";
+import { generateExcelTemplate } from "../src/lib/excel-template-export";
 
 const outDir = path.join(process.cwd(), "templates", "excel-bank");
 
 fs.mkdirSync(outDir, { recursive: true });
 
-fs.writeFileSync(
-  path.join(outDir, "shablon-voprosov.xlsx"),
-  Buffer.from(generateExcelTemplate())
-);
+void generateExcelTemplate().then((buffer) => {
+  fs.writeFileSync(path.join(outDir, "shablon-voprosov.xlsx"), Buffer.from(buffer));
+});
 
 for (const category of QUESTION_BANK_CATEGORIES) {
   fs.writeFileSync(

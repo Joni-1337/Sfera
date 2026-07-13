@@ -1,7 +1,7 @@
-import { generateExcelTemplate } from "@/lib/excel-import";
+import { generateExcelTemplate } from "@/lib/excel-template-export";
 
 export async function GET() {
-  const buffer = generateExcelTemplate();
+  const buffer = await generateExcelTemplate();
   return new Response(buffer, {
     headers: {
       "Content-Type":
