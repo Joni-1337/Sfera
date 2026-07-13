@@ -55,8 +55,6 @@ export default async function SettingsPage() {
             >
               <PasswordSettingsForm />
             </SettingsSection>
-
-            <SettingsPaymentHistory payments={payments} />
           </div>
 
           <aside className="space-y-6">
@@ -68,6 +66,15 @@ export default async function SettingsPage() {
             >
               <ThemeSelector currentTheme={uiTheme} />
             </SettingsSection>
+
+            <section id="payments" className="scroll-mt-24">
+              <SettingsSection
+                title="История платежей"
+                description="Оплаты подписки"
+              >
+                <SettingsPaymentHistory payments={payments} />
+              </SettingsSection>
+            </section>
           </aside>
         </div>
 
