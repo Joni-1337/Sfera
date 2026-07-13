@@ -97,7 +97,13 @@ export function NotificationBell({
       </button>
 
       {open && (
-        <div className="panel-enter-down absolute right-0 top-full z-50 mt-2 w-[min(100vw-2rem,22rem)] overflow-hidden rounded-xl border border-border bg-bg-card shadow-2xl shadow-black/50">
+        <div
+          className={cn(
+            "panel-enter-down z-[60] overflow-hidden rounded-xl border border-border bg-bg-card shadow-2xl shadow-black/50",
+            "absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-2rem)]",
+            "max-md:fixed max-md:inset-x-4 max-md:top-[4.75rem] max-md:mt-0 max-md:w-auto max-md:max-w-none"
+          )}
+        >
           <div className="border-b border-border px-4 py-2.5">
             <p className="text-sm font-semibold">Уведомления</p>
           </div>
