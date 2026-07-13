@@ -37,27 +37,19 @@ export default async function SettingsPage() {
           <p className="mt-1 text-text-secondary">Аккаунт преподавателя</p>
         </header>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-stretch">
-          <div className="flex flex-col gap-6">
-            <SettingsSection
-              title="Профиль"
-              description="Имя отображается на дашборде и в интерфейсе"
-            >
-              <ProfileSettingsForm
-                fullName={session.name}
-                email={session.email ?? ""}
-              />
-            </SettingsSection>
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+          <SettingsSection
+            title="Профиль"
+            description="Имя отображается на дашборде и в интерфейсе"
+            className="lg:col-start-1 lg:row-start-1"
+          >
+            <ProfileSettingsForm
+              fullName={session.name}
+              email={session.email ?? ""}
+            />
+          </SettingsSection>
 
-            <SettingsSection
-              title="Безопасность"
-              description="Регулярно обновляйте пароль для защиты аккаунта"
-            >
-              <PasswordSettingsForm />
-            </SettingsSection>
-          </div>
-
-          <aside className="flex h-full flex-col gap-6">
+          <div className="space-y-6 lg:col-start-2 lg:row-start-1">
             {subscription && <SettingsSubscriptionCard sub={subscription} />}
 
             <section id="payments" className="scroll-mt-24">
@@ -68,15 +60,23 @@ export default async function SettingsPage() {
                 <SettingsPaymentHistory payments={payments} />
               </SettingsSection>
             </section>
+          </div>
 
-            <SettingsSection
-              title="Оформление"
-              description="Тема для вас и учеников ваших групп"
-              className="mt-auto"
-            >
-              <ThemeSelector currentTheme={uiTheme} />
-            </SettingsSection>
-          </aside>
+          <SettingsSection
+            title="Безопасность"
+            description="Регулярно обновляйте пароль для защиты аккаунта"
+            className="lg:col-start-1 lg:row-start-2"
+          >
+            <PasswordSettingsForm />
+          </SettingsSection>
+
+          <SettingsSection
+            title="Оформление"
+            description="Тема для вас и учеников ваших групп"
+            className="lg:col-start-2 lg:row-start-2 lg:self-end"
+          >
+            <ThemeSelector currentTheme={uiTheme} />
+          </SettingsSection>
         </div>
 
         <div className="mt-6">
