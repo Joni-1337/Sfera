@@ -36,14 +36,17 @@ model Teacher {
 }
 
 model SubscriptionPayment {
-  id         String    @id @default(cuid())
-  teacherId  String
-  teacher    Teacher   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
-  yookassaId String    @unique
-  amountRub  Int
-  status     String    @default("pending")
-  createdAt  DateTime  @default(now())
-  paidAt     DateTime?
+  id          String    @id @default(cuid())
+  teacherId   String
+  teacher     Teacher   @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  yookassaId  String    @unique
+  amountRub   Int
+  status      String    @default("pending")
+  description String    @default("")
+  receiptUrl  String?
+  emailSentAt DateTime?
+  createdAt   DateTime  @default(now())
+  paidAt      DateTime?
 
   @@index([teacherId, createdAt])
 }

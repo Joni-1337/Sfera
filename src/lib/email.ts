@@ -140,6 +140,53 @@ export async function sendVerificationEmail(to: string, verifyUrl: string, fullN
   return sendEmail({ to, subject, html, text });
 }
 
+export async function sendSubscriptionPaidEmail(input: {
+  to: string;
+  fullName: string;
+  amountRub: number;
+  subscriptionEndsAt: Date;
+  settingsUrl: string;
+}) {
+  const { to, fullName, amountRub, subscriptionEndsAt, settingsUrl } = input;
+  const amountLabel = `${amountRub.toLocaleString("ru-RU")} ₽`;
+  const endsLabel = subscriptionEndsAt.toLocaleDateString("ru-RU", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+  const subject = `Подписка оплачена — ${APP_TITLE}`;
+  const html = `
+    <div style="font-family: sans-serif; max-width: 520px; margin: 0 auto; color: #18181b;">
+      <h1 style="font-size: 20px; margin-bottom: 8px;">Спасибо, ${escapeHtml(fullName)}!</h1>
+      <p style="line-height: 1.5; color: #52525b;">
+        Оплата подписки на платформе <strong>${APP_NAME}</strong> прошла успешно.
+      </p>
+      <table style="width: 100%; margin: 20px 0; border-collapse: collapse; font-size: 14px;">
+        <tr>
+          <td style="padding: 8px 0; color: #71717a;">Сумма</td>
+          <td style="padding: 8px 0; text-align: right; font-weight: 600;">${amountLabel}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px 0; color: #71717a;">Подписка активна до</td>
+          <td style="padding: 8px 0; text-align: right; font-weight: 600;">${endsLabel}</td>
+        </tr>
+      </table>
+      <p style="margin: 24px 0;">
+        <a href="${settingsUrl}" style="display: inline-block; background: #14b8a6; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 10px; font-weight: 600;">
+          История платежей
+        </a>
+      </p>
+      <p style="font-size: 13px; color: #71717a; line-height: 1.5;">
+        Кассовый чек по 54-ФЗ отправляется на этот email через ЮKassa. История оплат также доступна в настройках аккаунта.
+      </p>
+    </div>
+  `;
+  const text = `Подписка оплачена: ${amountLabel}. Активна до ${endsLabel}. ${settingsUrl}`;
+
+  return sendEmail({ to, subject, html, text });
+}
+
 export async function sendPasswordResetEmail(
   to: string,
   resetUrl: string,

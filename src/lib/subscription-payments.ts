@@ -3,9 +3,11 @@ import "server-only";
 import { randomUUID } from "crypto";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { appBaseUrl } from "@/lib/email";
+import { appBaseUrl, sendSubscriptionPaidEmail } from "@/lib/email";
+import { getSubscriptionPriceRub } from "@/lib/subscription-shared";
 import {
   createYookassaPayment,
+  extractYookassaReceiptUrl,
   fetchYookassaPayment,
   isYookassaConfigured,
   yookassaAmountRub,
@@ -32,7 +34,46 @@ function parsePaidAmountRub(amount?: { value: string; currency: string }) {
   return Math.round(parsed);
 }
 
-export async function activateTeacherSubscription(teacherId: string) {
+async function notifySubscriptionPaid(paymentId: string) {
+  const payment = await prisma.subscriptionPayment.findUnique({
+    where: { id: paymentId },
+    include: {
+      teacher: {
+        select: { email: true, fullName: true, subscriptionEndsAt: true },
+      },
+    },
+  });
+
+  if (!payment || payment.status !== "succeeded" || payment.emailSentAt) {
+    return;
+  }
+
+  if (!payment.teacher.email || !payment.teacher.subscriptionEndsAt) {
+    return;
+  }
+
+  const emailResult = await sendSubscriptionPaidEmail({
+    to: payment.teacher.email,
+    fullName: payment.teacher.fullName,
+    amountRub: payment.amountRub,
+    subscriptionEndsAt: payment.teacher.subscriptionEndsAt,
+    settingsUrl: `${appBaseUrl()}/settings#payments`,
+  });
+
+  if (emailResult.ok) {
+    await prisma.subscriptionPayment.update({
+      where: { id: paymentId },
+      data: { emailSentAt: new Date() },
+    });
+  } else {
+    console.error("[subscription] paid email failed:", emailResult.error);
+  }
+}
+
+export async function activateTeacherSubscription(
+  teacherId: string,
+  options?: { stub?: boolean }
+) {
   const teacher = await prisma.teacher.findUnique({
     where: { id: teacherId },
     select: { subscriptionEndsAt: true },
@@ -43,6 +84,24 @@ export async function activateTeacherSubscription(teacherId: string) {
   }
 
   const endsAt = computeSubscriptionEndDate(teacher.subscriptionEndsAt);
+  const description = yookassaPaymentDescription();
+  const amountRub = getSubscriptionPriceRub();
+
+  let paymentId: string | null = null;
+
+  if (options?.stub) {
+    const payment = await prisma.subscriptionPayment.create({
+      data: {
+        teacherId,
+        yookassaId: `stub_${randomUUID()}`,
+        amountRub,
+        status: "succeeded",
+        description,
+        paidAt: new Date(),
+      },
+    });
+    paymentId = payment.id;
+  }
 
   await prisma.teacher.update({
     where: { id: teacherId },
@@ -54,8 +113,13 @@ export async function activateTeacherSubscription(teacherId: string) {
 
   revalidatePath("/dashboard");
   revalidatePath("/pricing");
+  revalidatePath("/settings");
 
-  return { success: true as const, subscriptionEndsAt: endsAt };
+  if (paymentId) {
+    await notifySubscriptionPaid(paymentId);
+  }
+
+  return { success: true as const, subscriptionEndsAt: endsAt, paymentId };
 }
 
 export async function createSubscriptionCheckout(teacherId: string) {
@@ -63,7 +127,17 @@ export async function createSubscriptionCheckout(teacherId: string) {
     return { error: "ЮKassa не настроена" as const };
   }
 
+  const teacher = await prisma.teacher.findUnique({
+    where: { id: teacherId },
+    select: { email: true },
+  });
+
+  if (!teacher) {
+    return { error: "Аккаунт не найден" as const };
+  }
+
   const amountRub = yookassaAmountRub();
+  const description = yookassaPaymentDescription();
   const returnUrl = `${appBaseUrl()}/pricing?payment=return`;
 
   const paymentRecord = await prisma.subscriptionPayment.create({
@@ -72,17 +146,19 @@ export async function createSubscriptionCheckout(teacherId: string) {
       yookassaId: `pending_${randomUUID()}`,
       amountRub,
       status: "pending",
+      description,
     },
   });
 
   const created = await createYookassaPayment({
     amountRub,
-    description: yookassaPaymentDescription(),
+    description,
     returnUrl,
     metadata: {
       teacherId,
       paymentId: paymentRecord.id,
     },
+    customerEmail: teacher.email,
   });
 
   if (!created.ok) {
@@ -108,6 +184,23 @@ export async function getLatestSubscriptionPayment(teacherId: string) {
   return prisma.subscriptionPayment.findFirst({
     where: { teacherId },
     orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function getTeacherSubscriptionPayments(teacherId: string, limit = 20) {
+  return prisma.subscriptionPayment.findMany({
+    where: { teacherId },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    select: {
+      id: true,
+      amountRub: true,
+      status: true,
+      description: true,
+      receiptUrl: true,
+      createdAt: true,
+      paidAt: true,
+    },
   });
 }
 
@@ -142,6 +235,7 @@ export async function processYookassaWebhookPayment(yookassaId: string) {
   }
 
   if (existing.status === "succeeded") {
+    await notifySubscriptionPaid(existing.id);
     return { alreadyProcessed: true as const };
   }
 
@@ -178,6 +272,7 @@ export async function processYookassaWebhookPayment(yookassaId: string) {
     );
   }
 
+  const receiptUrl = extractYookassaReceiptUrl(remote.data);
   const teacherId = existing.teacherId;
 
   await prisma.$transaction(async (tx) => {
@@ -200,7 +295,11 @@ export async function processYookassaWebhookPayment(yookassaId: string) {
 
     await tx.subscriptionPayment.update({
       where: { id: existing.id },
-      data: { status: "succeeded", paidAt: new Date() },
+      data: {
+        status: "succeeded",
+        paidAt: new Date(),
+        receiptUrl,
+      },
     });
 
     await tx.teacher.update({
@@ -215,6 +314,8 @@ export async function processYookassaWebhookPayment(yookassaId: string) {
   revalidatePath("/dashboard");
   revalidatePath("/pricing");
   revalidatePath("/settings");
+
+  await notifySubscriptionPaid(existing.id);
 
   return { succeeded: true as const, teacherId };
 }

@@ -2,12 +2,14 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getTeacherSubscription } from "@/lib/subscription";
+import { getTeacherSubscriptionPayments } from "@/lib/subscription-payments";
 import { AppShell } from "@/components/layout/AppShell";
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { ProfileSettingsForm } from "@/components/settings/ProfileSettingsForm";
 import { PasswordSettingsForm } from "@/components/settings/PasswordSettingsForm";
 import { ThemeSelector } from "@/components/settings/ThemeSelector";
 import { SettingsSubscriptionCard } from "@/components/settings/SettingsSubscriptionCard";
+import { SettingsPaymentHistory } from "@/components/settings/SettingsPaymentHistory";
 import { SettingsQuickLinks } from "@/components/settings/SettingsQuickLinks";
 import type { UiTheme } from "@/components/layout/ThemeProvider";
 
@@ -16,12 +18,13 @@ export default async function SettingsPage() {
   if (!session) redirect("/login");
   if (session.role !== "teacher") redirect("/dashboard");
 
-  const [teacher, subscription] = await Promise.all([
+  const [teacher, subscription, payments] = await Promise.all([
     prisma.teacher.findUnique({
       where: { id: session.id },
       select: { uiTheme: true },
     }),
     getTeacherSubscription(session.id),
+    getTeacherSubscriptionPayments(session.id),
   ]);
 
   const uiTheme: UiTheme = teacher?.uiTheme === "light" ? "light" : "dark";
@@ -52,6 +55,8 @@ export default async function SettingsPage() {
             >
               <PasswordSettingsForm />
             </SettingsSection>
+
+            <SettingsPaymentHistory payments={payments} />
           </div>
 
           <aside className="space-y-6">

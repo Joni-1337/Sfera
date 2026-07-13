@@ -37,7 +37,7 @@ export async function startSubscriptionCheckout(): Promise<SubscriptionCheckoutR
     };
   }
 
-  const result = await activateTeacherSubscription(session.id);
+  const result = await activateTeacherSubscription(session.id, { stub: true });
   if ("error" in result && result.error) {
     return { error: result.error };
   }

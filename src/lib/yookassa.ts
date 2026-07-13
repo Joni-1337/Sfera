@@ -19,7 +19,14 @@ type YookassaPayment = {
   amount?: { value: string; currency: string };
   confirmation?: { confirmation_url?: string };
   metadata?: Record<string, string>;
+  receipt_registration?: "pending" | "succeeded" | "canceled";
+  receipt_ofd_url?: string;
 };
+
+export function isYookassaReceiptsEnabled() {
+  if (process.env.YOOKASSA_SEND_RECEIPTS === "false") return false;
+  return isYookassaConfigured();
+}
 
 export function isYookassaConfigured() {
   return Boolean(
@@ -79,23 +86,47 @@ export async function createYookassaPayment(input: {
   description: string;
   returnUrl: string;
   metadata: Record<string, string>;
+  customerEmail?: string | null;
 }) {
   const value = input.amountRub.toFixed(2);
+
+  const payload: Record<string, unknown> = {
+    amount: { value, currency: "RUB" },
+    capture: true,
+    confirmation: {
+      type: "redirect",
+      return_url: input.returnUrl,
+    },
+    description: input.description,
+    metadata: input.metadata,
+  };
+
+  const customerEmail = input.customerEmail?.trim();
+  if (isYookassaReceiptsEnabled() && customerEmail) {
+    payload.receipt = {
+      customer: { email: customerEmail },
+      items: [
+        {
+          description: input.description.slice(0, 128),
+          quantity: "1.00",
+          amount: { value, currency: "RUB" },
+          vat_code: 1,
+          payment_mode: "full_payment",
+          payment_subject: "service",
+        },
+      ],
+    };
+  }
 
   return yookassaRequest<YookassaPayment>("/payments", {
     method: "POST",
     idempotenceKey: randomUUID(),
-    body: JSON.stringify({
-      amount: { value, currency: "RUB" },
-      capture: true,
-      confirmation: {
-        type: "redirect",
-        return_url: input.returnUrl,
-      },
-      description: input.description,
-      metadata: input.metadata,
-    }),
+    body: JSON.stringify(payload),
   });
+}
+
+export function extractYookassaReceiptUrl(payment: YookassaPayment) {
+  return payment.receipt_ofd_url?.trim() || null;
 }
 
 export async function fetchYookassaPayment(paymentId: string) {
