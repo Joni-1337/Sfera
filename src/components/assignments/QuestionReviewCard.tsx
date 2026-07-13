@@ -1,7 +1,7 @@
 import { CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { questionTypeLabel } from "@/lib/scoring";
-import { getChoiceOptions, getOptionText } from "@/lib/question-options";
+import { checkAnswer, formatCorrectAnswerDisplay, questionTypeLabel } from "@/lib/scoring";
+import { getChoiceOptions, parseMultipleChoiceCorrect } from "@/lib/question-options";
 import { EgeQuestionPrompt } from "@/components/questions/EgeQuestionPrompt";
 
 export type QuestionReviewData = {
@@ -30,11 +30,17 @@ export function QuestionReviewCard({
   compact?: boolean;
 }) {
   const options = getChoiceOptions(question);
-  const correctKey = question.correctOption.trim().toUpperCase();
-  const correctText = getOptionText(question, correctKey);
+  const correctKeys = new Set(parseMultipleChoiceCorrect(question.correctOption));
   const chosenKey = chosenOption?.trim().toUpperCase() ?? "";
-  const hasStudentAnswer = Boolean(chosenKey);
-  const isCorrect = hasStudentAnswer && chosenKey === correctKey;
+  const hasStudentAnswer = Boolean(chosenOption?.trim());
+  const isCorrect =
+    hasStudentAnswer &&
+    checkAnswer(question.type, chosenOption ?? "", question.correctOption);
+  const correctAnswerLabel = formatCorrectAnswerDisplay(
+    question.type,
+    question.correctOption,
+    question
+  );
 
   return (
     <article
@@ -72,7 +78,7 @@ export function QuestionReviewCard({
       {options.length > 0 ? (
         <ul className="space-y-2">
           {options.map((option) => {
-            const isCorrectOption = option.key === correctKey;
+            const isCorrectOption = correctKeys.has(option.key);
             const isChosen = option.key === chosenKey;
             const isWrongChoice = isChosen && !isCorrectOption;
 
@@ -134,22 +140,18 @@ export function QuestionReviewCard({
           )}
           <p>
             <span className="text-text-secondary">Правильный ответ: </span>
-            <span className="font-medium text-teal-200">{question.correctOption}</span>
+            <span className="font-medium text-teal-100">{correctAnswerLabel}</span>
           </p>
         </div>
       )}
 
       <div className="mt-4 rounded-xl border border-accent/25 bg-accent/10 px-3 py-2.5 text-sm">
-        <p className="font-medium text-teal-200">
-          Правильный ответ: {correctKey}
-          {correctText && correctText !== correctKey ? ` — ${correctText}` : ""}
+        <p className="font-medium text-teal-100">
+          Правильный ответ: {correctAnswerLabel}
         </p>
-        {hasStudentAnswer && chosenKey && !isCorrect && (
+        {hasStudentAnswer && !isCorrect && (
           <p className="mt-1 text-red-200">
-            Выбрал ученик: {chosenKey}
-            {getOptionText(question, chosenKey) !== chosenKey
-              ? ` — ${getOptionText(question, chosenKey)}`
-              : ""}
+            Выбрал ученик: {chosenOption?.trim() || "—"}
           </p>
         )}
         {question.explanation && (

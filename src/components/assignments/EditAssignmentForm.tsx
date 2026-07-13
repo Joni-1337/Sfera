@@ -9,6 +9,13 @@ import { RESULT_CATEGORIES } from "@/lib/utils";
 import { QUESTION_TYPES } from "@/lib/scoring";
 import { DateInput, formatDateInputValue } from "@/components/ui/DateInput";
 import { CheckboxCard } from "@/components/ui/Checkbox";
+import { MultipleChoiceCorrectPicker } from "@/components/questions/MultipleChoiceCorrectPicker";
+import {
+  fieldInputClass,
+  fieldSelectClass,
+  fieldSelectCompactClass,
+} from "@/lib/form-styles";
+import { cn } from "@/lib/utils";
 
 const emptyQuestion = {
   type: "multiple_choice",
@@ -122,7 +129,7 @@ export function EditAssignmentForm({
             name="title"
             required
             defaultValue={assignment.title}
-            className="w-full rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none focus:border-accent"
+            className={cn(fieldInputClass, "rounded-xl px-4 py-3")}
           />
         </div>
 
@@ -132,7 +139,7 @@ export function EditAssignmentForm({
             name="category"
             required
             defaultValue={assignment.category}
-            className="w-full rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none focus:border-accent"
+            className={cn(fieldSelectClass, "rounded-xl px-4 py-3")}
           >
             {RESULT_CATEGORIES.map((c) => (
               <option key={c.id} value={c.id}>
@@ -148,7 +155,7 @@ export function EditAssignmentForm({
             name="description"
             rows={2}
             defaultValue={assignment.description}
-            className="w-full rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none focus:border-accent"
+            className={cn(fieldInputClass, "rounded-xl px-4 py-3")}
           />
         </div>
 
@@ -190,7 +197,7 @@ export function EditAssignmentForm({
                       next[idx].type = e.target.value;
                       setQuestions(next);
                     }}
-                    className="rounded-lg border border-border bg-bg-elevated px-2 py-1 text-xs"
+                    className={fieldSelectCompactClass}
                   >
                     {QUESTION_TYPES.map((t) => (
                       <option key={t.id} value={t.id}>
@@ -218,7 +225,7 @@ export function EditAssignmentForm({
                   setQuestions(next);
                 }}
                 placeholder="Текст вопроса"
-                className="w-full rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
+                className={fieldInputClass}
               />
               {q.type === "multiple_choice" && (
                 <>
@@ -232,24 +239,17 @@ export function EditAssignmentForm({
                         setQuestions(next);
                       }}
                       placeholder={`Вариант ${letter}`}
-                      className="w-full rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
+                      className={fieldInputClass}
                     />
                   ))}
-                  <select
+                  <MultipleChoiceCorrectPicker
                     value={q.correctOption}
-                    onChange={(e) => {
+                    onChange={(correctOption) => {
                       const next = [...questions];
-                      next[idx].correctOption = e.target.value;
+                      next[idx].correctOption = correctOption;
                       setQuestions(next);
                     }}
-                    className="rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
-                  >
-                    {["A", "B", "C", "D"].map((l) => (
-                      <option key={l} value={l}>
-                        Правильный: {l}
-                      </option>
-                    ))}
-                  </select>
+                  />
                 </>
               )}
               {q.type !== "multiple_choice" && (
@@ -265,7 +265,7 @@ export function EditAssignmentForm({
                       ? "Правильная буква (напр. «е»)"
                       : "Правильный ответ"
                   }
-                  className="w-full rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
+                  className={fieldInputClass}
                 />
               )}
               <input
@@ -276,14 +276,14 @@ export function EditAssignmentForm({
                   setQuestions(next);
                 }}
                 placeholder="Пояснение (необязательно)"
-                className="w-full rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
+                className={fieldInputClass}
               />
             </div>
           ))}
           <button
             type="button"
             onClick={() => setQuestions([...questions, { ...emptyQuestion }])}
-            className="text-sm text-accent hover:underline"
+            className="text-sm text-teal-200 hover:text-teal-100 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 rounded px-1"
           >
             + Добавить вопрос
           </button>

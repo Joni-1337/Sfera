@@ -20,7 +20,15 @@ import {
   QuestionSourceTabs,
   type QuestionSourceMode,
 } from "@/components/questions/ExcelQuestionsImport";
+import { MultipleChoiceCorrectPicker } from "@/components/questions/MultipleChoiceCorrectPicker";
 import { cn } from "@/lib/utils";
+import {
+  choiceChipClass,
+  fieldInputClass,
+  fieldInputCompactClass,
+  fieldSelectClass,
+  fieldSelectCompactClass,
+} from "@/lib/form-styles";
 
 const emptyQuestion = {
   type: "multiple_choice",
@@ -112,7 +120,7 @@ export function CreateAssignmentForm({
             name="title"
             required
             placeholder="Орфография — тренировка 1"
-            className="w-full rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none focus:border-accent"
+            className={fieldInputClass}
           />
         </div>
 
@@ -123,7 +131,7 @@ export function CreateAssignmentForm({
             required
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none focus:border-accent"
+            className={fieldSelectClass}
           >
             {RESULT_CATEGORIES.map((c) => (
               <option key={c.id} value={c.id}>{c.label}</option>
@@ -133,7 +141,7 @@ export function CreateAssignmentForm({
 
         <div>
           <label className="mb-1.5 block text-sm text-text-secondary">Описание</label>
-          <textarea name="description" rows={2} className="w-full rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none focus:border-accent" />
+          <textarea name="description" rows={2} className={cn(fieldInputClass, "rounded-xl px-4 py-3")} />
         </div>
 
         <section className="rounded-2xl border border-border bg-bg-card p-5">
@@ -200,13 +208,7 @@ export function CreateAssignmentForm({
                       type="button"
                       disabled={count > bankSize}
                       onClick={() => setTemplateCount(count)}
-                      className={cn(
-                        "rounded-lg border px-3.5 py-2 text-sm font-medium transition-all",
-                        effectiveTemplateCount === count
-                          ? "border-accent bg-accent/15 text-accent"
-                          : "border-border text-text-secondary hover:border-accent/30",
-                        count > bankSize && "cursor-not-allowed opacity-40"
-                      )}
+                      className={choiceChipClass(effectiveTemplateCount === count, count > bankSize)}
                     >
                       {count}
                     </button>
@@ -223,7 +225,7 @@ export function CreateAssignmentForm({
                     max={Math.min(bankSize, MAX_TEMPLATE_COUNT)}
                     value={templateCount}
                     onChange={(e) => handleTemplateCountChange(e.target.value)}
-                    className="w-24 rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm outline-none focus:border-accent"
+                    className={cn(fieldInputCompactClass, "w-24")}
                   />
                 </div>
                 {templateCount > bankSize && (
@@ -261,7 +263,7 @@ export function CreateAssignmentForm({
                         next[idx].type = e.target.value;
                         setQuestions(next);
                       }}
-                      className="rounded-lg border border-border bg-bg-elevated px-2 py-1 text-xs"
+                      className={fieldSelectCompactClass}
                     >
                       {QUESTION_TYPES.map((t) => (
                         <option key={t.id} value={t.id}>{t.label}</option>
@@ -287,7 +289,7 @@ export function CreateAssignmentForm({
                     setQuestions(next);
                   }}
                   placeholder="Текст вопроса"
-                  className="w-full rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
+                  className={fieldInputClass}
                 />
                 {q.type === "multiple_choice" && (
                   <>
@@ -301,22 +303,17 @@ export function CreateAssignmentForm({
                           setQuestions(next);
                         }}
                         placeholder={`Вариант ${letter}`}
-                        className="w-full rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
+                        className={fieldInputClass}
                       />
                     ))}
-                    <select
+                    <MultipleChoiceCorrectPicker
                       value={q.correctOption}
-                      onChange={(e) => {
+                      onChange={(correctOption) => {
                         const next = [...questions];
-                        next[idx].correctOption = e.target.value;
+                        next[idx].correctOption = correctOption;
                         setQuestions(next);
                       }}
-                      className="rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
-                    >
-                      {["A", "B", "C", "D"].map((l) => (
-                        <option key={l} value={l}>Правильный: {l}</option>
-                      ))}
-                    </select>
+                    />
                   </>
                 )}
                 {q.type !== "multiple_choice" && (
@@ -328,7 +325,7 @@ export function CreateAssignmentForm({
                       setQuestions(next);
                     }}
                     placeholder={q.type === "gap_fill" ? "Правильная буква (напр. «е»)" : "Правильный ответ"}
-                    className="w-full rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
+                    className={fieldInputClass}
                   />
                 )}
                 <input
@@ -339,14 +336,14 @@ export function CreateAssignmentForm({
                     setQuestions(next);
                   }}
                   placeholder="Пояснение (необязательно)"
-                  className="w-full rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
+                  className={fieldInputClass}
                 />
               </div>
             ))}
             <button
               type="button"
               onClick={() => setQuestions([...questions, { ...emptyQuestion }])}
-              className="text-sm text-accent hover:underline"
+              className="text-sm text-teal-200 hover:text-teal-100 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 rounded px-1"
             >
               + Добавить вопрос
             </button>

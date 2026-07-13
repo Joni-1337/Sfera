@@ -1,11 +1,10 @@
 import {
-
+  getOptionText,
   normalizeChoiceLetter,
-
   normalizeCorrectAnswer,
-
+  parseMultipleChoiceCorrect,
   parseOptionsList,
-
+  type QuestionOptionFields,
 } from "@/lib/question-options";
 
 
@@ -106,15 +105,11 @@ export function checkAnswer(
 
 
   if (questionType === "multiple_choice") {
-
     const studentLetter = normalizeChoiceLetter(studentAnswer);
+    if (!studentLetter) return false;
 
-    const correctLetter = normalizeChoiceLetter(correctAnswer);
-
-    if (!studentLetter || !correctLetter) return false;
-
-    return studentLetter === correctLetter;
-
+    const correctLetters = parseMultipleChoiceCorrect(correctAnswer);
+    return correctLetters.includes(studentLetter);
   }
 
 
@@ -131,7 +126,40 @@ export function checkAnswer(
 
 }
 
+export function formatCorrectAnswerDisplay(
+  questionType: string,
+  correctAnswer: string,
+  optionFields?: QuestionOptionFields
+): string {
+  if (questionType === "multiple_choice") {
+    const letters = parseMultipleChoiceCorrect(correctAnswer);
+    if (letters.length > 1) {
+      return letters
+        .map((letter) => {
+          if (optionFields) {
+            const text = getOptionText(optionFields, letter);
+            if (text && text !== letter) return `${letter} — ${text}`;
+          }
+          return letter;
+        })
+        .join(" или ");
+    }
 
+    const key = (normalizeChoiceLetter(correctAnswer) ?? correctAnswer.trim()).toUpperCase();
+    if (optionFields) {
+      const text = getOptionText(optionFields, key);
+      if (text && text !== key) return `${key} — ${text}`;
+    }
+    return key;
+  }
+
+  const variants = splitAcceptableAnswers(correctAnswer);
+  if (variants.length > 1) {
+    return variants.join(" или ");
+  }
+
+  return correctAnswer.trim();
+}
 
 export function questionTypeLabel(type: string): string {
 

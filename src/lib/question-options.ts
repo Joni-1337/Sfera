@@ -90,22 +90,81 @@ export function resolveMultipleChoiceCorrect(
   options: string[],
   correctRaw: string
 ): string | null {
+  const letters = resolveMultipleChoiceCorrects(options, correctRaw);
+  return letters[0] ?? null;
+}
+
+/** Одна или несколько букв A|B|C по ячейке «правильный» (буквы или текст вариантов). */
+export function resolveMultipleChoiceCorrects(
+  options: string[],
+  correctRaw: string
+): string[] {
   const trimmed = correctRaw.trim();
-  if (!trimmed) return null;
+  if (!trimmed) return [];
 
-  const letter = normalizeChoiceLetter(trimmed);
-  if (letter) {
-    const index = CHOICE_LETTERS.indexOf(letter as (typeof CHOICE_LETTERS)[number]);
-    if (index >= 0 && index < options.length) return letter;
+  const parts = parseOptionsList(trimmed);
+  const rawParts = parts.length > 1 ? parts : [trimmed];
+
+  const letters = rawParts
+    .map((part) => {
+      const letter = normalizeChoiceLetter(part);
+      if (letter) {
+        const index = CHOICE_LETTERS.indexOf(letter as (typeof CHOICE_LETTERS)[number]);
+        if (index >= 0 && index < options.length) return letter;
+      }
+
+      const normalized = part.trim().toLowerCase();
+      const index = options.findIndex((option) => option.trim().toLowerCase() === normalized);
+      if (index >= 0) return CHOICE_LETTERS[index] ?? null;
+
+      return null;
+    })
+    .filter((letter): letter is string => Boolean(letter));
+
+  return [...new Set(letters)];
+}
+
+export function parseMultipleChoiceCorrect(raw: string): string[] {
+  const trimmed = raw.trim();
+  if (!trimmed) return [];
+
+  const fromPipe = parseOptionsList(trimmed);
+  const parts = fromPipe.length > 1 ? fromPipe : [trimmed];
+
+  return [...new Set(
+    parts
+      .map((part) => normalizeChoiceLetter(part))
+      .filter((letter): letter is string => Boolean(letter))
+  )];
+}
+
+export function serializeMultipleChoiceCorrect(letters: string[]): string {
+  const normalized = letters
+    .map((letter) => normalizeChoiceLetter(letter))
+    .filter((letter): letter is string => Boolean(letter));
+
+  const unique = [...new Set(normalized)].sort(
+    (a, b) =>
+      CHOICE_LETTERS.indexOf(a as (typeof CHOICE_LETTERS)[number]) -
+      CHOICE_LETTERS.indexOf(b as (typeof CHOICE_LETTERS)[number])
+  );
+
+  return unique.join(OPTION_SEPARATOR);
+}
+
+export function toggleMultipleChoiceCorrect(current: string, letter: string): string {
+  const normalized = normalizeChoiceLetter(letter);
+  if (!normalized) return current;
+
+  const selected = new Set(parseMultipleChoiceCorrect(current));
+  if (selected.has(normalized)) {
+    if (selected.size <= 1) return current;
+    selected.delete(normalized);
+  } else {
+    selected.add(normalized);
   }
 
-  const normalized = trimmed.toLowerCase();
-  const index = options.findIndex((option) => option.trim().toLowerCase() === normalized);
-  if (index >= 0) {
-    return CHOICE_LETTERS[index] ?? null;
-  }
-
-  return null;
+  return serializeMultipleChoiceCorrect([...selected]);
 }
 
 export function normalizeCorrectAnswer(type: string, raw: string): string {
@@ -113,6 +172,8 @@ export function normalizeCorrectAnswer(type: string, raw: string): string {
   if (!trimmed) return "";
 
   if (type === "multiple_choice") {
+    const letters = parseMultipleChoiceCorrect(trimmed);
+    if (letters.length > 0) return serializeMultipleChoiceCorrect(letters);
     return normalizeChoiceLetter(trimmed) ?? trimmed.toUpperCase();
   }
 

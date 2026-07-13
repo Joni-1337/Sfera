@@ -13,6 +13,12 @@ import {
   QuestionSourceTabs,
   type QuestionSourceMode,
 } from "@/components/questions/ExcelQuestionsImport";
+import { MultipleChoiceCorrectPicker } from "@/components/questions/MultipleChoiceCorrectPicker";
+import {
+  fieldInputClass,
+  fieldSelectCompactClass,
+} from "@/lib/form-styles";
+import { cn } from "@/lib/utils";
 
 const emptyQuestion = {
   type: "multiple_choice",
@@ -157,7 +163,7 @@ export function CreateTestForm({
             name="title"
             required
             placeholder="Пробный вариант ЕГЭ №1"
-            className="w-full rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none focus:border-accent"
+            className={cn(fieldInputClass, "rounded-xl px-4 py-3")}
           />
         </div>
 
@@ -167,7 +173,7 @@ export function CreateTestForm({
             name="description"
             rows={2}
             placeholder="Полный вариант по заданиям 4–27"
-            className="w-full rounded-xl border border-border bg-bg-elevated px-4 py-3 text-sm outline-none focus:border-accent"
+            className={cn(fieldInputClass, "rounded-xl px-4 py-3")}
           />
         </div>
 
@@ -216,7 +222,7 @@ export function CreateTestForm({
           mode={mode}
           onChange={setMode}
           templateLabel="Вариант ЕГЭ"
-          templateHint="Подставится случайный полный вариант ЕГЭ из банка Russkij100 (26 заданий)."
+          templateHint="Подставится случайный полный вариант ЕГЭ."
         />
 
         {mode === "excel" && <ExcelQuestionsImport disabled={pending} />}
@@ -235,7 +241,7 @@ export function CreateTestForm({
                         next[idx].type = e.target.value;
                         setQuestions(next);
                       }}
-                      className="rounded-lg border border-border bg-bg-elevated px-2 py-1 text-xs"
+                      className={fieldSelectCompactClass}
                     >
                       {QUESTION_TYPES.map((t) => (
                         <option key={t.id} value={t.id}>
@@ -263,7 +269,7 @@ export function CreateTestForm({
                     setQuestions(next);
                   }}
                   placeholder="Текст вопроса"
-                  className="w-full rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
+                  className={fieldInputClass}
                 />
                 {q.type === "multiple_choice" && (
                   <>
@@ -277,24 +283,17 @@ export function CreateTestForm({
                           setQuestions(next);
                         }}
                         placeholder={`Вариант ${letter}`}
-                        className="w-full rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
+                        className={fieldInputClass}
                       />
                     ))}
-                    <select
+                    <MultipleChoiceCorrectPicker
                       value={q.correctOption}
-                      onChange={(e) => {
+                      onChange={(correctOption) => {
                         const next = [...questions];
-                        next[idx].correctOption = e.target.value;
+                        next[idx].correctOption = correctOption;
                         setQuestions(next);
                       }}
-                      className="rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
-                    >
-                      {["A", "B", "C", "D"].map((l) => (
-                        <option key={l} value={l}>
-                          Правильный: {l}
-                        </option>
-                      ))}
-                    </select>
+                    />
                   </>
                 )}
                 {q.type !== "multiple_choice" && (
@@ -306,7 +305,7 @@ export function CreateTestForm({
                       setQuestions(next);
                     }}
                     placeholder="Правильный ответ"
-                    className="w-full rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
+                    className={fieldInputClass}
                   />
                 )}
                 <input
@@ -317,14 +316,14 @@ export function CreateTestForm({
                     setQuestions(next);
                   }}
                   placeholder="Пояснение (необязательно)"
-                  className="w-full rounded-lg border border-border bg-bg-elevated px-3 py-2 text-sm"
+                  className={fieldInputClass}
                 />
               </div>
             ))}
             <button
               type="button"
               onClick={() => setQuestions([...questions, { ...emptyQuestion }])}
-              className="text-sm text-accent hover:underline"
+              className="text-sm text-teal-200 hover:text-teal-100 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/35 rounded px-1"
             >
               + Добавить вопрос
             </button>

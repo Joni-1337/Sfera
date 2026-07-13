@@ -5,7 +5,8 @@ import {
   normalizeCorrectAnswer,
   optionsToFields,
   parseOptionsList,
-  resolveMultipleChoiceCorrect,
+  resolveMultipleChoiceCorrects,
+  serializeMultipleChoiceCorrect,
 } from "@/lib/question-options";
 import {
   QUESTION_TEMPLATES,
@@ -243,21 +244,22 @@ export function parseQuestionsFromExcel(buffer: ArrayBuffer): {
 
 
 
-      const letter = resolveMultipleChoiceCorrect(options, correctRaw);
-
-      if (!letter) {
+      const letters = resolveMultipleChoiceCorrects(options, correctRaw);
+      if (letters.length === 0) {
         errors.push(
-          `Строка ${line}: для выбора укажите букву (A, B, C…) или точный текст правильного варианта`
+          `Строка ${line}: для выбора укажите букву (A, B, C…), несколько через | или точный текст правильного варианта`
         );
         return;
       }
 
-      const letterIndex = CHOICE_LETTERS.indexOf(letter as (typeof CHOICE_LETTERS)[number]);
-      if (letterIndex < 0 || letterIndex >= options.length) {
-        errors.push(
-          `Строка ${line}: правильный ответ «${correctRaw}» не подходит к числу вариантов (${options.length})`
-        );
-        return;
+      for (const letter of letters) {
+        const letterIndex = CHOICE_LETTERS.indexOf(letter as (typeof CHOICE_LETTERS)[number]);
+        if (letterIndex < 0 || letterIndex >= options.length) {
+          errors.push(
+            `Строка ${line}: правильный ответ «${correctRaw}» не подходит к числу вариантов (${options.length})`
+          );
+          return;
+        }
       }
 
       const spread = optionsToFields(options);
@@ -270,7 +272,7 @@ export function parseQuestionsFromExcel(buffer: ArrayBuffer): {
         optionB: spread.optionB,
         optionC: spread.optionC,
         optionD: spread.optionD,
-        correctOption: letter,
+        correctOption: serializeMultipleChoiceCorrect(letters),
         explanation: pick(row, ["explanation", "пояснение", "объяснение"]),
       });
       return;

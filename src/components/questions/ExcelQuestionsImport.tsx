@@ -18,6 +18,7 @@ import {
   EXCEL_TYPE_HINTS,
 } from "@/lib/excel-columns";
 import { cn } from "@/lib/utils";
+import { sourceTabClass } from "@/lib/form-styles";
 
 type PreviewState =
   | { status: "idle" }
@@ -154,7 +155,7 @@ export function ExcelQuestionsImport({
       {/* Скачать шаблон */}
       <a
         href={EXCEL_TEMPLATE_URL}
-        className="flex items-center justify-center gap-2 rounded-xl border border-accent/40 bg-accent/10 px-4 py-3 text-sm font-medium text-accent transition-colors hover:bg-accent/15"
+        className="flex items-center justify-center gap-2 rounded-xl border border-emerald-400/50 bg-emerald-500/15 px-4 py-3 text-sm font-semibold text-emerald-100 transition-colors hover:bg-emerald-500/25"
       >
         <Download className="h-4 w-4" />
         Скачать шаблон Excel (.xlsx)
@@ -262,11 +263,11 @@ export function ExcelQuestionsImport({
       )}
 
       {preview.status === "ok" && (
-        <div className="space-y-2 rounded-xl border border-green-500/20 bg-green-500/5 p-4">
+        <div className="space-y-2 rounded-xl border border-emerald-400/40 bg-emerald-500/10 p-4">
           <div className="flex items-start gap-2">
-            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-green-400" />
+            <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-300" />
             <div>
-              <p className="text-sm font-medium text-green-400">
+              <p className="text-sm font-semibold text-emerald-100">
                 Готово к импорту: {preview.count}{" "}
                 {preview.count === 1
                   ? "вопрос"
@@ -347,12 +348,7 @@ export function QuestionSourceTabs({
             key={tab.id}
             type="button"
             onClick={() => onChange(tab.id)}
-            className={cn(
-              "rounded-xl border px-2 py-3 text-center transition-all sm:px-4",
-              mode === tab.id
-                ? "border-accent bg-accent/10 text-accent"
-                : "border-border text-text-secondary hover:border-accent/30"
-            )}
+            className={sourceTabClass(mode === tab.id)}
           >
             <span className="block text-sm font-medium">{tab.label}</span>
             <span className="mt-0.5 block text-[10px] text-text-muted sm:text-xs">{tab.hint}</span>
