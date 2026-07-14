@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
 import { Mail, RefreshCw, Link2 } from "lucide-react";
+import { AccentIcon3D } from "@/components/ui/AccentIcon3D";
 import { resendVerificationFormAction } from "@/lib/actions";
 
 export function CheckEmailForm({
@@ -27,13 +28,12 @@ export function CheckEmailForm({
 
   return (
     <div className="rounded-2xl border border-border bg-bg-card p-6 shadow-2xl shadow-black/40">
-      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent/10">
-        {localMode ? (
-          <Link2 className="h-7 w-7 text-accent" />
-        ) : (
-          <Mail className="h-7 w-7 text-accent" />
-        )}
-      </div>
+      <AccentIcon3D
+        icon={localMode ? Link2 : Mail}
+        size="lg"
+        variant="blue"
+        className="mb-4"
+      />
 
       <h2 className="mb-2 text-lg font-semibold">
         {localMode ? "Подтвердите email" : "Проверьте почту"}

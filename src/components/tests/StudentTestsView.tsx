@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FlaskConical, Clock, AlertCircle, RotateCcw } from "lucide-react";
+import { AccentIcon3D } from "@/components/ui/AccentIcon3D";
 import { SuccessCheckIcon } from "@/components/ui/SuccessCheckIcon";
 import { formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -45,7 +46,7 @@ export function StudentTestsView({
   if (tests.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-bg-card/50 py-20 text-center">
-        <FlaskConical className="mb-4 h-12 w-12 text-text-muted" />
+        <AccentIcon3D icon={FlaskConical} size="lg" variant="violet" className="mb-4" />
         <p className="text-text-secondary">Нет назначенных тестов</p>
         <p className="mt-1 text-sm text-text-muted">
           Преподаватель опубликует тесты — они появятся здесь
@@ -82,22 +83,13 @@ export function StudentTestsView({
           >
             <Link href={href} className="group block">
               <div className="mb-4 flex items-start justify-between">
-                <div
-                  className={cn(
-                    "flex h-12 w-12 items-center justify-center rounded-xl",
-                    done
-                      ? "bg-green-500/25"
-                      : "bg-accent/10 group-hover:bg-accent/20"
-                  )}
-                >
-                  {done ? (
-                    <SuccessCheckIcon size="md" />
-                  ) : overdue ? (
-                    <AlertCircle className="h-6 w-6 text-red-400" />
-                  ) : (
-                    <FlaskConical className="h-6 w-6 text-accent" />
-                  )}
-                </div>
+                {done ? (
+                  <SuccessCheckIcon size="md" />
+                ) : overdue ? (
+                  <AccentIcon3D icon={AlertCircle} size="md" variant="orange" />
+                ) : (
+                  <AccentIcon3D icon={FlaskConical} size="md" variant="violet" />
+                )}
                 {best && (
                   <span className="rounded-full border border-green-500/40 bg-green-500/25 px-2.5 py-0.5 text-xs font-semibold text-green-200">
                     {best.score}/{best.maxScore}

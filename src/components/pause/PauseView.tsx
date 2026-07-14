@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { Pause, Trash2, ClipboardList, FlaskConical, BookMarked } from "lucide-react";
+import { AccentIcon3D } from "@/components/ui/AccentIcon3D";
 import { removeFromPause } from "@/lib/pause-actions";
 import { formatDateTime } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -86,9 +87,7 @@ export function PauseView({
 
       {items.length === 0 ? (
         <div className="flex flex-col items-center rounded-2xl border border-dashed border-border bg-bg-card/50 py-16 text-center">
-          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
-            <Pause className="h-8 w-8 text-accent" />
-          </div>
+          <AccentIcon3D icon={Pause} size="lg" variant="violet" className="mb-4" />
           <p className="font-medium">Список паузы пуст</p>
           <p className="mt-2 max-w-md text-sm text-text-secondary">
             Откладывайте задания, тесты и сложные слова сюда, чтобы вернуться к ним

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ClipboardList, Clock, AlertCircle, RotateCcw } from "lucide-react";
+import { AccentIcon3D } from "@/components/ui/AccentIcon3D";
 import { SuccessCheckIcon } from "@/components/ui/SuccessCheckIcon";
 import { formatDate, RESULT_CATEGORIES } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -50,7 +51,7 @@ export function StudentTasksView({
   if (assignments.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-bg-card/50 py-20 text-center">
-        <ClipboardList className="mb-4 h-12 w-12 text-text-muted" />
+        <AccentIcon3D icon={ClipboardList} size="lg" variant="neutral" className="mb-4" />
         <p className="text-text-secondary">Нет назначенных заданий</p>
         <p className="mt-1 text-sm text-text-muted">Преподаватель опубликует задания — они появятся здесь</p>
       </div>
@@ -89,22 +90,13 @@ export function StudentTasksView({
           >
             <Link href={href} className="group block">
               <div className="mb-4 flex items-start justify-between">
-                <div
-                  className={cn(
-                    "flex h-12 w-12 items-center justify-center rounded-xl",
-                    done
-                      ? "bg-green-500/25"
-                      : "bg-accent/10 group-hover:bg-accent/20"
-                  )}
-                >
-                  {done ? (
-                    <SuccessCheckIcon size="md" />
-                  ) : overdue ? (
-                    <AlertCircle className="h-6 w-6 text-red-400" />
-                  ) : (
-                    <ClipboardList className="h-6 w-6 text-accent" />
-                  )}
-                </div>
+                {done ? (
+                  <SuccessCheckIcon size="md" />
+                ) : overdue ? (
+                  <AccentIcon3D icon={AlertCircle} size="md" variant="orange" />
+                ) : (
+                  <AccentIcon3D icon={ClipboardList} size="md" />
+                )}
                 {best && (
                   <span className="rounded-full border border-green-500/40 bg-green-500/25 px-2.5 py-0.5 text-xs font-semibold text-green-200">
                     {best.score}/{best.maxScore}

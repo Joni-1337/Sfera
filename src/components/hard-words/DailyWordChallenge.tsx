@@ -12,6 +12,7 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { SuccessCheckIcon } from "@/components/ui/SuccessCheckIcon";
+import { AccentIcon3D } from "@/components/ui/AccentIcon3D";
 import { submitDailyWordQuiz } from "@/lib/daily-word-actions";
 import { hardWordTopicLabel } from "@/lib/hard-word-constants";
 import { WordContentBlocks } from "@/components/hard-words/WordContentBlocks";
@@ -198,18 +199,14 @@ export function DailyWordChallenge({
 
         <div className="grid w-full shrink-0 grid-cols-2 rounded-2xl border border-border/80 bg-bg-elevated/70 sm:w-auto sm:min-w-[220px]">
           <div className="flex flex-col items-center justify-center border-r border-border px-3 py-3 text-center sm:px-4">
-            <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-orange-500/15">
-              <Flame className="h-5 w-5 text-orange-400" />
-            </div>
+            <AccentIcon3D icon={Flame} size="sm" variant="orange" shape="circle" className="mb-1" />
             <p className="text-2xl font-bold leading-none">{displayStreak}</p>
             <p className="mt-1 text-[11px] leading-tight text-text-muted">
               {streakLabel(displayStreak)}
             </p>
           </div>
           <div className="flex flex-col items-center justify-center px-3 py-3 text-center sm:px-4">
-            <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-full bg-accent/15">
-              <Trophy className="h-5 w-5 text-accent" />
-            </div>
+            <AccentIcon3D icon={Trophy} size="sm" variant="amber" shape="circle" className="mb-1" />
             <p className="text-2xl font-bold leading-none">{displayStreakBest}</p>
             <p className="mt-1 text-[11px] leading-tight text-text-muted">рекорд</p>
           </div>

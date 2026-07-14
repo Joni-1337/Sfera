@@ -28,6 +28,7 @@ import type {
   TeacherDashboardStats,
 } from "@/lib/teacher-dashboard-data";
 import { SubscriptionBanner } from "@/components/subscription/SubscriptionBanner";
+import { AccentIcon3D } from "@/components/ui/AccentIcon3D";
 import type { TeacherSubscription } from "@/lib/subscription-shared";
 
 const groupLinks = [
@@ -151,9 +152,7 @@ export function TeacherDashboard({
                   href={href}
                   className="flex flex-col items-center gap-2 rounded-xl border border-border bg-bg-card px-3 py-4 text-center transition-all hover:border-accent/30 md:gap-3 md:rounded-2xl md:px-5 md:py-5"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 md:h-12 md:w-12">
-                    <Icon className="h-5 w-5 text-accent md:h-6 md:w-6" />
-                  </div>
+                  <AccentIcon3D icon={Icon} size="md" />
                   <span className="text-xs font-medium leading-tight md:text-sm lg:text-base">
                     {label}
                   </span>

@@ -12,6 +12,7 @@ import {
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { HomeFaqSection } from "@/components/home/HomeFaqSection";
 import { EgeRusskiyPageJsonLd } from "@/components/seo/MarketingJsonLd";
+import { AccentIcon3D } from "@/components/ui/AccentIcon3D";
 import { APP_NAME } from "@/lib/branding";
 import { buildPageMetadata } from "@/lib/seo";
 import { SUBSCRIPTION_PRICE_RUB, TRIAL_DAYS } from "@/lib/subscription-shared";
@@ -111,9 +112,7 @@ export default function EgeRusskiyPage() {
                 key={title}
                 className="rounded-2xl border border-border bg-bg-card/60 p-5"
               >
-                <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10">
-                  <Icon className="h-5 w-5 text-accent" />
-                </div>
+                <AccentIcon3D icon={Icon} size="sm" className="mb-3" />
                 <h3 className="font-semibold">{title}</h3>
                 <p className="mt-1 text-sm text-text-secondary">{text}</p>
               </li>
