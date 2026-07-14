@@ -8,7 +8,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return PUBLIC_INDEXABLE_PATHS.map((path) => ({
     url: new URL(path, SITE_URL).toString(),
     lastModified,
-    changeFrequency: path === "/" ? "weekly" : "monthly",
-    priority: path === "/" ? 1 : path === "/pricing" ? 0.9 : 0.5,
+    changeFrequency: path === "/" || path === "/ege-russkiy" ? "weekly" : "monthly",
+    priority:
+      path === "/"
+        ? 1
+        : path === "/ege-russkiy"
+          ? 0.95
+          : path === "/pricing"
+            ? 0.9
+            : 0.5,
   }));
 }

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { SferaSphereIcon } from "@/components/branding/SferaSphereIcon";
+import { HomeFaqSection } from "@/components/home/HomeFaqSection";
 import { APP_NAME } from "@/lib/branding";
 import { SUBSCRIPTION_PRICE_RUB, TRIAL_DAYS } from "@/lib/subscription-shared";
 
@@ -78,15 +79,15 @@ export default function HomeLanding() {
               {TRIAL_DAYS} дня бесплатно для преподавателей
             </div>
             <h1 className="mb-4 text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
-              Подготовка к ЕГЭ
+              {APP_NAME} — подготовка к
               <span className="mt-2 block bg-gradient-to-r from-accent via-teal-300 to-teal-400 bg-clip-text text-transparent">
-                в одной сфере
+                ЕГЭ по русскому языку
               </span>
             </h1>
             <p className="mx-auto mb-8 max-w-xl text-lg text-text-secondary lg:mx-0">
-              <span className="font-medium text-text-primary">{APP_NAME}</span>{" "}
-              — платформа для репетиторов и учителей: группы, задания, тесты,
-              статистика и словарь для учеников.
+              Онлайн-платформа для репетиторов и учителей: группы, задания и
+              тесты <strong className="font-medium text-text-primary">ЕГЭ русский</strong>,
+              статистика, тексты и словарь — всё в одном месте.
             </p>
             <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
               <Link
@@ -129,9 +130,11 @@ export default function HomeLanding() {
 
       <section id="features" className="scroll-mt-24 mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="mb-10 text-center">
-          <h2 className="text-2xl font-bold sm:text-3xl">Всё для подготовки к экзамену</h2>
+          <h2 className="text-2xl font-bold sm:text-3xl">
+            Всё для подготовки к ЕГЭ по русскому
+          </h2>
           <p className="mt-2 text-text-secondary">
-            Инструменты преподавателя и личный кабинет ученика
+            Инструменты преподавателя и личный кабинет ученика на одной платформе
           </p>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -198,6 +201,8 @@ export default function HomeLanding() {
           </div>
         </div>
       </section>
+
+      <HomeFaqSection />
 
       <section className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
         <div className="relative overflow-hidden rounded-3xl border border-accent/25 bg-gradient-to-br from-accent/10 via-bg-card to-bg-card p-8 text-center sm:p-12">

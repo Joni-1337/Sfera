@@ -7,16 +7,20 @@ export const DEFAULT_TITLE = APP_TITLE;
 export const DEFAULT_DESCRIPTION = APP_DESCRIPTION;
 
 export const SEO_KEYWORDS = [
+  "ЕГЭ русский",
   "ЕГЭ по русскому",
-  "подготовка к ЕГЭ русский язык",
-  "платформа для репетитора",
-  "задания ЕГЭ",
-  "тесты ЕГЭ",
-  "группы учеников",
-  "репетитор русский язык",
+  "ЕГЭ по русскому языку",
+  "подготовка к ЕГЭ русский",
+  "подготовка к ЕГЭ по русскому языку",
+  "платформа для репетитора ЕГЭ",
+  "задания ЕГЭ русский",
+  "тесты ЕГЭ русский",
+  "репетитор русский язык ЕГЭ",
   "учитель русского ЕГЭ",
+  "онлайн подготовка ЕГЭ русский",
   APP_NAME,
   "sferaege",
+  "сфера егэ русский",
 ] as const;
 
 const YANDEX_VERIFICATION = process.env.NEXT_PUBLIC_YANDEX_VERIFICATION?.trim();
@@ -84,6 +88,15 @@ export const rootMetadata: Metadata = {
   alternates: {
     canonical: SITE_URL,
   },
+  icons: {
+    icon: [
+      { url: "/icon", sizes: "120x120", type: "image/png" },
+      { url: "/apple-icon", sizes: "180x180", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
+    shortcut: "/icon",
+  },
+  manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
     locale: "ru_RU",
@@ -113,6 +126,7 @@ export const noIndexMetadata: Metadata = {
 
 export const PUBLIC_INDEXABLE_PATHS = [
   "/",
+  "/ege-russkiy",
   "/pricing",
   "/privacy",
   "/offer",

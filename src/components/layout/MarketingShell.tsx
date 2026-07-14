@@ -60,10 +60,13 @@ export function MarketingShell({
           <div>
             <p className="text-sm font-semibold">{APP_NAME}</p>
             <p className="mt-1 text-xs text-text-muted">
-              Платформа для преподавателей и учеников
+              Подготовка к ЕГЭ по русскому языку
             </p>
           </div>
           <div className="flex flex-wrap justify-center gap-4 text-xs text-text-muted sm:justify-end">
+            <Link href="/ege-russkiy" className="hover:text-accent">
+              ЕГЭ русский
+            </Link>
             <Link href="/pricing" className="hover:text-accent">
               Тарифы
             </Link>

@@ -4,7 +4,23 @@ import {
   SUBSCRIPTION_PRICE_RUB,
   TRIAL_DAYS,
 } from "@/lib/subscription-shared";
+import { HOME_FAQ_ITEMS } from "@/components/home/HomeFaqSection";
 import { JsonLd } from "@/components/seo/JsonLd";
+
+function buildFaqJsonLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: HOME_FAQ_ITEMS.map(({ question, answer }) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: answer,
+      },
+    })),
+  };
+}
 
 export function HomePageJsonLd() {
   const data = [
@@ -13,6 +29,7 @@ export function HomePageJsonLd() {
       "@type": "Organization",
       name: APP_NAME,
       url: SITE_URL,
+      logo: `${SITE_URL}/icon`,
       email: "sferaege@mail.ru",
       founder: LEGAL_OPERATOR_FULL_NAME,
     },
@@ -23,7 +40,7 @@ export function HomePageJsonLd() {
       url: SITE_URL,
       inLanguage: "ru-RU",
       description:
-        "Платформа для преподавателей и учеников: группы, задания, тесты и аналитика для подготовки к ЕГЭ по русскому языку",
+        "Платформа для подготовки к ЕГЭ по русскому языку: группы, задания, тесты и аналитика для репетиторов и учителей",
     },
     {
       "@context": "https://schema.org",
@@ -39,6 +56,42 @@ export function HomePageJsonLd() {
         description: `Пробный период ${TRIAL_DAYS} дня для преподавателей`,
       },
     },
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      name: "Подготовка к ЕГЭ по русскому языку",
+      description:
+        "Онлайн-платформа для репетиторов и учителей: задания, тесты, группы и статистика",
+      provider: {
+        "@type": "Organization",
+        name: APP_NAME,
+        url: SITE_URL,
+      },
+      inLanguage: "ru-RU",
+      url: SITE_URL,
+    },
+    buildFaqJsonLd(),
+  ];
+
+  return <JsonLd data={data} />;
+}
+
+export function EgeRusskiyPageJsonLd() {
+  const data = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: "ЕГЭ русский — подготовка онлайн",
+      url: `${SITE_URL}/ege-russkiy`,
+      description:
+        "Подготовка к ЕГЭ по русскому языку на платформе СФЕРА для репетиторов и учителей",
+      isPartOf: {
+        "@type": "WebSite",
+        name: APP_NAME,
+        url: SITE_URL,
+      },
+    },
+    buildFaqJsonLd(),
   ];
 
   return <JsonLd data={data} />;
