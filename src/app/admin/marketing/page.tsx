@@ -3,45 +3,20 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { AppShell } from "@/components/layout/AppShell";
 import {
-  getMarketingStats,
-  isMarketingAdmin,
-  type SignupAttributionRow,
-} from "@/lib/marketing-stats";
+  DashboardLinksPanel,
+  StatsTable,
+  UtmHelpPanel,
+} from "@/components/admin/MarketingDashboardPanels";
+import {
+  getAdminDashboardGroups,
+  UTM_EXAMPLE,
+  UTM_FIELD_HINTS,
+} from "@/lib/admin-dashboard-links";
+import { getMarketingStats, isMarketingAdmin } from "@/lib/marketing-stats";
 import { SITE_URL } from "@/lib/legal";
 import { noIndexMetadata } from "@/lib/seo";
 
 export const metadata = noIndexMetadata;
-
-function StatsTable({
-  title,
-  rows,
-}: {
-  title: string;
-  rows: SignupAttributionRow[];
-}) {
-  return (
-    <section className="rounded-2xl border border-border bg-bg-card p-4 md:p-5">
-      <h2 className="mb-3 text-sm font-semibold md:text-base">{title}</h2>
-      {rows.length === 0 ? (
-        <p className="text-sm text-text-muted">Пока нет данных</p>
-      ) : (
-        <ul className="space-y-2">
-          {rows.map((row) => (
-            <li
-              key={`${title}-${row.label}`}
-              className="flex items-center justify-between gap-3 rounded-xl bg-bg-elevated/60 px-3 py-2 text-sm"
-            >
-              <span className="min-w-0 truncate">{row.label}</span>
-              <span className="shrink-0 font-semibold tabular-nums text-accent">
-                {row.count}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
-  );
-}
 
 export default async function MarketingAdminPage() {
   const session = await getSession();
@@ -55,6 +30,8 @@ export default async function MarketingAdminPage() {
 
   const stats = await getMarketingStats();
   const metrikaId = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID?.trim();
+  const dashboardGroups = getAdminDashboardGroups(metrikaId);
+  const withoutUtm = stats.bySource.find((r) => r.label === "— (не указано)")?.count ?? 0;
 
   return (
     <AppShell>
@@ -62,8 +39,21 @@ export default async function MarketingAdminPage() {
         <div>
           <h1 className="text-2xl font-bold md:text-3xl">Маркетинг и трафик</h1>
           <p className="mt-2 max-w-3xl text-sm text-text-secondary md:text-base">
-            Источники регистраций преподавателей (UTM и referrer сохраняются при
-            регистрации). Для просмотра всех визитов используйте Яндекс.Метрику.
+            Здесь — <strong className="font-medium text-text-primary">источники регистраций</strong>{" "}
+            преподавателей. Все визиты и поведение на сайте — в{" "}
+            <a
+              href={
+                metrikaId
+                  ? `https://metrika.yandex.ru/dashboard?id=${metrikaId}`
+                  : "https://metrika.yandex.ru"
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-accent hover:underline"
+            >
+              Яндекс.Метрике
+            </a>
+            .
           </p>
         </div>
 
@@ -75,46 +65,54 @@ export default async function MarketingAdminPage() {
             </p>
           </div>
           <div className="rounded-2xl border border-border bg-bg-card p-4">
-            <p className="text-sm text-text-muted">С данными об источнике</p>
+            <p className="text-sm text-text-muted">С UTM / referrer</p>
             <p className="mt-1 text-2xl font-bold tabular-nums">
               {stats.withAttribution}
+            </p>
+            <p className="mt-1 text-xs text-text-muted">
+              Без меток: {withoutUtm}
             </p>
           </div>
           <div className="rounded-2xl border border-border bg-bg-card p-4">
             <p className="text-sm text-text-muted">Сайт</p>
             <p className="mt-1 truncate text-sm font-medium">{SITE_URL}</p>
-            {metrikaId ? (
-              <a
-                href={`https://metrika.yandex.ru/dashboard?id=${metrikaId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 inline-block text-sm text-accent hover:underline"
-              >
-                Открыть Метрику →
-              </a>
-            ) : (
-              <p className="mt-2 text-xs text-text-muted">
-                Добавьте NEXT_PUBLIC_YANDEX_METRIKA_ID в Vercel
-              </p>
-            )}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-accent/20 bg-accent/5 p-4 text-sm text-text-secondary">
-          <p className="font-medium text-text-primary">Как отслеживать рекламу</p>
-          <p className="mt-2">
-            Добавляйте UTM-метки к ссылкам, например:{" "}
-            <code className="rounded bg-bg-elevated px-1.5 py-0.5 text-xs">
-              {SITE_URL}/?utm_source=yandex&utm_medium=cpc&utm_campaign=ege_rus
-            </code>
-          </p>
-        </div>
+        <DashboardLinksPanel groups={dashboardGroups} />
 
-        <div className="grid gap-4 lg:grid-cols-2">
-          <StatsTable title="utm_source" rows={stats.bySource} />
-          <StatsTable title="utm_medium" rows={stats.byMedium} />
-          <StatsTable title="utm_campaign" rows={stats.byCampaign} />
-          <StatsTable title="Страница входа" rows={stats.byLandingPage} />
+        <UtmHelpPanel exampleUrl={UTM_EXAMPLE.replace("https://sferaege.ru", SITE_URL)} />
+
+        <div>
+          <h2 className="mb-1 text-sm font-semibold md:text-base">
+            Статистика регистраций
+          </h2>
+          <p className="mb-4 text-xs text-text-muted md:text-sm">
+            Считаются только преподаватели, зарегистрировавшиеся после деплоя
+            отслеживания. Старые аккаунты без меток попадают в «не указано».
+          </p>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <StatsTable
+              title="utm_source"
+              hint={UTM_FIELD_HINTS["utm_source"]}
+              rows={stats.bySource}
+            />
+            <StatsTable
+              title="utm_medium"
+              hint={UTM_FIELD_HINTS["utm_medium"]}
+              rows={stats.byMedium}
+            />
+            <StatsTable
+              title="utm_campaign"
+              hint={UTM_FIELD_HINTS["utm_campaign"]}
+              rows={stats.byCampaign}
+            />
+            <StatsTable
+              title="Страница входа"
+              hint={UTM_FIELD_HINTS["Страница входа"]}
+              rows={stats.byLandingPage}
+            />
+          </div>
         </div>
 
         <section className="rounded-2xl border border-border bg-bg-card p-4 md:p-5">
@@ -134,8 +132,11 @@ export default async function MarketingAdminPage() {
               </thead>
               <tbody>
                 {stats.recentSignups.map((row) => (
-                  <tr key={`${row.email}-${row.createdAt.toISOString()}`} className="border-b border-border/60">
-                    <td className="px-2 py-2 whitespace-nowrap text-text-muted">
+                  <tr
+                    key={`${row.email}-${row.createdAt.toISOString()}`}
+                    className="border-b border-border/60"
+                  >
+                    <td className="whitespace-nowrap px-2 py-2 text-text-muted">
                       {row.createdAt.toLocaleDateString("ru-RU")}
                     </td>
                     <td className="px-2 py-2">
