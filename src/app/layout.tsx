@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Analytics } from "@/components/analytics/Analytics";
 import { TawkWidget } from "@/components/support/TawkWidget";
+import { TawkWelcomePrompt } from "@/components/support/TawkWelcomePrompt";
 import { rootMetadata } from "@/lib/seo";
 import "./globals.css";
 
@@ -22,6 +23,7 @@ export default function RootLayout({
         {children}
         <Analytics />
         <TawkWidget />
+        <TawkWelcomePrompt />
       </body>
     </html>
   );
