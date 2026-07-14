@@ -18,7 +18,8 @@
     "db:setup": "prisma db push && tsx prisma/seed.ts",
     "import:bank": "tsx scripts/import-question-bank.ts",
     "import:words": "tsx scripts/import-hard-words-bank.ts",
-    "import:russkij100": "tsx scripts/import-russkij100-tests.ts"
+    "import:russkij100": "tsx scripts/import-russkij100-tests.ts",
+    "generate:favicons": "tsx scripts/generate-favicons.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.9.0",

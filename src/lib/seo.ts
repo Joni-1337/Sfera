@@ -90,11 +90,12 @@ export const rootMetadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: "/favicon.ico", sizes: "120x120", type: "image/png" },
       { url: "/icon", sizes: "120x120", type: "image/png" },
-      { url: "/apple-icon", sizes: "180x180", type: "image/png" },
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
-    apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
-    shortcut: "/icon",
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: "/favicon.ico",
   },
   manifest: "/manifest.webmanifest",
   openGraph: {

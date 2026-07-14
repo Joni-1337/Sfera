@@ -1,3 +1,4 @@
+import React from "react";
 import { ImageResponse } from "next/og";
 
 /** PNG-иконка сферы для favicon / apple-touch (Яндекс и Google не всегда берут SVG). */
