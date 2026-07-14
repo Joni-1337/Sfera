@@ -44,8 +44,8 @@ export default async function SettingsPage() {
           <p className="mt-1 text-text-secondary">Аккаунт преподавателя</p>
         </header>
 
-        <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
-          <div className="space-y-6">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+          <div className="space-y-6 min-w-0">
             <SettingsSection
               title="Профиль"
               description="Имя отображается на дашборде и в интерфейсе"
@@ -64,7 +64,7 @@ export default async function SettingsPage() {
             </SettingsSection>
           </div>
 
-          <aside className="space-y-6">
+          <aside className="space-y-6 lg:w-[300px] lg:shrink-0">
             {subscription && <SettingsSubscriptionCard sub={subscription} />}
 
             <SettingsSection
