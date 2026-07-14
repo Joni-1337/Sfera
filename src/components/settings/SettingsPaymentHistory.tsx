@@ -47,12 +47,13 @@ export function SettingsPaymentHistory({
   }
 
   return (
-    <ul className="divide-y divide-border/70 rounded-xl border border-border/70">
-      {payments.map((payment) => {
-        const when = payment.paidAt ?? payment.createdAt;
+    <div className="max-h-[min(22rem,45vh)] overflow-y-auto rounded-xl border border-border/70">
+      <ul className="divide-y divide-border/70">
+        {payments.map((payment) => {
+          const when = payment.paidAt ?? payment.createdAt;
 
-        return (
-          <li key={payment.id} className="px-4 py-3.5">
+          return (
+            <li key={payment.id} className="bg-bg-elevated/20 px-4 py-3.5">
             <div className="flex flex-wrap items-center gap-2">
               <p className="font-semibold tabular-nums">
                 {payment.amountRub.toLocaleString("ru-RU")} ₽
@@ -89,6 +90,7 @@ export function SettingsPaymentHistory({
           </li>
         );
       })}
-    </ul>
+      </ul>
+    </div>
   );
 }

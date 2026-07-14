@@ -2,7 +2,10 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getTeacherSubscription } from "@/lib/subscription";
-import { getTeacherSubscriptionPayments, syncAllPendingTeacherPayments } from "@/lib/subscription-payments";
+import {
+  getTeacherSubscriptionPayments,
+  syncAllPendingTeacherPayments,
+} from "@/lib/subscription-payments";
 import { AppShell } from "@/components/layout/AppShell";
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { ProfileSettingsForm } from "@/components/settings/ProfileSettingsForm";
@@ -41,7 +44,7 @@ export default async function SettingsPage() {
           <p className="mt-1 text-text-secondary">Аккаунт преподавателя</p>
         </header>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start">
+        <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
           <div className="space-y-6">
             <SettingsSection
               title="Профиль"
@@ -64,15 +67,6 @@ export default async function SettingsPage() {
           <aside className="space-y-6">
             {subscription && <SettingsSubscriptionCard sub={subscription} />}
 
-            <section id="payments" className="scroll-mt-24">
-              <SettingsSection
-                title="История платежей"
-                description="Оплаты подписки"
-              >
-                <SettingsPaymentHistory payments={payments} />
-              </SettingsSection>
-            </section>
-
             <SettingsSection
               title="Оформление"
               description="Тема для вас и учеников ваших групп"
@@ -81,6 +75,19 @@ export default async function SettingsPage() {
             </SettingsSection>
           </aside>
         </div>
+
+        <section id="payments" className="mt-6 scroll-mt-24">
+          <SettingsSection
+            title="История платежей"
+            description={
+              payments.length > 3
+                ? `Оплаты подписки · ${payments.length} записей`
+                : "Оплаты подписки"
+            }
+          >
+            <SettingsPaymentHistory payments={payments} />
+          </SettingsSection>
+        </section>
 
         <div className="mt-6">
           <SettingsQuickLinks />
