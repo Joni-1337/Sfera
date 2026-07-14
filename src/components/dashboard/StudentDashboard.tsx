@@ -8,10 +8,10 @@ import {
   FileText,
   Clock,
   AlertCircle,
-  PlayCircle,
   ChevronRight,
   BookMarked,
 } from "lucide-react";
+import { SuccessCheckIcon } from "@/components/ui/SuccessCheckIcon";
 import { formatDate, formatDateTime } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { bestAttemptForStudent, isPerfectScore } from "@/lib/attempts";
@@ -237,7 +237,7 @@ export function StudentDashboard({
         <div className="rounded-2xl border border-border bg-bg-card p-5">
           {workItems.length === 0 ? (
             <div className="flex flex-col items-center py-8 text-center">
-              <PlayCircle className="mb-3 h-10 w-10 text-green-400/60" />
+              <SuccessCheckIcon size="lg" className="mb-3" />
               <p className="text-sm text-text-secondary">Всё выполнено</p>
               <p className="mt-1 text-xs text-text-muted">
                 Новые задания и тесты появятся здесь

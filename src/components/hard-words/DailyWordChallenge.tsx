@@ -7,11 +7,11 @@ import {
   Sparkles,
   BookOpen,
   ArrowRight,
-  CheckCircle2,
   XCircle,
   Trophy,
   RotateCcw,
 } from "lucide-react";
+import { SuccessCheckIcon } from "@/components/ui/SuccessCheckIcon";
 import { submitDailyWordQuiz } from "@/lib/daily-word-actions";
 import { hardWordTopicLabel } from "@/lib/hard-word-constants";
 import { WordContentBlocks } from "@/components/hard-words/WordContentBlocks";
@@ -363,7 +363,7 @@ export function DailyWordChallenge({
         <div className="mt-5 rounded-2xl border border-border bg-bg-card p-5">
           <div className="flex items-start gap-3">
             {result.passed ? (
-              <CheckCircle2 className="mt-0.5 h-6 w-6 shrink-0 text-green-400" />
+              <SuccessCheckIcon size="md" className="mt-0.5" />
             ) : (
               <XCircle className="mt-0.5 h-6 w-6 shrink-0 text-red-400" />
             )}

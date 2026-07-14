@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { ClipboardList, CheckCircle, Clock, AlertCircle, RotateCcw } from "lucide-react";
+import { ClipboardList, Clock, AlertCircle, RotateCcw } from "lucide-react";
+import { SuccessCheckIcon } from "@/components/ui/SuccessCheckIcon";
 import { formatDate, RESULT_CATEGORIES } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import {
@@ -97,7 +98,7 @@ export function StudentTasksView({
                   )}
                 >
                   {done ? (
-                    <CheckCircle className="h-6 w-6 text-green-300" strokeWidth={2.25} />
+                    <SuccessCheckIcon size="md" />
                   ) : overdue ? (
                     <AlertCircle className="h-6 w-6 text-red-400" />
                   ) : (

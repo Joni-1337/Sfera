@@ -3,7 +3,9 @@
 import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Check, Sparkles, GraduationCap, User, Loader2 } from "lucide-react";
+import { Sparkles, Loader2 } from "lucide-react";
+import { PlanRoleIcon } from "@/components/ui/PlanRoleIcon";
+import { SuccessCheckIcon } from "@/components/ui/SuccessCheckIcon";
 import { reachMetrikaGoal } from "@/lib/metrika-client";
 import { METRIKA_GOALS } from "@/lib/metrika-goals";
 import { startSubscriptionCheckout } from "@/lib/subscription-actions";
@@ -132,7 +134,7 @@ export function PricingView({
 
       <div className="grid gap-6 lg:grid-cols-2">
         <PlanCard
-          icon={GraduationCap}
+          role="teacher"
           name="Преподаватель"
           subtitle="Для преподавателей"
           price={`${SUBSCRIPTION_PRICE_RUB.toLocaleString("ru-RU")} ₽`}
@@ -203,7 +205,7 @@ export function PricingView({
         />
 
         <PlanCard
-          icon={User}
+          role="student"
           name="Ученик"
           subtitle="Бесплатно"
           price="0 ₽"
@@ -249,7 +251,7 @@ export function PricingView({
 }
 
 function PlanCard({
-  icon: Icon,
+  role,
   name,
   subtitle,
   price,
@@ -260,7 +262,7 @@ function PlanCard({
   badge,
   footer,
 }: {
-  icon: React.ComponentType<{ className?: string }>;
+  role: "teacher" | "student";
   name: string;
   subtitle: string;
   price: string;
@@ -287,9 +289,7 @@ function PlanCard({
       )}
 
       <div className="mb-4 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10">
-          <Icon className="h-5 w-5 text-accent" />
-        </div>
+        <PlanRoleIcon role={role} />
         <div>
           <h3 className="text-lg font-semibold">{name}</h3>
           <p className="text-xs text-text-muted">{subtitle}</p>
@@ -309,8 +309,8 @@ function PlanCard({
 
       <ul className="mt-5 flex-1 space-y-2.5">
         {features.map((f) => (
-          <li key={f} className="flex items-start gap-2 text-sm text-text-secondary">
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+          <li key={f} className="flex items-start gap-2.5 text-sm text-text-secondary">
+            <SuccessCheckIcon size="sm" className="mt-0.5" />
             {f}
           </li>
         ))}

@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { FlaskConical, CheckCircle, Clock, AlertCircle, RotateCcw } from "lucide-react";
+import { FlaskConical, Clock, AlertCircle, RotateCcw } from "lucide-react";
+import { SuccessCheckIcon } from "@/components/ui/SuccessCheckIcon";
 import { formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import {
@@ -90,7 +91,7 @@ export function StudentTestsView({
                   )}
                 >
                   {done ? (
-                    <CheckCircle className="h-6 w-6 text-green-300" strokeWidth={2.25} />
+                    <SuccessCheckIcon size="md" />
                   ) : overdue ? (
                     <AlertCircle className="h-6 w-6 text-red-400" />
                   ) : (
