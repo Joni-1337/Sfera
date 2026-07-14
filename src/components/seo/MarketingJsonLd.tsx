@@ -1,5 +1,6 @@
 import { APP_NAME } from "@/lib/branding";
 import { SITE_URL, LEGAL_OPERATOR_FULL_NAME } from "@/lib/legal";
+import { MARKETING_NAV_LINKS } from "@/lib/marketing-nav";
 import {
   SUBSCRIPTION_PRICE_RUB,
   TRIAL_DAYS,
@@ -22,6 +23,15 @@ function buildFaqJsonLd() {
   };
 }
 
+function buildSiteNavigationJsonLd() {
+  return MARKETING_NAV_LINKS.map(({ label, path }) => ({
+    "@context": "https://schema.org",
+    "@type": "SiteNavigationElement",
+    name: label,
+    url: `${SITE_URL}${path}`,
+  }));
+}
+
 export function HomePageJsonLd() {
   const data = [
     {
@@ -29,7 +39,7 @@ export function HomePageJsonLd() {
       "@type": "Organization",
       name: APP_NAME,
       url: SITE_URL,
-      logo: `${SITE_URL}/icon`,
+      logo: `${SITE_URL}/favicon.ico`,
       email: "sferaege@mail.ru",
       founder: LEGAL_OPERATOR_FULL_NAME,
     },
@@ -71,6 +81,7 @@ export function HomePageJsonLd() {
       url: SITE_URL,
     },
     buildFaqJsonLd(),
+    ...buildSiteNavigationJsonLd(),
   ];
 
   return <JsonLd data={data} />;
@@ -98,24 +109,28 @@ export function EgeRusskiyPageJsonLd() {
 }
 
 export function PricingPageJsonLd() {
-  const data = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: `Подписка преподавателя на платформу «${APP_NAME}»`,
-    description:
-      "Полный доступ к группам, заданиям, тестам ЕГЭ, текстам и аналитике",
-    brand: { "@type": "Brand", name: APP_NAME },
-    offers: {
-      "@type": "Offer",
-      url: `${SITE_URL}/pricing`,
-      priceCurrency: "RUB",
-      price: SUBSCRIPTION_PRICE_RUB,
-      availability: "https://schema.org/InStock",
-      priceValidUntil: new Date(
-        Date.now() + 365 * 24 * 60 * 60 * 1000
-      ).toISOString().slice(0, 10),
+  const data = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: `Подписка преподавателя на платформу «${APP_NAME}»`,
+      description:
+        "Полный доступ к группам, заданиям, тестам ЕГЭ, текстам и аналитике",
+      brand: { "@type": "Brand", name: APP_NAME },
+      offers: {
+        "@type": "Offer",
+        url: `${SITE_URL}/pricing`,
+        priceCurrency: "RUB",
+        price: SUBSCRIPTION_PRICE_RUB,
+        availability: "https://schema.org/InStock",
+        priceValidUntil: new Date(
+          Date.now() + 365 * 24 * 60 * 60 * 1000
+        )
+          .toISOString()
+          .slice(0, 10),
+      },
     },
-  };
+  ];
 
   return <JsonLd data={data} />;
 }

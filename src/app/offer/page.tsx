@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { SeoBreadcrumbs } from "@/components/seo/SeoBreadcrumbs";
 import { APP_NAME, SUPPORT_EMAIL } from "@/lib/branding";
+import { HOME_BREADCRUMB } from "@/lib/breadcrumbs";
 import {
   LEGAL_OPERATOR_FULL_NAME,
   SUBSCRIPTION_PRICE_LABEL,
@@ -22,6 +24,9 @@ export default function OfferPage() {
   return (
     <div className="min-h-screen bg-bg-primary px-4 py-12">
       <div className="mx-auto max-w-3xl">
+        <SeoBreadcrumbs
+          items={[HOME_BREADCRUMB, { label: "Публичная оферта" }]}
+        />
         <Link
           href="/pricing"
           className="mb-8 inline-block text-sm text-accent hover:underline"

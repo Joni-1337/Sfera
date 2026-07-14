@@ -87,9 +87,32 @@ export default function HomeLanding() {
             </h1>
             <p className="mx-auto mb-8 max-w-xl text-lg text-text-secondary lg:mx-0">
               Онлайн-платформа для репетиторов и учителей: группы, задания и
-              тесты <strong className="font-medium text-text-primary">ЕГЭ русский</strong>,
-              статистика, тексты и словарь — всё в одном месте.
+              тесты{" "}
+              <Link
+                href="/ege-russkiy"
+                className="font-medium text-text-primary hover:text-accent hover:underline"
+              >
+                ЕГЭ русский
+              </Link>
+              , статистика, тексты и словарь — всё в одном месте.
             </p>
+            <nav
+              aria-label="Основные разделы"
+              className="mb-8 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm lg:justify-start"
+            >
+              <Link
+                href="/ege-russkiy"
+                className="text-text-muted hover:text-accent"
+              >
+                ЕГЭ русский
+              </Link>
+              <Link
+                href="/pricing"
+                className="text-text-muted hover:text-accent"
+              >
+                Тарифы
+              </Link>
+            </nav>
             <div className="flex flex-wrap justify-center gap-3 lg:justify-start">
               <Link
                 href="/register"

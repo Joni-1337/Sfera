@@ -12,8 +12,10 @@ import {
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { HomeFaqSection } from "@/components/home/HomeFaqSection";
 import { EgeRusskiyPageJsonLd } from "@/components/seo/MarketingJsonLd";
+import { SeoBreadcrumbs } from "@/components/seo/SeoBreadcrumbs";
 import { AccentIcon3D } from "@/components/ui/AccentIcon3D";
 import { APP_NAME } from "@/lib/branding";
+import { HOME_BREADCRUMB } from "@/lib/breadcrumbs";
 import { buildPageMetadata } from "@/lib/seo";
 import { SUBSCRIPTION_PRICE_RUB, TRIAL_DAYS } from "@/lib/subscription-shared";
 
@@ -53,9 +55,12 @@ const POINTS = [
 
 export default function EgeRusskiyPage() {
   return (
-    <MarketingShell activeNav="home">
+    <MarketingShell activeNav="ege-russkiy">
       <EgeRusskiyPageJsonLd />
       <article className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
+        <SeoBreadcrumbs
+          items={[HOME_BREADCRUMB, { label: "ЕГЭ русский" }]}
+        />
         <p className="mb-3 text-sm font-medium uppercase tracking-wider text-accent">
           {APP_NAME}
         </p>

@@ -1,13 +1,17 @@
 import Link from "next/link";
 import { SferaLogo } from "@/components/branding/SferaLogo";
 import { APP_NAME } from "@/lib/branding";
+import {
+  MARKETING_NAV_LINKS,
+  type MarketingNavKey,
+} from "@/lib/marketing-nav";
 
 export function MarketingShell({
   children,
   activeNav,
 }: {
   children: React.ReactNode;
-  activeNav?: "home" | "pricing";
+  activeNav?: MarketingNavKey;
 }) {
   return (
     <div className="relative min-h-screen overflow-hidden bg-bg-primary">
@@ -19,23 +23,29 @@ export function MarketingShell({
 
       <header className="relative mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
         <SferaLogo href="/" size="md" showTag={false} />
-        <nav className="hidden items-center gap-6 text-sm sm:flex">
+        <nav
+          className="hidden items-center gap-6 text-sm sm:flex"
+          aria-label="Основное меню"
+        >
           <Link
             href="/#features"
             className="text-text-secondary transition-colors hover:text-accent"
           >
             Возможности
           </Link>
-          <Link
-            href="/pricing"
-            className={
-              activeNav === "pricing"
-                ? "font-medium text-accent"
-                : "text-text-secondary transition-colors hover:text-accent"
-            }
-          >
-            Тарифы
-          </Link>
+          {MARKETING_NAV_LINKS.map(({ label, path, navKey }) => (
+            <Link
+              key={path}
+              href={path}
+              className={
+                activeNav === navKey
+                  ? "font-medium text-accent"
+                  : "text-text-secondary transition-colors hover:text-accent"
+              }
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
         <div className="flex items-center gap-2 sm:gap-3">
           <Link

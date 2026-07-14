@@ -8,8 +8,10 @@ import { AppShell } from "@/components/layout/AppShell";
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { PricingView } from "@/components/subscription/PricingView";
 import { PricingPageJsonLd } from "@/components/seo/MarketingJsonLd";
+import { SeoBreadcrumbs } from "@/components/seo/SeoBreadcrumbs";
 import { MetrikaGoal } from "@/components/analytics/MetrikaGoal";
 import { APP_NAME } from "@/lib/branding";
+import { HOME_BREADCRUMB } from "@/lib/breadcrumbs";
 import { buildPageMetadata } from "@/lib/seo";
 import {
   SUBSCRIPTION_PRICE_RUB,
@@ -89,6 +91,7 @@ export default async function PricingPage({
     <>
       <PricingPageJsonLd />
       <MetrikaGoal goal="pricing_view" />
+      <SeoBreadcrumbs items={[HOME_BREADCRUMB, { label: "Тарифы" }]} />
       <div className="mb-10 text-center sm:text-left">
         <p className="mb-2 text-sm font-medium uppercase tracking-wider text-accent">
           {APP_NAME}

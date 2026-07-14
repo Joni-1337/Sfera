@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { SeoBreadcrumbs } from "@/components/seo/SeoBreadcrumbs";
 import { APP_NAME, SUPPORT_EMAIL } from "@/lib/branding";
+import { HOME_BREADCRUMB } from "@/lib/breadcrumbs";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -13,6 +15,12 @@ export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-bg-primary px-4 py-12">
       <div className="mx-auto max-w-3xl">
+        <SeoBreadcrumbs
+          items={[
+            HOME_BREADCRUMB,
+            { label: "Политика конфиденциальности" },
+          ]}
+        />
         <Link
           href="/register"
           className="mb-8 inline-block text-sm text-accent hover:underline"
