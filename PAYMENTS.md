@@ -89,6 +89,7 @@ https://sferaege.ru/api/payments/yookassa
 Включите события:
 - `payment.succeeded`
 - `payment.canceled`
+- `refund.succeeded` — возврат: списывает дни подписки и обновляет историю платежей
 
 Сохраните. Без webhook подписка не активируется автоматически.
 

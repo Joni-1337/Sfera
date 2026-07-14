@@ -12,15 +12,25 @@ export type PaymentHistoryItem = {
   receiptUrl: string | null;
   createdAt: Date;
   paidAt: Date | null;
+  refundedAt: Date | null;
+  refundedAmountRub: number;
 };
 
-function statusLabel(status: string) {
+function statusLabel(status: string, refundedAmountRub: number, amountRub: number) {
+  if (status === "refunded") return "Возвращено";
+  if (status === "succeeded" && refundedAmountRub > 0 && refundedAmountRub < amountRub) {
+    return "Частичный возврат";
+  }
   if (status === "succeeded") return "Оплачено";
   if (status === "canceled") return "Отменено";
   return "Ожидание";
 }
 
-function statusClass(status: string) {
+function statusClass(status: string, refundedAmountRub: number, amountRub: number) {
+  if (status === "refunded") return "badge-status-error";
+  if (status === "succeeded" && refundedAmountRub > 0 && refundedAmountRub < amountRub) {
+    return "badge-status-warn";
+  }
   if (status === "succeeded") return "badge-published";
   if (status === "canceled") return "badge-status-error";
   return "badge-status-warn";
@@ -50,7 +60,20 @@ export function SettingsPaymentHistory({
     <div className="max-h-[min(22rem,45vh)] overflow-y-auto rounded-xl border border-border/70">
       <ul className="divide-y divide-border/70">
         {payments.map((payment) => {
-          const when = payment.paidAt ?? payment.createdAt;
+          const when =
+            payment.status === "refunded" && payment.refundedAt
+              ? payment.refundedAt
+              : payment.paidAt ?? payment.createdAt;
+          const label = statusLabel(
+            payment.status,
+            payment.refundedAmountRub,
+            payment.amountRub
+          );
+          const badgeClass = statusClass(
+            payment.status,
+            payment.refundedAmountRub,
+            payment.amountRub
+          );
 
           return (
             <li key={payment.id} className="bg-bg-elevated/20 px-4 py-3.5">
@@ -61,15 +84,30 @@ export function SettingsPaymentHistory({
               <span
                 className={cn(
                   "rounded-full px-2 py-0.5 text-[11px] font-semibold",
-                  statusClass(payment.status)
+                  badgeClass
                 )}
               >
-                {statusLabel(payment.status)}
+                {label}
               </span>
             </div>
             <p className="mt-1 text-sm text-text-secondary">
               {payment.description || "Подписка на 30 дней"}
             </p>
+            {payment.status === "refunded" || payment.refundedAmountRub > 0 ? (
+              <p className="mt-1 text-xs text-text-muted">
+                −
+                {Math.max(
+                  1,
+                  Math.round(
+                    (payment.refundedAmountRub / payment.amountRub) * 30
+                  )
+                )}{" "}
+                дн. подписки
+                {payment.refundedAmountRub > 0
+                  ? ` · возврат ${payment.refundedAmountRub.toLocaleString("ru-RU")} ₽`
+                  : ""}
+              </p>
+            ) : null}
             <p className="mt-0.5 text-xs text-text-muted">
               {formatDateTime(when)}
             </p>

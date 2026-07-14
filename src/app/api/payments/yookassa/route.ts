@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { processYookassaWebhookPayment, revalidateSubscriptionPaths } from "@/lib/subscription-payments";
+import {
+  processYookassaRefundWebhook,
+  processYookassaWebhookPayment,
+  revalidateSubscriptionPaths,
+} from "@/lib/subscription-payments";
 import { isYookassaConfigured } from "@/lib/yookassa";
 
 type YookassaWebhookBody = {
   event?: string;
-  object?: { id?: string };
+  object?: { id?: string; payment_id?: string };
 };
 
 export async function GET() {
@@ -28,6 +32,25 @@ export async function POST(request: NextRequest) {
 
   const event = body.event;
   const paymentId = body.object?.id?.trim();
+  const refundPaymentId = body.object?.payment_id?.trim();
+
+  if (event === "refund.succeeded") {
+    const yookassaPaymentId = refundPaymentId ?? paymentId;
+    if (!yookassaPaymentId) {
+      return NextResponse.json({ error: "Missing payment id" }, { status: 400 });
+    }
+
+    try {
+      const result = await processYookassaRefundWebhook(yookassaPaymentId);
+      if ("refunded" in result && result.refunded) {
+        revalidateSubscriptionPaths();
+      }
+      return NextResponse.json({ ok: true });
+    } catch (error) {
+      console.error("[yookassa/webhook/refund]", error);
+      return NextResponse.json({ error: "Webhook processing failed" }, { status: 500 });
+    }
+  }
 
   if (!paymentId) {
     return NextResponse.json({ error: "Missing payment id" }, { status: 400 });

@@ -4,6 +4,8 @@ import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Check, Sparkles, GraduationCap, User, Loader2 } from "lucide-react";
+import { reachMetrikaGoal } from "@/lib/metrika-client";
+import { METRIKA_GOALS } from "@/lib/metrika-goals";
 import { startSubscriptionCheckout } from "@/lib/subscription-actions";
 import {
   SUBSCRIPTION_PRICE_RUB,
@@ -71,6 +73,7 @@ export function PricingView({
           setError(result.error);
           return;
         }
+        reachMetrikaGoal(METRIKA_GOALS.paymentCheckout);
         if (result.redirectTo.startsWith("http")) {
           window.location.href = result.redirectTo;
           return;

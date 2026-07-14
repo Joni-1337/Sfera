@@ -3,6 +3,8 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { reachMetrikaGoal } from "@/lib/metrika-client";
+import { METRIKA_GOALS } from "@/lib/metrika-goals";
 import {
   resumeSubscriptionPayment,
   syncSubscriptionPayment,
@@ -22,6 +24,7 @@ export function PaymentHistoryActions({ paymentId }: { paymentId: string }) {
           setError(result.error);
           return;
         }
+        reachMetrikaGoal(METRIKA_GOALS.paymentCheckout);
         if (result.redirectTo.startsWith("http")) {
           window.location.href = result.redirectTo;
         } else {

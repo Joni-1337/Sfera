@@ -10,6 +10,7 @@ import {
   extractYookassaReceiptUrl,
   fetchYookassaPayment,
   isYookassaConfigured,
+  parseYookassaAmountRub,
   yookassaAmountRub,
   yookassaPaymentDescription,
   type YookassaPaymentStatus,
@@ -33,11 +34,212 @@ function computeSubscriptionEndDate(currentEndsAt: Date | null) {
   return endsAt;
 }
 
-function parsePaidAmountRub(amount?: { value: string; currency: string }) {
-  if (!amount || amount.currency !== "RUB") return null;
-  const parsed = Number.parseFloat(amount.value);
-  if (!Number.isFinite(parsed)) return null;
-  return Math.round(parsed);
+function subtractSubscriptionDays(currentEndsAt: Date | null, days: number) {
+  if (!currentEndsAt || days <= 0) return currentEndsAt;
+  const endsAt = new Date(currentEndsAt);
+  endsAt.setDate(endsAt.getDate() - days);
+  return endsAt;
+}
+
+function refundDaysForAmount(amountRub: number, paymentAmountRub: number) {
+  if (paymentAmountRub <= 0) return SUBSCRIPTION_PERIOD_DAYS;
+  return Math.max(
+    1,
+    Math.round((amountRub / paymentAmountRub) * SUBSCRIPTION_PERIOD_DAYS)
+  );
+}
+
+function resolveSubscriptionStatusAfterRefund(teacher: {
+  trialEndsAt: Date | null;
+  subscriptionEndsAt: Date | null;
+}) {
+  const now = new Date();
+  const hasPaidAccess =
+    teacher.subscriptionEndsAt && teacher.subscriptionEndsAt > now;
+
+  if (hasPaidAccess) {
+    return "active" as const;
+  }
+
+  if (teacher.trialEndsAt && teacher.trialEndsAt > now) {
+    return "trial" as const;
+  }
+
+  return "expired" as const;
+}
+
+type PaymentRefundRow = {
+  id: string;
+  teacherId: string;
+  amountRub: number;
+  status: string;
+  refundedAmountRub: number;
+  yookassaId: string;
+};
+
+async function applyPaymentRefundDelta(
+  payment: PaymentRefundRow,
+  totalRefundedRub: number,
+  deltaRub: number
+) {
+  if (deltaRub <= 0 || payment.status === "refunded") {
+    return { alreadyProcessed: true as const };
+  }
+
+  if (payment.status !== "succeeded" && payment.status !== "refunded") {
+    return { ignored: true as const };
+  }
+
+  const daysToSubtract = refundDaysForAmount(deltaRub, payment.amountRub);
+  const fullyRefunded = totalRefundedRub >= payment.amountRub;
+
+  const result = await prisma.$transaction(async (tx) => {
+    const current = await tx.subscriptionPayment.findUnique({
+      where: { id: payment.id },
+    });
+
+    if (!current || current.status === "refunded") {
+      return { alreadyProcessed: true as const };
+    }
+
+    if (current.refundedAmountRub >= totalRefundedRub) {
+      return { alreadyProcessed: true as const };
+    }
+
+    const teacher = await tx.teacher.findUnique({
+      where: { id: payment.teacherId },
+      select: {
+        subscriptionEndsAt: true,
+        trialEndsAt: true,
+        subscriptionStatus: true,
+      },
+    });
+
+    if (!teacher) {
+      throw new Error("Teacher not found for refund");
+    }
+
+    const subscriptionEndsAt = subtractSubscriptionDays(
+      teacher.subscriptionEndsAt,
+      daysToSubtract
+    );
+
+    await tx.subscriptionPayment.update({
+      where: { id: payment.id },
+      data: {
+        refundedAmountRub: totalRefundedRub,
+        refundedAt: new Date(),
+        status: fullyRefunded ? "refunded" : "succeeded",
+      },
+    });
+
+    await tx.teacher.update({
+      where: { id: payment.teacherId },
+      data: {
+        subscriptionEndsAt,
+        subscriptionStatus: resolveSubscriptionStatusAfterRefund({
+          trialEndsAt: teacher.trialEndsAt,
+          subscriptionEndsAt,
+        }),
+      },
+    });
+
+    return {
+      refunded: true as const,
+      teacherId: payment.teacherId,
+      fullyRefunded,
+    };
+  });
+
+  if ("refunded" in result && result.refunded) {
+    revalidateSubscriptionPaths();
+  }
+
+  return result;
+}
+
+async function syncPaymentRefundsFromYookassa(payment: PaymentRefundRow) {
+  if (
+    payment.yookassaId.startsWith("pending_") ||
+    payment.yookassaId.startsWith("stub_")
+  ) {
+    return { ignored: true as const };
+  }
+
+  if (payment.status === "refunded") {
+    return { alreadyProcessed: true as const };
+  }
+
+  if (payment.status !== "succeeded") {
+    return { ignored: true as const };
+  }
+
+  const remote = await fetchYookassaPayment(payment.yookassaId);
+  if (!remote.ok) {
+    return { error: remote.error };
+  }
+
+  const totalRefundedRub = parseYookassaAmountRub(remote.data.refunded_amount) ?? 0;
+  if (totalRefundedRub <= payment.refundedAmountRub) {
+    return { unchanged: true as const };
+  }
+
+  const deltaRub = totalRefundedRub - payment.refundedAmountRub;
+  return applyPaymentRefundDelta(payment, totalRefundedRub, deltaRub);
+}
+
+export async function processYookassaRefundWebhook(yookassaPaymentId: string) {
+  const payment = await prisma.subscriptionPayment.findUnique({
+    where: { yookassaId: yookassaPaymentId },
+    select: {
+      id: true,
+      teacherId: true,
+      amountRub: true,
+      status: true,
+      refundedAmountRub: true,
+      yookassaId: true,
+    },
+  });
+
+  if (!payment) {
+    console.warn("[yookassa] refund for unknown payment:", yookassaPaymentId);
+    return { ignored: true as const };
+  }
+
+  return syncPaymentRefundsFromYookassa(payment);
+}
+
+export async function syncAllTeacherPaymentRefunds(teacherId: string) {
+  if (!isYookassaConfigured()) return;
+
+  const payments = await prisma.subscriptionPayment.findMany({
+    where: {
+      teacherId,
+      status: { in: ["succeeded", "refunded"] },
+      NOT: { yookassaId: { startsWith: "pending_" } },
+    },
+    select: {
+      id: true,
+      teacherId: true,
+      amountRub: true,
+      status: true,
+      refundedAmountRub: true,
+      yookassaId: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  for (const payment of payments) {
+    try {
+      await syncPaymentRefundsFromYookassa(payment);
+    } catch (error) {
+      console.error(
+        "[subscription] refund sync failed:",
+        payment.yookassaId,
+        error
+      );
+    }
+  }
 }
 
 async function notifySubscriptionPaid(paymentId: string) {
@@ -214,6 +416,8 @@ export async function getTeacherSubscriptionPayments(teacherId: string, limit = 
       receiptUrl: true,
       createdAt: true,
       paidAt: true,
+      refundedAt: true,
+      refundedAmountRub: true,
     },
   });
 }
@@ -238,6 +442,8 @@ export async function syncAllPendingTeacherPayments(teacherId: string) {
       console.error("[subscription] sync pending failed:", payment.yookassaId, error);
     }
   }
+
+  await syncAllTeacherPaymentRefunds(teacherId);
 }
 
 /** После возврата с ЮKassa — проверяем статус платежей напрямую (не ждём webhook). */
@@ -380,8 +586,24 @@ export async function processYookassaWebhookPayment(yookassaId: string) {
     return { ignored: true as const };
   }
 
-  if (existing.status === "succeeded") {
-    await notifySubscriptionPaid(existing.id);
+  if (existing.status === "succeeded" || existing.status === "refunded") {
+    const refundSync = await syncPaymentRefundsFromYookassa({
+      id: existing.id,
+      teacherId: existing.teacherId,
+      amountRub: existing.amountRub,
+      status: existing.status,
+      refundedAmountRub: existing.refundedAmountRub,
+      yookassaId: existing.yookassaId,
+    });
+
+    if ("refunded" in refundSync && refundSync.refunded) {
+      return refundSync;
+    }
+
+    if (existing.status === "succeeded") {
+      await notifySubscriptionPaid(existing.id);
+    }
+
     return { alreadyProcessed: true as const };
   }
 
@@ -404,7 +626,7 @@ export async function processYookassaWebhookPayment(yookassaId: string) {
     return { canceled: true as const };
   }
 
-  const paidAmountRub = parsePaidAmountRub(remote.data.amount);
+  const paidAmountRub = parseYookassaAmountRub(remote.data.amount);
   if (paidAmountRub === null || paidAmountRub <= 0) {
     return { error: "Некорректная сумма платежа" as const };
   }

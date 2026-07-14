@@ -43,10 +43,12 @@ model SubscriptionPayment {
   amountRub   Int
   status      String    @default("pending")
   description String    @default("")
-  receiptUrl  String?
-  emailSentAt DateTime?
-  createdAt   DateTime  @default(now())
-  paidAt      DateTime?
+  receiptUrl        String?
+  emailSentAt       DateTime?
+  refundedAmountRub Int       @default(0)
+  refundedAt        DateTime?
+  createdAt         DateTime  @default(now())
+  paidAt            DateTime?
 
   @@index([teacherId, createdAt])
 }

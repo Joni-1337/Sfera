@@ -12,16 +12,33 @@ export type YookassaPaymentStatus =
   | "succeeded"
   | "canceled";
 
+type YookassaAmount = { value: string; currency: string };
+
 type YookassaPayment = {
   id: string;
   status: YookassaPaymentStatus;
   paid: boolean;
-  amount?: { value: string; currency: string };
+  amount?: YookassaAmount;
+  refunded_amount?: YookassaAmount;
   confirmation?: { confirmation_url?: string };
   metadata?: Record<string, string>;
   receipt_registration?: "pending" | "succeeded" | "canceled";
   receipt_ofd_url?: string;
 };
+
+export type YookassaRefund = {
+  id: string;
+  payment_id: string;
+  status: string;
+  amount?: YookassaAmount;
+};
+
+export function parseYookassaAmountRub(amount?: YookassaAmount) {
+  if (!amount || amount.currency !== "RUB") return null;
+  const parsed = Number.parseFloat(amount.value);
+  if (!Number.isFinite(parsed)) return null;
+  return Math.round(parsed);
+}
 
 export function isYookassaReceiptsEnabled() {
   if (process.env.YOOKASSA_SEND_RECEIPTS === "false") return false;
