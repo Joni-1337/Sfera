@@ -39,6 +39,8 @@ npm run db:seed
 | `APP_URL` | `https://sferaege.ru` (или временный `https://xxx.vercel.app`) |
 | `RESEND_API_KEY` | Ключ Resend (когда настроите) |
 | `EMAIL_FROM` | `СФЕРА <noreply@sferaege.ru>` |
+| `SUBSCRIPTION_PRICE_RUB` | `1990` — сумма списания в ЮKassa |
+| `NEXT_PUBLIC_SUBSCRIPTION_PRICE_RUB` | `1990` — цена на сайте (нужен redeploy после смены) |
 | `SUBSCRIPTION_STUB` | `true` (только для теста без ЮKassa) |
 | `YOOKASSA_SHOP_ID` | shopId из [ЮKassa](https://yookassa.ru) (когда подключите) |
 | `YOOKASSA_SECRET_KEY` | Секретный ключ ЮKassa |
