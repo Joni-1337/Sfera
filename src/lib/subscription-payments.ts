@@ -17,6 +17,12 @@ import {
 
 const SUBSCRIPTION_PERIOD_DAYS = 30;
 
+export function revalidateSubscriptionPaths() {
+  revalidatePath("/dashboard");
+  revalidatePath("/pricing");
+  revalidatePath("/settings");
+}
+
 function computeSubscriptionEndDate(currentEndsAt: Date | null) {
   const now = new Date();
   const baseDate =
@@ -111,9 +117,7 @@ export async function activateTeacherSubscription(
     },
   });
 
-  revalidatePath("/dashboard");
-  revalidatePath("/pricing");
-  revalidatePath("/settings");
+  revalidateSubscriptionPaths();
 
   if (paymentId) {
     await notifySubscriptionPaid(paymentId);
@@ -228,7 +232,11 @@ export async function syncAllPendingTeacherPayments(teacherId: string) {
   });
 
   for (const payment of pending) {
-    await processYookassaWebhookPayment(payment.yookassaId);
+    try {
+      await processYookassaWebhookPayment(payment.yookassaId);
+    } catch (error) {
+      console.error("[subscription] sync pending failed:", payment.yookassaId, error);
+    }
   }
 }
 
@@ -448,10 +456,6 @@ export async function processYookassaWebhookPayment(yookassaId: string) {
       },
     });
   });
-
-  revalidatePath("/dashboard");
-  revalidatePath("/pricing");
-  revalidatePath("/settings");
 
   await notifySubscriptionPaid(existing.id);
 

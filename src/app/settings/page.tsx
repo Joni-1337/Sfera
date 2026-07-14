@@ -18,7 +18,9 @@ export default async function SettingsPage() {
   if (!session) redirect("/login");
   if (session.role !== "teacher") redirect("/dashboard");
 
-  await syncAllPendingTeacherPayments(session.id);
+  await syncAllPendingTeacherPayments(session.id).catch((error) => {
+    console.error("[settings] payment sync failed:", error);
+  });
 
   const [teacher, subscription, payments] = await Promise.all([
     prisma.teacher.findUnique({

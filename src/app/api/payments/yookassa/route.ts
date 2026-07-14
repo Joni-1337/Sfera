@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { processYookassaWebhookPayment } from "@/lib/subscription-payments";
+import { processYookassaWebhookPayment, revalidateSubscriptionPaths } from "@/lib/subscription-payments";
 import { isYookassaConfigured } from "@/lib/yookassa";
 
 type YookassaWebhookBody = {
   event?: string;
   object?: { id?: string };
 };
+
+export async function GET() {
+  return NextResponse.json(
+    { error: "Webhook принимает только POST от ЮKassa" },
+    { status: 405 }
+  );
+}
 
 export async function POST(request: NextRequest) {
   if (!isYookassaConfigured()) {
@@ -31,7 +38,10 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    await processYookassaWebhookPayment(paymentId);
+    const result = await processYookassaWebhookPayment(paymentId);
+    if ("succeeded" in result && result.succeeded) {
+      revalidateSubscriptionPaths();
+    }
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("[yookassa/webhook]", error);

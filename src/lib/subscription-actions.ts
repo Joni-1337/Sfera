@@ -1,12 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { requireTeacher } from "@/lib/auth";
 import { getSubscriptionPriceRub as getPrice } from "@/lib/subscription-shared";
 import {
   activateTeacherSubscription,
   createSubscriptionCheckout,
   getSubscriptionPaymentResumeUrl,
+  revalidateSubscriptionPaths,
   syncSubscriptionPaymentById,
 } from "@/lib/subscription-payments";
 import { isYookassaConfigured } from "@/lib/yookassa";
@@ -44,9 +44,7 @@ export async function startSubscriptionCheckout(): Promise<SubscriptionCheckoutR
     return { error: result.error };
   }
 
-  revalidatePath("/dashboard");
-  revalidatePath("/pricing");
-  revalidatePath("/settings");
+  revalidateSubscriptionPaths();
 
   return { redirectTo: "/pricing?success=1" };
 }
@@ -66,8 +64,10 @@ export async function resumeSubscriptionPayment(
     return { error: result.error };
   }
 
-  revalidatePath("/settings");
-  revalidatePath("/pricing");
+  if (result.redirectTo === "/settings#payments") {
+    revalidateSubscriptionPaths();
+  }
+
   return { redirectTo: result.redirectTo! };
 }
 
@@ -76,8 +76,6 @@ export async function syncSubscriptionPayment(paymentId: string) {
   if (!session) return { error: "Необходима авторизация" as const };
 
   const result = await syncSubscriptionPaymentById(session.id, paymentId);
-  revalidatePath("/settings");
-  revalidatePath("/pricing");
-  revalidatePath("/dashboard");
+  revalidateSubscriptionPaths();
   return result;
 }
