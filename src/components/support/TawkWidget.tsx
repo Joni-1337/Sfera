@@ -1,15 +1,9 @@
 import Script from "next/script";
-import "@/lib/tawk-types";
 
 const TAWK_PROPERTY_ID = process.env.NEXT_PUBLIC_TAWK_PROPERTY_ID?.trim();
 const TAWK_WIDGET_ID =
   process.env.NEXT_PUBLIC_TAWK_WIDGET_ID?.trim() || "default";
 
-/**
- * Английское приветствие «Hi! How can we help?» задаётся в кабинете Tawk.to
- * (Administration → Triggers → Welcome message). Отключите его, чтобы не
- * дублировать русское приветствие TawkWelcomePrompt на сайте.
- */
 export function TawkWidget() {
   if (!TAWK_PROPERTY_ID) return null;
 
