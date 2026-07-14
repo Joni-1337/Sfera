@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getTeacherSubscription } from "@/lib/subscription";
-import { getTeacherSubscriptionPayments } from "@/lib/subscription-payments";
+import { getTeacherSubscriptionPayments, syncAllPendingTeacherPayments } from "@/lib/subscription-payments";
 import { AppShell } from "@/components/layout/AppShell";
 import { SettingsSection } from "@/components/settings/SettingsSection";
 import { ProfileSettingsForm } from "@/components/settings/ProfileSettingsForm";
@@ -17,6 +17,8 @@ export default async function SettingsPage() {
   const session = await getSession();
   if (!session) redirect("/login");
   if (session.role !== "teacher") redirect("/dashboard");
+
+  await syncAllPendingTeacherPayments(session.id);
 
   const [teacher, subscription, payments] = await Promise.all([
     prisma.teacher.findUnique({

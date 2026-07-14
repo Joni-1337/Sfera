@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ExternalLink, Receipt } from "lucide-react";
 import { formatDateTime } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { PaymentHistoryActions } from "@/components/settings/PaymentHistoryActions";
 
 export type PaymentHistoryItem = {
   id: string;
@@ -71,6 +72,9 @@ export function SettingsPaymentHistory({
             <p className="mt-0.5 text-xs text-text-muted">
               {formatDateTime(when)}
             </p>
+            {payment.status === "pending" ? (
+              <PaymentHistoryActions paymentId={payment.id} />
+            ) : null}
             {payment.status === "succeeded" && payment.receiptUrl ? (
               <a
                 href={payment.receiptUrl}

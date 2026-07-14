@@ -127,6 +127,16 @@ export async function createSubscriptionCheckout(teacherId: string) {
     return { error: "Онлайн-оплата временно недоступна" as const };
   }
 
+  const reusable = await getReusablePendingCheckout(teacherId);
+  if (reusable && "confirmationUrl" in reusable && reusable.confirmationUrl) {
+    return { confirmationUrl: reusable.confirmationUrl };
+  }
+  if (reusable && "alreadyPaid" in reusable) {
+    return {
+      error: "Оплата уже прошла. Обновите страницу или откройте настройки.",
+    } as const;
+  }
+
   const teacher = await prisma.teacher.findUnique({
     where: { id: teacherId },
     select: { email: true },
@@ -204,18 +214,146 @@ export async function getTeacherSubscriptionPayments(teacherId: string, limit = 
   });
 }
 
-/** После возврата с ЮKassa — проверяем статус платежа напрямую (не ждём webhook). */
+/** После возврата с ЮKassa — проверяем все ожидающие платежи (не только последний). */
+export async function syncAllPendingTeacherPayments(teacherId: string) {
+  if (!isYookassaConfigured()) return;
+
+  const pending = await prisma.subscriptionPayment.findMany({
+    where: {
+      teacherId,
+      status: "pending",
+      NOT: { yookassaId: { startsWith: "pending_" } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  for (const payment of pending) {
+    await processYookassaWebhookPayment(payment.yookassaId);
+  }
+}
+
+/** После возврата с ЮKassa — проверяем статус платежей напрямую (не ждём webhook). */
 export async function syncTeacherPaymentOnReturn(teacherId: string) {
   if (!isYookassaConfigured()) {
     return getLatestSubscriptionPayment(teacherId);
   }
 
-  const latest = await getLatestSubscriptionPayment(teacherId);
-  if (latest?.status === "pending" && !latest.yookassaId.startsWith("pending_")) {
-    await processYookassaWebhookPayment(latest.yookassaId);
+  await syncAllPendingTeacherPayments(teacherId);
+  return getLatestSubscriptionPayment(teacherId);
+}
+
+async function getReusablePendingCheckout(teacherId: string) {
+  const recentPending = await prisma.subscriptionPayment.findFirst({
+    where: {
+      teacherId,
+      status: "pending",
+      createdAt: { gte: new Date(Date.now() - 60 * 60 * 1000) },
+      NOT: { yookassaId: { startsWith: "pending_" } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (!recentPending) return null;
+
+  const remote = await fetchYookassaPayment(recentPending.yookassaId);
+  if (!remote.ok) return null;
+
+  if (remote.data.status === "succeeded") {
+    await processYookassaWebhookPayment(recentPending.yookassaId);
+    return { alreadyPaid: true as const };
   }
 
-  return getLatestSubscriptionPayment(teacherId);
+  if (remote.data.status === "canceled") {
+    await processYookassaWebhookPayment(recentPending.yookassaId);
+    return null;
+  }
+
+  const confirmationUrl = remote.data.confirmation?.confirmation_url?.trim();
+  if (confirmationUrl) {
+    return { confirmationUrl };
+  }
+
+  return null;
+}
+
+export async function getSubscriptionPaymentResumeUrl(
+  teacherId: string,
+  paymentId: string
+) {
+  const payment = await prisma.subscriptionPayment.findFirst({
+    where: { id: paymentId, teacherId },
+  });
+
+  if (!payment) {
+    return { error: "Платёж не найден" as const };
+  }
+
+  if (payment.status === "succeeded") {
+    return { redirectTo: "/settings#payments" as const };
+  }
+
+  if (payment.status === "canceled") {
+    return { error: "Платёж отменён. Оформите подписку заново на странице тарифов." as const };
+  }
+
+  if (payment.yookassaId.startsWith("pending_")) {
+    return { error: "Платёж ещё создаётся. Подождите и попробуйте снова." as const };
+  }
+
+  const remote = await fetchYookassaPayment(payment.yookassaId);
+  if (!remote.ok) {
+    return { error: remote.error };
+  }
+
+  if (remote.data.status === "succeeded") {
+    await processYookassaWebhookPayment(payment.yookassaId);
+    return { redirectTo: "/settings#payments" as const };
+  }
+
+  if (remote.data.status === "canceled") {
+    await processYookassaWebhookPayment(payment.yookassaId);
+    return { error: "Платёж отменён. Оформите подписку заново на странице тарифов." as const };
+  }
+
+  const confirmationUrl = remote.data.confirmation?.confirmation_url?.trim();
+  if (!confirmationUrl) {
+    return {
+      error: "Ссылка на оплату недоступна. Создайте новый платёж на странице тарифов.",
+    };
+  }
+
+  return { redirectTo: confirmationUrl };
+}
+
+export async function syncSubscriptionPaymentById(
+  teacherId: string,
+  paymentId: string
+) {
+  const payment = await prisma.subscriptionPayment.findFirst({
+    where: { id: paymentId, teacherId },
+  });
+
+  if (!payment) {
+    return { error: "Платёж не найден" as const };
+  }
+
+  if (payment.status !== "pending" || payment.yookassaId.startsWith("pending_")) {
+    return { status: payment.status as "succeeded" | "canceled" | "pending" };
+  }
+
+  const result = await processYookassaWebhookPayment(payment.yookassaId);
+  const updated = await prisma.subscriptionPayment.findUnique({
+    where: { id: paymentId },
+    select: { status: true },
+  });
+
+  return {
+    status: (updated?.status ?? payment.status) as
+      | "succeeded"
+      | "canceled"
+      | "pending",
+    processed: result,
+  };
 }
 
 function mapYookassaStatus(status: YookassaPaymentStatus) {

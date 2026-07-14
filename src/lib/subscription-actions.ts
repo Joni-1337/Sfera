@@ -6,6 +6,8 @@ import { getSubscriptionPriceRub as getPrice } from "@/lib/subscription-shared";
 import {
   activateTeacherSubscription,
   createSubscriptionCheckout,
+  getSubscriptionPaymentResumeUrl,
+  syncSubscriptionPaymentById,
 } from "@/lib/subscription-payments";
 import { isYookassaConfigured } from "@/lib/yookassa";
 
@@ -51,4 +53,31 @@ export async function startSubscriptionCheckout(): Promise<SubscriptionCheckoutR
 
 export async function getSubscriptionPriceRub() {
   return getPrice();
+}
+
+export async function resumeSubscriptionPayment(
+  paymentId: string
+): Promise<SubscriptionCheckoutResult> {
+  const session = await requireTeacher();
+  if (!session) return { error: "Необходима авторизация" };
+
+  const result = await getSubscriptionPaymentResumeUrl(session.id, paymentId);
+  if ("error" in result && result.error) {
+    return { error: result.error };
+  }
+
+  revalidatePath("/settings");
+  revalidatePath("/pricing");
+  return { redirectTo: result.redirectTo! };
+}
+
+export async function syncSubscriptionPayment(paymentId: string) {
+  const session = await requireTeacher();
+  if (!session) return { error: "Необходима авторизация" as const };
+
+  const result = await syncSubscriptionPaymentById(session.id, paymentId);
+  revalidatePath("/settings");
+  revalidatePath("/pricing");
+  revalidatePath("/dashboard");
+  return result;
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Check, Sparkles, GraduationCap, User } from "lucide-react";
+import { Check, Sparkles, GraduationCap, User, Loader2 } from "lucide-react";
 import { startSubscriptionCheckout } from "@/lib/subscription-actions";
 import {
   SUBSCRIPTION_PRICE_RUB,
@@ -50,11 +50,20 @@ export function PricingView({
   paymentsEnabled?: boolean;
 }) {
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submittingRef = useRef(false);
   const [pending, startTransition] = useTransition();
   const router = useRouter();
 
+  const checkoutBusy = isSubmitting || pending;
+
   function handleSubscribe() {
+    if (submittingRef.current || checkoutBusy) return;
+
+    submittingRef.current = true;
+    setIsSubmitting(true);
     setError(null);
+
     startTransition(async () => {
       try {
         const result = await startSubscriptionCheckout();
@@ -64,12 +73,15 @@ export function PricingView({
         }
         if (result.redirectTo.startsWith("http")) {
           window.location.href = result.redirectTo;
-        } else {
-          router.push(result.redirectTo);
-          router.refresh();
+          return;
         }
+        router.push(result.redirectTo);
+        router.refresh();
       } catch {
         setError("Не удалось оформить подписку. Попробуйте ещё раз.");
+      } finally {
+        submittingRef.current = false;
+        setIsSubmitting(false);
       }
     });
   }
@@ -137,14 +149,19 @@ export function PricingView({
                   <button
                     type="button"
                     onClick={handleSubscribe}
-                    disabled={pending || !paymentsEnabled}
+                    disabled={checkoutBusy || !paymentsEnabled}
                     className={btnRenewal}
                   >
-                    {pending
-                      ? "Обработка..."
-                      : !paymentsEnabled
-                        ? "Оплата скоро будет доступна"
-                        : `Продлить · ${SUBSCRIPTION_PRICE_RUB.toLocaleString("ru-RU")} ₽/мес`}
+                    {checkoutBusy ? (
+                      <span className="inline-flex items-center justify-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Переход к оплате...
+                      </span>
+                    ) : !paymentsEnabled ? (
+                      "Оплата скоро будет доступна"
+                    ) : (
+                      `Продлить · ${SUBSCRIPTION_PRICE_RUB.toLocaleString("ru-RU")} ₽/мес`
+                    )}
                   </button>
                   <p className="mt-2 text-center text-xs text-text-muted">
                     {paymentsEnabled
@@ -156,14 +173,19 @@ export function PricingView({
                 <button
                   type="button"
                   onClick={handleSubscribe}
-                  disabled={pending || !paymentsEnabled}
+                  disabled={checkoutBusy || !paymentsEnabled}
                   className={cn(btnPrimary, "mt-6 w-full py-3")}
                 >
-                  {pending
-                    ? "Обработка..."
-                    : !paymentsEnabled
-                      ? "Оплата скоро будет доступна"
-                      : `Оформить · ${SUBSCRIPTION_PRICE_RUB.toLocaleString("ru-RU")} ₽/мес`}
+                  {checkoutBusy ? (
+                    <span className="inline-flex items-center justify-center gap-2">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Переход к оплате...
+                    </span>
+                  ) : !paymentsEnabled ? (
+                    "Оплата скоро будет доступна"
+                  ) : (
+                    `Оформить · ${SUBSCRIPTION_PRICE_RUB.toLocaleString("ru-RU")} ₽/мес`
+                  )}
                 </button>
               )
             ) : (
