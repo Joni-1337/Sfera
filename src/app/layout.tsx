@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { APP_NAME, APP_TITLE, APP_DESCRIPTION } from "@/lib/branding";
 import { Analytics } from "@/components/analytics/Analytics";
 import { TawkWidget } from "@/components/support/TawkWidget";
+import { rootMetadata } from "@/lib/seo";
 import "./globals.css";
 
 const inter = Inter({
@@ -10,14 +10,7 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: APP_TITLE,
-    template: `%s · ${APP_NAME}`,
-  },
-  description: APP_DESCRIPTION,
-  applicationName: APP_NAME,
-};
+export const metadata: Metadata = rootMetadata;
 export default function RootLayout({
   children,
 }: Readonly<{

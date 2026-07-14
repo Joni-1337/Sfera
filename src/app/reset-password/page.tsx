@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { XCircle } from "lucide-react";
 import { resolveGuestSession } from "@/lib/session-guard";
 import { ResetPasswordForm } from "@/components/auth/ResetPasswordForm";
 import { validatePasswordResetToken } from "@/lib/password-reset";
 import { AuthShell } from "@/components/layout/AuthShell";
+import { noIndexMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = noIndexMetadata;
 
 export default async function ResetPasswordPage({
   searchParams,

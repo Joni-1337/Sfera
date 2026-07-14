@@ -1,8 +1,12 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { checkSession, CLEAR_SESSION_PATH } from "@/lib/session";
 import { RegisterForm } from "@/components/auth/RegisterForm";
 import { usesLocalEmailVerification } from "@/lib/email";
 import { AuthShell } from "@/components/layout/AuthShell";
+import { noIndexMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = noIndexMetadata;
 
 export default async function RegisterPage() {
   const check = await checkSession();

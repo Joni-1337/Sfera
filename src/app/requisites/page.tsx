@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { APP_NAME, SUPPORT_EMAIL } from "@/lib/branding";
 import {
   LEGAL_INN,
@@ -8,10 +9,13 @@ import {
   SITE_URL,
   isLegalInfoComplete,
 } from "@/lib/legal";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: `Реквизиты и контакты — ${APP_NAME}`,
-};
+  description: `Реквизиты самозанятого и контактная информация платформы ${APP_NAME}.`,
+  path: "/requisites",
+});
 
 export default function RequisitesPage() {
   const complete = isLegalInfoComplete();

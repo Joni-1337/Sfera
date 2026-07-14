@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { APP_NAME, SUPPORT_EMAIL } from "@/lib/branding";
 import {
   LEGAL_OPERATOR_FULL_NAME,
@@ -7,10 +8,13 @@ import {
   SITE_URL,
 } from "@/lib/legal";
 import { SUBSCRIPTION_PRICE_RUB } from "@/lib/subscription-shared";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: `Публичная оферта — ${APP_NAME}`,
-};
+  description: `Публичная оферта на оказание услуг платформы ${APP_NAME}: условия подписки, оплаты и использования сервиса.`,
+  path: "/offer",
+});
 
 export default function OfferPage() {
   const updated = new Date().toLocaleDateString("ru-RU");

@@ -44,7 +44,10 @@ npm run db:seed
 | `YOOKASSA_SECRET_KEY` | Секретный ключ ЮKassa |
 | `NEXT_PUBLIC_TAWK_PROPERTY_ID` | Property ID из [Tawk.to](https://www.tawk.to) (чат поддержки) |
 | `NEXT_PUBLIC_TAWK_WIDGET_ID` | Widget ID (обычно `default`, см. Direct Chat Link) |
-| `NEXT_PUBLIC_YANDEX_METRIKA_ID` | Номер счётчика [Яндекс.Метрики](https://metrika.yandex.ru) |
+| `NEXT_PUBLIC_YANDEX_METRIKA_ID` | `110556448` — счётчик [Яндекс.Метрики](https://metrika.yandex.ru) |
+| `NEXT_PUBLIC_YANDEX_VERIFICATION` | `56b1dce39eea263b` — [Яндекс.Вебмастер](https://webmaster.yandex.ru) |
+| `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` | `23f5cs0J9pWbbq8wHJw1SIOqoRgqL1uWAzQW87IlrVc` — [Google Search Console](https://search.google.com/search-console) |
+| `MARKETING_ADMIN_EMAIL` | Email владельца — доступ к `/admin/marketing` |
 | `NEXT_PUBLIC_LEGAL_NAME` | ФИО самозанятого (как в «Мой налог») |
 | `NEXT_PUBLIC_LEGAL_INN` | ИНН самозанятого (12 цифр) |
 
@@ -141,3 +144,41 @@ Vercel пересоберёт сайт автоматически.
 | БД | PostgreSQL (Neon) | SQLite или Postgres |
 
 Проект настроен под **PostgreSQL** — SQLite больше не используется.
+
+## 7. SEO и аналитика
+
+### Яндекс.Метрика (все визиты и источники)
+
+1. [metrika.yandex.ru](https://metrika.yandex.ru) → создайте счётчик для `sferaege.ru`
+2. Vercel → `NEXT_PUBLIC_YANDEX_METRIKA_ID` = номер счётчика → Redeploy
+3. В Метрике: **Настройки → Цели** — создайте цели:
+   - `pricing_view` — просмотр тарифов
+   - `registration_submit` — отправка регистрации
+   - `registration_complete` — подтверждение email
+
+### Источники регистраций (UTM в базе)
+
+При регистрации сохраняются UTM-метки и referrer. Смотреть:
+
+- Vercel → `MARKETING_ADMIN_EMAIL` = ваш email преподавателя
+- Откройте **`/admin/marketing`** после входа
+
+Пример ссылки для рекламы:
+
+`https://sferaege.ru/?utm_source=yandex&utm_medium=cpc&utm_campaign=ege_rus`
+
+### Индексация в Яндекс и Google
+
+1. [webmaster.yandex.ru](https://webmaster.yandex.ru) → добавьте сайт → скопируйте код верификации → `NEXT_PUBLIC_YANDEX_VERIFICATION` в Vercel
+2. [search.google.com/search-console](https://search.google.com/search-console) → то же → `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`
+3. Отправьте sitemap: **`https://sferaege.ru/sitemap.xml`**
+4. Redeploy
+
+На сайте уже есть: `robots.txt`, sitemap, Open Graph, JSON-LD, canonical URL, `noindex` для кабинета.
+
+### Продвижение (вне кода)
+
+- Заполните описание на главной и в карточках возможностей ключевыми запросами («ЕГЭ русский», «платформа для репетитора»)
+- Регулярно публикуйте полезный контент (статьи, кейсы) — отдельные landing-страницы при необходимости
+- Яндекс.Бизнес / 2GIS — карточка сервиса
+- Внешние ссылки с тематических сайтов и профилей репетиторов

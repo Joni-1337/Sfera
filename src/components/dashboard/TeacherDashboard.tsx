@@ -199,7 +199,7 @@ export function TeacherDashboard({
           {/* Сводка */}
           <section className="rounded-2xl border border-border bg-bg-card p-4 md:p-5">
             <h2 className="mb-3 text-sm font-semibold md:mb-4 md:text-base">Сводка</h2>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5 lg:gap-2.5">
+            <div className="grid grid-cols-2 gap-2 lg:grid-cols-5 lg:gap-2.5">
               <StatCard
                 icon={Users}
                 label="Учеников"
@@ -247,7 +247,7 @@ export function TeacherDashboard({
                 label="За неделю"
                 value={String(stats.weeklySubmissions)}
                 detail="сдач за 7 дней"
-                className="col-span-2 sm:col-span-1"
+                className="col-span-2 mx-auto w-[calc(50%-0.25rem)] lg:col-span-1 lg:mx-0 lg:w-auto"
               />
             </div>
           </section>

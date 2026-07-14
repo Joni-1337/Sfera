@@ -1,8 +1,13 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { resolveGuestSession } from "@/lib/session-guard";
 import { CheckEmailForm } from "@/components/auth/CheckEmailForm";
 import { getDevVerificationLinkForEmail } from "@/lib/email-verification";
 import { AuthShell } from "@/components/layout/AuthShell";
+import { MetrikaGoal } from "@/components/analytics/MetrikaGoal";
+import { noIndexMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = noIndexMetadata;
 
 export default async function CheckEmailPage({
   searchParams,
@@ -22,6 +27,7 @@ export default async function CheckEmailPage({
 
   return (
     <AuthShell title="Подтвердите email" subtitle="Остался один шаг до входа">
+      <MetrikaGoal goal="registration_submit" />
       <CheckEmailForm
         email={email}
         devLink={devLink}

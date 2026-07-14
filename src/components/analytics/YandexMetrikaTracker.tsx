@@ -2,14 +2,9 @@
 
 import { useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import "@/lib/metrika-types";
 
 const COUNTER_ID = Number(process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID);
-
-declare global {
-  interface Window {
-    ym?: (id: number, method: string, url: string, options?: object) => void;
-  }
-}
 
 export function YandexMetrikaTracker() {
   const pathname = usePathname();

@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { getSession } from "@/lib/auth";
 import { getTeacherSubscription } from "@/lib/subscription";
 import { syncTeacherPaymentOnReturn } from "@/lib/subscription-payments";
@@ -6,7 +7,20 @@ import { isPaymentsEnabled } from "@/lib/yookassa";
 import { AppShell } from "@/components/layout/AppShell";
 import { MarketingShell } from "@/components/layout/MarketingShell";
 import { PricingView } from "@/components/subscription/PricingView";
+import { PricingPageJsonLd } from "@/components/seo/MarketingJsonLd";
+import { MetrikaGoal } from "@/components/analytics/MetrikaGoal";
 import { APP_NAME } from "@/lib/branding";
+import { buildPageMetadata } from "@/lib/seo";
+import {
+  SUBSCRIPTION_PRICE_RUB,
+  TRIAL_DAYS,
+} from "@/lib/subscription-shared";
+
+export const metadata: Metadata = buildPageMetadata({
+  title: `Тарифы — подписка для преподавателей ${SUBSCRIPTION_PRICE_RUB.toLocaleString("ru-RU")} ₽/мес`,
+  description: `Подписка ${APP_NAME} для преподавателей: ${SUBSCRIPTION_PRICE_RUB.toLocaleString("ru-RU")} ₽ в месяц. ${TRIAL_DAYS} дня бесплатно. Ученики ваших групп пользуются платформой бесплатно.`,
+  path: "/pricing",
+});
 
 async function resolvePaymentNotice(
   teacherId: string,
@@ -73,6 +87,8 @@ export default async function PricingPage({
 
   const content = (
     <>
+      <PricingPageJsonLd />
+      <MetrikaGoal goal="pricing_view" />
       <div className="mb-10 text-center sm:text-left">
         <p className="mb-2 text-sm font-medium uppercase tracking-wider text-accent">
           {APP_NAME}

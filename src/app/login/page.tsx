@@ -1,6 +1,11 @@
 import { resolveGuestSession } from "@/lib/session-guard";
+import type { Metadata } from "next";
 import { LoginForms } from "@/components/auth/LoginForms";
 import { AuthShell } from "@/components/layout/AuthShell";
+import { MetrikaGoal } from "@/components/analytics/MetrikaGoal";
+import { noIndexMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = noIndexMetadata;
 
 const VERIFY_MESSAGES: Record<string, string> = {
   success: "Email подтверждён. Войдите с паролем.",
@@ -33,6 +38,7 @@ export default async function LoginPage({
 
   return (
     <AuthShell title="Вход" subtitle="Ученик или преподаватель">
+      {isSuccess ? <MetrikaGoal goal="registration_complete" /> : null}
       <LoginForms
         verifyNotice={verifyNotice}
         verifySuccess={isSuccess}

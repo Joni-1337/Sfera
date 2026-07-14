@@ -1,9 +1,13 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { APP_NAME, SUPPORT_EMAIL } from "@/lib/branding";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: `Политика обработки персональных данных — ${APP_NAME}`,
-};
+  description: `Политика обработки персональных данных платформы ${APP_NAME}: какие данные собираются, цели обработки, cookies и аналитика.`,
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (
