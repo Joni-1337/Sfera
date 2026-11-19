@@ -370,6 +370,11 @@ export async function duplicateAssignment(assignmentId: string) {
 }
 
 export async function startAttempt(assignmentId: string, studentId: string) {
+  const session = await getSession();
+  if (!session || session.role !== "student" || session.id !== studentId) {
+    return { error: "Нет доступа" };
+  }
+
   const assignment = await prisma.assignment.findFirst({
     where: { id: assignmentId, published: true },
     include: { questions: { orderBy: { orderIndex: "asc" } } },
@@ -454,7 +459,11 @@ export async function saveAttemptDraft(
 
 export async function submitAttempt(formData: FormData) {
   const assignmentId = String(formData.get("assignmentId") ?? "");
-  const studentId = String(formData.get("studentId") ?? "");
+  const session = await getSession();
+  if (!session || session.role !== "student") {
+    return { error: "Нет доступа" };
+  }
+  const studentId = session.id;
   const attemptId = String(formData.get("attemptId") ?? "");
 
   const assignment = await prisma.assignment.findFirst({

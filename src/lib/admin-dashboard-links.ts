@@ -45,19 +45,9 @@ export function getAdminDashboardGroups(metrikaId?: string): AdminDashboardGroup
       description: "Деплой, база, письма",
       links: [
         {
-          label: "Vercel",
-          href: "https://vercel.com/dashboard",
-          hint: "Деплой, переменные окружения, домен sferaege.ru",
-        },
-        {
-          label: "Neon",
-          href: "https://console.neon.tech",
-          hint: "PostgreSQL — база пользователей и данных",
-        },
-        {
-          label: "Resend",
-          href: "https://resend.com/emails",
-          hint: "Письма: регистрация, сброс пароля, оплата",
+          label: "Cloud.ru",
+          href: "https://console.cloud.ru",
+          hint: "Сервер: сайт, база PostgreSQL, бэкапы (Docker)",
         },
         {
           label: "GitHub",

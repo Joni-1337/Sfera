@@ -6,7 +6,7 @@ import { AppShell } from "@/components/layout/AppShell";
 
 import { PauseView } from "@/components/pause/PauseView";
 
-import { getPauseItems } from "@/lib/pause-actions";
+import { getPauseItems } from "@/lib/notification-queries";
 
 
 

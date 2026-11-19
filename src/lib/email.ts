@@ -1,4 +1,5 @@
 import "server-only";
+import nodemailer, { type Transporter } from "nodemailer";
 import { APP_NAME, APP_TITLE } from "@/lib/branding";
 
 type SendEmailInput = {
@@ -8,8 +9,54 @@ type SendEmailInput = {
   text?: string;
 };
 
+/**
+ * Почта отправляется через SMTP (российские сервисы: Unisender Go, Selectel,
+ * SMTP.bz, Яндекс Cloud Postbox и т.п.), если задан SMTP_HOST.
+ * Иначе — через Resend (RESEND_API_KEY), как раньше.
+ */
+function isSmtpConfigured() {
+  return Boolean(process.env.SMTP_HOST?.trim());
+}
+
 export function isEmailConfigured() {
-  return Boolean(process.env.RESEND_API_KEY?.trim());
+  return isSmtpConfigured() || Boolean(process.env.RESEND_API_KEY?.trim());
+}
+
+let smtpTransport: Transporter | null = null;
+
+function getSmtpTransport(): Transporter {
+  if (smtpTransport) return smtpTransport;
+  const port = Number(process.env.SMTP_PORT?.trim() || 465);
+  const secureEnv = process.env.SMTP_SECURE?.trim();
+  smtpTransport = nodemailer.createTransport({
+    host: process.env.SMTP_HOST!.trim(),
+    port,
+    // 465 — сразу TLS; 587/25 — STARTTLS.
+    secure: secureEnv ? secureEnv === "true" : port === 465,
+    auth: process.env.SMTP_USER?.trim()
+      ? { user: process.env.SMTP_USER.trim(), pass: process.env.SMTP_PASSWORD ?? "" }
+      : undefined,
+  });
+  return smtpTransport;
+}
+
+async function sendViaSmtp(
+  input: SendEmailInput,
+  from: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await getSmtpTransport().sendMail({
+      from,
+      to: input.to,
+      subject: input.subject,
+      html: input.html,
+      text: input.text,
+    });
+    return { ok: true };
+  } catch (error) {
+    console.error("[email] SMTP send failed:", error);
+    return { ok: false, error: "Не удалось отправить письмо. Попробуйте позже." };
+  }
 }
 
 /** Без своего домена: локально подтверждаем email ссылкой на странице, без Resend. */
@@ -42,7 +89,7 @@ function parseResendError(status: number, body: string): string {
     }
 
     if (status === 403 && message.toLowerCase().includes("domain")) {
-      return "Домен для почты ещё не подтверждён в Resend. Дождитесь статуса Verified или проверьте EMAIL_FROM в Vercel.";
+      return "Домен для почты ещё не подтверждён в Resend. Дождитесь статуса Verified или проверьте EMAIL_FROM в настройках сервера.";
     }
 
     if (status === 422 && message.toLowerCase().includes("from")) {
@@ -68,9 +115,17 @@ export async function sendEmail(input: SendEmailInput): Promise<
   | { ok: true }
   | { ok: false; error: string; status?: number; rawBody?: string }
 > {
+  if (isSmtpConfigured()) {
+    const smtpFrom = process.env.EMAIL_FROM?.trim();
+    if (!smtpFrom) {
+      return { ok: false, error: "Email не настроен (EMAIL_FROM)" };
+    }
+    return sendViaSmtp(input, smtpFrom);
+  }
+
   const apiKey = process.env.RESEND_API_KEY?.trim();
   if (!apiKey) {
-    return { ok: false, error: "Email не настроен (RESEND_API_KEY)" };
+    return { ok: false, error: "Email не настроен (SMTP_HOST или RESEND_API_KEY)" };
   }
 
   const from = process.env.EMAIL_FROM?.trim() ?? `${APP_NAME} <onboarding@resend.dev>`;

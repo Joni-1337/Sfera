@@ -61,7 +61,10 @@ export async function sendTeacherVerificationEmail(teacherId: string) {
       if (
         sent.status &&
         sent.rawBody &&
-        isResendSandboxRecipientError(sent.status, sent.rawBody)
+        isResendSandboxRecipientError(sent.status, sent.rawBody) &&
+        // Ссылку на странице показываем только локально: на проде это
+        // позволило бы любому получить доступ к чужому аккаунту.
+        process.env.NODE_ENV !== "production"
       ) {
         return {
           success: true as const,
@@ -75,7 +78,7 @@ export async function sendTeacherVerificationEmail(teacherId: string) {
   }
 
   if (process.env.NODE_ENV === "production") {
-    return { error: "Почта не настроена. Добавьте RESEND_API_KEY в настройках сервера." as const };
+    return { error: "Почта не настроена. Задайте SMTP_HOST (или RESEND_API_KEY) в настройках сервера." as const };
   }
 
   console.info("[email-verification] Dev link:", verifyUrl);

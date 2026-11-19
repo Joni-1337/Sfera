@@ -1,9 +1,29 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
+import { prisma } from "@/lib/prisma";
 
-const SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? "dev-secret"
-);
+let cachedSecret: Uint8Array | null = null;
+
+/**
+ * Секрет для подписи сессий. В продакшене без JWT_SECRET (или с коротким)
+ * приложение отказывается работать: иначе любой мог бы подделать вход,
+ * зная запасной секрет из исходного кода.
+ */
+function getSecret(): Uint8Array {
+  if (cachedSecret) return cachedSecret;
+  const fromEnv = process.env.JWT_SECRET?.trim();
+  const isProd = process.env.NODE_ENV === "production";
+  if (!fromEnv) {
+    if (isProd) {
+      throw new Error("JWT_SECRET не задан. Задайте его в переменных окружения.");
+    }
+    console.warn("[auth] JWT_SECRET не задан — используется небезопасный секрет для разработки");
+  } else if (fromEnv.length < 32) {
+    console.error("[auth] JWT_SECRET короче 32 символов — замените на длинную случайную строку");
+  }
+  cachedSecret = new TextEncoder().encode(fromEnv || "dev-secret-only-for-local-development");
+  return cachedSecret;
+}
 
 export type SessionPayload = {
   role: "teacher" | "student";
@@ -21,7 +41,7 @@ export async function buildSessionCookie(payload: SessionPayload) {
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
-    .sign(SECRET);
+    .sign(getSecret());
 
   return {
     name: COOKIE_NAME,
@@ -48,7 +68,7 @@ export async function getSession(): Promise<SessionPayload | null> {
   if (!token) return null;
 
   try {
-    const { payload } = await jwtVerify(token, SECRET);
+    const { payload } = await jwtVerify(token, getSecret(), { algorithms: ["HS256"] });
     return payload as unknown as SessionPayload;
   } catch {
     return null;
@@ -66,9 +86,20 @@ export async function requireSession() {
   return session;
 }
 
+/**
+ * Сессия преподавателя для server actions. Дополнительно проверяем, что
+ * аккаунт ещё существует: cookie живёт 7 дней и переживает удаление аккаунта.
+ */
 export async function requireTeacher() {
   const session = await getSession();
-  if (!session || session.role !== "teacher") {
+  if (!session || session.role !== "teacher" || !session.id) {
+    return null;
+  }
+  const teacher = await prisma.teacher.findUnique({
+    where: { id: session.id },
+    select: { id: true, emailVerified: true },
+  });
+  if (!teacher || !teacher.emailVerified) {
     return null;
   }
   return session;

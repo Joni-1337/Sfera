@@ -1,0 +1,7 @@
+# Caddy сам получает и продлевает HTTPS-сертификат Let's Encrypt.
+# SITE_DOMAIN задаётся в .env, например: sferaege.ru, www.sferaege.ru
+# Нужен именно домен с HTTPS: по http:// браузер не сохранит cookie входа.
+{$SITE_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy app:3000
+}

@@ -1,5 +1,6 @@
 "use server";
 
+import { randomInt } from "crypto";
 import { revalidatePath } from "next/cache";
 import { requireTeacher } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -126,7 +127,8 @@ function generateAccessKey() {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let key = "";
   for (let i = 0; i < 8; i++) {
-    key += chars[Math.floor(Math.random() * chars.length)];
+    // crypto.randomInt — криптостойкий генератор, ключ нельзя предсказать.
+    key += chars[randomInt(chars.length)];
   }
   return key;
 }

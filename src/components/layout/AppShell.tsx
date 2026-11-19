@@ -2,11 +2,12 @@ import { requireValidSession } from "@/lib/session-guard";
 import { prisma } from "@/lib/prisma";
 import { Navbar } from "@/components/layout/Navbar";
 import { ThemeProvider, type UiTheme } from "@/components/layout/ThemeProvider";
-import { getUnreadNotificationCount, getRecentNotifications } from "@/lib/notification-actions";
 import {
+  getUnreadNotificationCount,
+  getRecentNotifications,
   getUnreadTeacherNotificationCount,
   getTeacherNotifications,
-} from "@/lib/teacher-notification-actions";
+} from "@/lib/notification-queries";
 import { getTeacherSubscription } from "@/lib/subscription";
 
 async function getUiTheme(

@@ -16,6 +16,25 @@ import {
   sendTeacherPasswordResetEmail,
 } from "@/lib/password-reset";
 import { getTeacherSignupAttribution } from "@/lib/attribution-server";
+import {
+  RATE_LIMITS,
+  TOO_MANY_ATTEMPTS,
+  clearRateLimit,
+  consumeRateLimit,
+  getClientIp,
+  hitRateLimit,
+  isRateLimited,
+} from "@/lib/rate-limit";
+
+/** Лимит на отправку писем: и на адрес, и на IP. true — превышен. */
+async function emailSendLimited(email: string) {
+  const ip = await getClientIp();
+  const [byIp, byAddress] = await Promise.all([
+    consumeRateLimit(`email-ip:${ip}`, RATE_LIMITS.emailSendIp),
+    consumeRateLimit(`email-addr:${email}`, RATE_LIMITS.emailSendAddress),
+  ]);
+  return byIp || byAddress;
+}
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -47,6 +66,10 @@ export async function resendVerificationFormAction(
 
   if (!email || !EMAIL_RE.test(email)) {
     return { error: "Введите корректный email" };
+  }
+
+  if (await emailSendLimited(email)) {
+    return { error: TOO_MANY_ATTEMPTS };
   }
 
   const result = await sendTeacherVerificationEmailByAddress(email);
@@ -82,6 +105,10 @@ export async function requestPasswordResetFormAction(
   }
 
   try {
+    if (await emailSendLimited(email)) {
+      return { error: TOO_MANY_ATTEMPTS };
+    }
+
     const result = await sendTeacherPasswordResetEmail(email);
 
     if ("error" in result && result.error) {
@@ -171,6 +198,10 @@ async function registerTeacherCore(formData: FormData): Promise<RegisterFormStat
     return { error: "Необходимо согласие с политикой обработки данных" };
   }
 
+  if (await consumeRateLimit(`register-ip:${await getClientIp()}`, RATE_LIMITS.registerIp)) {
+    return { error: TOO_MANY_ATTEMPTS };
+  }
+
   const existing = await prisma.teacher.findUnique({ where: { email } });
   if (existing) {
     return { error: "Преподаватель с таким email уже зарегистрирован" };
@@ -242,10 +273,26 @@ async function loginTeacherCore(formData: FormData): Promise<LoginFormState> {
     return { error: "Введите email и пароль" };
   }
 
+  const ip = await getClientIp();
+  const ipKey = `teacher-login-ip:${ip}`;
+  const emailKey = `teacher-login-email:${email}`;
+  if (
+    (await isRateLimited(ipKey, RATE_LIMITS.teacherLoginIp)) ||
+    (await isRateLimited(emailKey, RATE_LIMITS.teacherLoginEmail))
+  ) {
+    return { error: TOO_MANY_ATTEMPTS };
+  }
+
   const teacher = await prisma.teacher.findUnique({ where: { email } });
   if (!teacher || !(await bcrypt.compare(password, teacher.passwordHash))) {
+    await Promise.all([
+      hitRateLimit(ipKey, RATE_LIMITS.teacherLoginIp),
+      hitRateLimit(emailKey, RATE_LIMITS.teacherLoginEmail),
+    ]);
     return { error: "Неверный email или пароль" };
   }
+
+  await clearRateLimit(emailKey);
 
   if (!teacher.emailVerified) {
     return {
@@ -278,20 +325,35 @@ async function loginStudentCore(formData: FormData): Promise<LoginFormState> {
     return { error: "Необходимо согласие с политикой обработки данных" };
   }
 
+  const ipKey = `student-login-ip:${await getClientIp()}`;
+  const keyKey = `student-login-key:${accessKey}`;
+  if (
+    (await isRateLimited(ipKey, RATE_LIMITS.studentLoginIp)) ||
+    (await isRateLimited(keyKey, RATE_LIMITS.studentLoginKey))
+  ) {
+    return { error: TOO_MANY_ATTEMPTS };
+  }
+
   const student = await prisma.student.findUnique({
     where: { accessKey },
     include: { group: true },
   });
 
   if (!student) {
+    await hitRateLimit(ipKey, RATE_LIMITS.studentLoginIp);
     return { error: "Неверный ключ доступа" };
   }
 
-  const normalizedInput = fullName.toLowerCase();
-  const normalizedStored = student.fullName.toLowerCase();
-  if (normalizedInput !== normalizedStored) {
+  const normalizeName = (value: string) => value.trim().replace(/s+/g, " ").toLowerCase();
+  if (normalizeName(fullName) !== normalizeName(student.fullName)) {
+    await Promise.all([
+      hitRateLimit(ipKey, RATE_LIMITS.studentLoginIp),
+      hitRateLimit(keyKey, RATE_LIMITS.studentLoginKey),
+    ]);
     return { error: "Имя не совпадает с учётной записью" };
   }
+
+  await clearRateLimit(keyKey);
 
   await createSession({
     role: "student",
@@ -314,6 +376,10 @@ export async function resendVerificationEmail(formData: FormData) {
 
   if (!email || !EMAIL_RE.test(email)) {
     return { error: "Введите корректный email" };
+  }
+
+  if (await emailSendLimited(email)) {
+    return { error: TOO_MANY_ATTEMPTS };
   }
 
   const result = await sendTeacherVerificationEmailByAddress(email);

@@ -26,7 +26,7 @@ npm run dev
 
 Откройте [http://localhost:3000](http://localhost:3000)
 
-Скопируйте `.env.example` в `.env` и при необходимости настройте `RESEND_API_KEY` для email.
+Скопируйте `.env.example` в `.env` и при необходимости настройте почту (`SMTP_*` или `RESEND_API_KEY`).
 
 ## Аккаунты из seed
 
@@ -54,8 +54,12 @@ npm run dev
 
 - Next.js 15 (App Router)
 - TypeScript, Tailwind CSS 4
-- Prisma + SQLite
-- JWT-сессии (jose), Resend (email)
+- Prisma + PostgreSQL
+- JWT-сессии (jose), почта через SMTP (или Resend)
+
+## Продакшен
+
+Сервер в РФ (Cloud.ru) на Docker: сайт + PostgreSQL + Caddy (HTTPS). Пошаговая инструкция — [DEPLOY-RU.md](DEPLOY-RU.md).
 
 ## Структура
 

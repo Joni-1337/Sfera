@@ -44,7 +44,7 @@ export default function RequisitesPage() {
           <p className="mb-6 rounded-xl border border-amber-400/40 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
             Оператору сайта: укажите ФИО и ИНН в переменных окружения{" "}
             <code className="text-xs">NEXT_PUBLIC_LEGAL_NAME</code> и{" "}
-            <code className="text-xs">NEXT_PUBLIC_LEGAL_INN</code> в Vercel.
+            <code className="text-xs">NEXT_PUBLIC_LEGAL_INN</code> в переменных окружения сервера.
           </p>
         )}
 

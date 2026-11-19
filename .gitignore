@@ -31,6 +31,9 @@ yarn-error.log*
 # env files
 .env
 .env*.local
+.env.onreza
+.env.vercel
+.onreza/
 
 # typescript
 *.tsbuildinfo
@@ -44,3 +47,8 @@ prisma/prod.db-journal
 
 # local deploy archives
 /deploy/
+.vercel
+.env*
+
+# бэкапы базы на сервере
+/infra/backups/

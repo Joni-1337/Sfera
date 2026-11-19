@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>СФЕРА — Investor Pitch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0b1418;
+      --bg-elev: #122025;
+      --bg-soft: #183038;
+      --line: rgba(148, 197, 188, 0.16);
+      --text: #e8f2ef;
+      --muted: #9bb5ad;
+      --accent: #2dd4bf;
+      --accent-dim: rgba(45, 212, 191, 0.14);
+      --amber: #f0b45a;
+      --rose: #f07167;
+      --ok: #5dce8f;
+      --font: "Manrope", system-ui, sans-serif;
+      --serif: "Source Serif 4", Georgia, serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .deck {
+      height: 100%;
+      width: 100%;
+      position: relative;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: clamp(1.5rem, 4vw, 3.5rem) clamp(1.5rem, 5vw, 4.5rem);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      background:
+        radial-gradient(ellipse 80% 55% at 100% -10%, rgba(45, 212, 191, 0.12), transparent 55%),
+        radial-gradient(ellipse 50% 40% at -10% 100%, rgba(24, 80, 90, 0.35), transparent 50%),
+        var(--bg);
+      animation: fadeIn 0.35s ease;
+    }
+    .slide.active { display: flex; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    .eyebrow {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: clamp(2.1rem, 4.8vw, 3.6rem);
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      max-width: 18ch;
+    }
+
+    h2 {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+      max-width: 28ch;
+    }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.45rem;
+      color: var(--text);
+    }
+
+    .lead {
+      margin-top: 1.1rem;
+      font-size: clamp(1.05rem, 1.6vw, 1.25rem);
+      color: var(--muted);
+      max-width: 42ch;
+      line-height: 1.55;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.8rem;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .slide { overflow-y: auto; justify-content: flex-start; padding-top: 2rem; padding-bottom: 5rem; }
+    }
+
+    .card {
+      background: var(--bg-elev);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 1.1rem 1.2rem;
+    }
+    .card.accent {
+      background: var(--accent-dim);
+      border-color: rgba(45, 212, 191, 0.35);
+    }
+    .card.highlight {
+      border-color: rgba(45, 212, 191, 0.55);
+      box-shadow: inset 0 0 0 1px rgba(45, 212, 191, 0.12);
+    }
+
+    ul.clean {
+      list-style: none;
+      display: grid;
+      gap: 0.55rem;
+      margin-top: 0.25rem;
+    }
+    ul.clean li {
+      position: relative;
+      padding-left: 1.15rem;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.98rem;
+    }
+    ul.clean li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 0.4rem;
+      height: 0.4rem;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .stat-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 1.75rem;
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.03em;
+    }
+    .stat span {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid rgba(45, 212, 191, 0.35);
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 0.35rem 0.8rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .table-wrap { overflow-x: auto; margin-top: 0.5rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.65rem 0.7rem;
+      border-bottom: 1px solid var(--line);
+    }
+    th { color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    td { color: var(--text); }
+    tr.rec td { background: var(--accent-dim); }
+    .num { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--accent); }
+
+    .footer-meta {
+      position: absolute;
+      left: clamp(1.5rem, 5vw, 4.5rem);
+      right: clamp(1.5rem, 5vw, 4.5rem);
+      bottom: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .progress {
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      z-index: 6;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.25s ease;
+    }
+
+    .nav-hint {
+      pointer-events: auto;
+      display: flex;
+      gap: 0.4rem;
+    }
+    .nav-hint button {
+      pointer-events: auto;
+      border: 1px solid var(--line);
+      background: var(--bg-elev);
+      color: var(--text);
+      width: 2rem;
+      height: 2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .nav-hint button:hover { border-color: var(--accent); color: var(--accent); }
+
+    .notes-panel {
+      display: none;
+      position: absolute;
+      right: 1rem;
+      bottom: 3.2rem;
+      width: min(360px, calc(100% - 2rem));
+      max-height: 40vh;
+      overflow: auto;
+      background: #0e1a1e;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      z-index: 8;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+    .notes-panel.open { display: block; }
+    .notes-panel strong { color: var(--text); display: block; margin-bottom: 0.35rem; }
+
+    .brand-mark {
+      width: 3.2rem;
+      height: 3.2rem;
+      border-radius: 50%;
+      border: 2px solid rgba(45, 212, 191, 0.55);
+      display: grid;
+      place-items: center;
+      margin-bottom: 1.4rem;
+      background: radial-gradient(circle at 35% 30%, rgba(45,212,191,0.35), transparent 55%), var(--bg-elev);
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      font-size: 0.7rem;
+    }
+
+    .quote {
+      font-family: var(--serif);
+      font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+      line-height: 1.35;
+      max-width: 28ch;
+      margin-top: 0.5rem;
+    }
+
+    .pill-row { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1rem; }
+    .pill {
+      border: 1px solid var(--line);
+      background: var(--bg-soft);
+      border-radius: 999px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+    .tiny { font-size: 0.78rem; color: var(--muted); margin-top: 0.75rem; }
+    .ok { color: var(--ok); }
+    .warn { color: var(--amber); }
+    .bad { color: var(--rose); }
+
+    .title-slide h1 { max-width: 16ch; }
+    .close-slide h1 { max-width: 20ch; }
+
+    .kicker {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      max-width: 50ch;
+    }
+  </style>
+</head>
+<body>
+  <div class="progress"><i id="bar"></i></div>
+  <div class="deck" id="deck">
+
+    <!-- 01 -->
+    <section class="slide title-slide active" data-notes="Представьтесь коротко. Назовите стадию и что просите. Не уходите в детали продукта на титуле.">
+      <div class="brand-mark">СФ</div>
+      <p class="eyebrow">Investor pitch · Seed / Pre-seed</p>
+      <h1>СФЕРА — ОС подготовки к ЕГЭ для преподавателя</h1>
+      <p class="lead">Один кабинет вместо Excel, WhatsApp и разрозненных сайтов. Сейчас — СФЕРА.Рус. Дальше — мультипредметная платформа.</p>
+      <div class="stat-row">
+        <div class="stat"><strong>1 990 ₽</strong><span>подписка учителя / мес</span></div>
+        <div class="stat"><strong>0 ₽</strong><span>для учеников групп</span></div>
+        <div class="stat"><strong>B2Pro</strong><span>SaaS · sferaege.ru</span></div>
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section class="slide" data-notes="Три тезиса: рынок ЕГЭ стабилен; боль операционки; бренд уже под платформу.">
+      <p class="eyebrow">Почему сейчас</p>
+      <h2>Окно возможности</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>01 · Стабильный спрос</h3>
+          <p style="color:var(--muted);font-size:0.95rem;line-height:1.5">ЕГЭ — ежегодный ритуал. Репетиторы и курсы цифровизируют подготовку, но софт под их процесс слабый.</p>
+        </div>
+        <div class="card">
+          <h3>02 · Операционный хаос</h3>
+          <p style="color:var(--muted);font-size:0.95rem;line-height:1.5">Задания в чатах, учёт в таблицах, тесты на чужих сайтах. Нет единой аналитики и дисциплины дедлайнов.</p>
+        </div>
+        <div class="card accent">
+          <h3>03 · Платформенный задел</h3>
+          <p style="color:var(--muted);font-size:0.95rem;line-height:1.5">СФЕРА.* — архитектура под предметы. Русский — wedge. Мат, Общ и дальше — история масштаба.</p>
+        </div>
+      </div>
+      <p class="kicker">Мы продаём не контент ученику. Мы продаём <span style="color:var(--text)">контроль процесса</span> преподавателю.</p>
+    </section>
+
+    <!-- 03 -->
+    <section class="slide" data-notes="Пройдите роли. Акцент на цене хаоса: часы, отток, потолок масштаба групп.">
+      <p class="eyebrow">Проблема</p>
+      <h2>Подготовка к ЕГЭ живёт в хаосе инструментов</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Преподаватель</h3>
+          <ul class="clean">
+            <li>Раздаёт задания вручную в мессенджерах</li>
+            <li>Прогресс учеников «на глаз»</li>
+            <li>Не масштабирует группы без потери качества</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Ученик и родитель</h3>
+          <ul class="clean">
+            <li>Разные ссылки, нет привычки кабинета</li>
+            <li>Слабая обратная связь между занятиями</li>
+            <li>Родитель не видит реальную работу</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card highlight" style="margin-top:1rem">
+        <p class="quote">Цена хаоса — потерянные часы репетитора и невидимый прогресс ученика.</p>
+      </div>
+    </section>
+
+    <!-- 04 -->
+    <section class="slide" data-notes="Если можно — 60 сек live demo. Иначе проговорите модули уверенно, как уже shipped.">
+      <p class="eyebrow">Решение сегодня · СФЕРА.Рус</p>
+      <h2>Готовый кабинет для репетитора и учителя</h2>
+      <div class="grid-3">
+        <div class="card"><h3>Группы</h3><p style="color:var(--muted);font-size:0.92rem">Ключи доступа, архив, учёт учеников без email</p></div>
+        <div class="card"><h3>Задания и тесты ЕГЭ</h3><p style="color:var(--muted);font-size:0.92rem">Банк, Excel-импорт, автопроверка, дедлайны</p></div>
+        <div class="card"><h3>Аналитика</h3><p style="color:var(--muted);font-size:0.92rem">По группе, ученику, заданию · CSV-экспорт</p></div>
+        <div class="card"><h3>Тексты и словарь</h3><p style="color:var(--muted);font-size:0.92rem">Материалы + сложные слова + «слово дня»</p></div>
+        <div class="card"><h3>Подписка</h3><p style="color:var(--muted);font-size:0.92rem">Trial 3 дня → Pro 1 990 ₽ · ЮKassa</p></div>
+        <div class="card accent"><h3>Ценность</h3><p style="color:var(--muted);font-size:0.92rem">Платит учитель. Ученики бесплатно. Прогресс в цифрах.</p></div>
+      </div>
+    </section>
+
+    <!-- 05 -->
+    <section class="slide" data-notes="Объясните wedge→platform. Это ключевой narrative для венчурной истории.">
+      <p class="eyebrow">Масштаб</p>
+      <h2>Не сайт по одному предмету — платформа СФЕРА</h2>
+      <div class="two-col">
+        <div>
+          <div class="card accent" style="margin-bottom:0.8rem"><h3>Ядро</h3><ul class="clean"><li>Аккаунты и роли</li><li>Группы и биллинг</li><li>Аналитика и уведомления</li><li>Чат, рефералка, AI-слой</li></ul></div>
+          <div class="pill-row">
+            <span class="pill">ОГЭ</span><span class="pill">10 класс</span><span class="pill">интенсивы</span><span class="pill">школьный тариф</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Предметные модули</h3>
+          <ul class="clean">
+            <li><strong style="color:var(--accent)">СФЕРА.Рус</strong> — live</li>
+            <li>СФЕРА.Мат — следующий wedge</li>
+            <li>СФЕРА.Обществознание</li>
+            <li>История · Английский · Физика…</li>
+          </ul>
+          <p class="tiny">Unit economics отрабатываем на русском → копируем playbook на предметы с общим ядром.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 -->
+    <section class="slide" data-notes="Перед питчем подставьте актуальные оценки рынка из открытых источников.">
+      <p class="eyebrow">Рынок</p>
+      <h2>Большой рынок репетиторства · узкий клин ЕГЭ-операционки</h2>
+      <div class="grid-3">
+        <div class="card">
+          <div class="stat"><strong>TAM</strong><span>EdTech + репетиторство РФ</span></div>
+          <p class="tiny">Широкий рынок платного обучения и подготовки к экзаменам</p>
+        </div>
+        <div class="card">
+          <div class="stat"><strong>SAM</strong><span>Репетиторы и курсы ЕГЭ online/hybrid</span></div>
+          <p class="tiny">Те, кто ведёт группы и готов платить за софт процесса</p>
+        </div>
+        <div class="card accent">
+          <div class="stat"><strong>SOM</strong><span>3 года · 3–5 предметов СФЕРА</span></div>
+          <p class="tiny">Доля платящих преподавателей в ядре ЕГЭ-предметов</p>
+        </div>
+      </div>
+      <p class="kicker">Модель: <span class="num">ARPU учителя × N учителей × LTV</span> · ученик = бесплатный пользователь и канал удержания</p>
+    </section>
+
+    <!-- 07 -->
+    <section class="slide" data-notes="Не раздувайте marketplace. Фокус: подписка учителя и апселлы.">
+      <p class="eyebrow">Бизнес-модель</p>
+      <h2>Деньги с того, кто зарабатывает на учениках</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Поток</th><th>Когда</th><th>Суть</th></tr></thead>
+          <tbody>
+            <tr><td>Core Pro</td><td>сейчас</td><td>1 990 ₽/мес · группы, задания, тесты, аналитика</td></tr>
+            <tr><td>Pro+</td><td>6–12 мес</td><td>чат, AI-разбор, отчёты родителям, приоритет</td></tr>
+            <tr><td>School / Org</td><td>12–18 мес</td><td>несколько учителей, админ, seats</td></tr>
+            <tr><td>Subject packs</td><td>по запуску</td><td>новые предметы в подписке / апселл</td></tr>
+            <tr><td>Referral credits</td><td>рано</td><td>скидки и месяцы Pro за приглашения</td></tr>
+            <tr><td>Marketplace</td><td>18+ мес</td><td>опцион · не ядро раунда</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 08 -->
+    <section class="slide" data-notes="Дифференциация без агрессии. Моат = привычка + данные + мультипредмет + рефералы.">
+      <p class="eyebrow">Конкуренция</p>
+      <h2>ЕГЭ-first кабинет учителя — наш угол</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Кто рядом</h3>
+          <ul class="clean">
+            <li>Банки заданий — контент, мало операционки</li>
+            <li>Универсальные LMS — тяжело и не про ЕГЭ</li>
+            <li>WhatsApp + Excel — привычно и хаотично</li>
+            <li>B2C AI-репетиторы — продают ученику</li>
+          </ul>
+        </div>
+        <div class="card accent">
+          <h3>Наш моат на 24–36 мес</h3>
+          <ul class="clean">
+            <li>Предметные банки + UX репетитора</li>
+            <li>Данные прогресса группы</li>
+            <li>Привычка ежедневного кабинета</li>
+            <li>Сеть рефералов учителей</li>
+            <li>Мультипредметный бренд СФЕРА</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 09 -->
+    <section class="slide" data-notes="Чат и рефералка — must-have роста. AI — assist, не replace.">
+      <p class="eyebrow">Продуктовое видение</p>
+      <h2>Что строим поверх ядра</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Чат учитель ↔ ученик</h3>
+          <ul class="clean">
+            <li>Личный и групповой канал</li>
+            <li>Треды к заданиям и тестам</li>
+            <li>Объявления, файлы, read-status</li>
+            <li>Цель: убрать WhatsApp как 2-ю систему</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Реферальная система</h3>
+          <ul class="clean">
+            <li>Teacher → Teacher — главный рост</li>
+            <li>Двусторонний бонус после оплаты</li>
+            <li>Антифрод и дашборд конверсий</li>
+            <li>Виральность через учеников бренда</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Мультипредметность</h3>
+          <ul class="clean">
+            <li>Рус → Мат → Общ → …</li>
+            <li>Банк + шаблоны ЕГЭ + аналитика</li>
+            <li>Общее ядро · разные модули</li>
+          </ul>
+        </div>
+        <div class="card accent">
+          <h3>Фишки уровня «вау»</h3>
+          <ul class="clean">
+            <li>AI-разбор ошибок</li>
+            <li>Карта готовности к ЕГЭ</li>
+            <li>Родительский read-only</li>
+            <li>PWA · отчёты PDF · School</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section class="slide" data-notes="Ключевой слайд. Просите деньги под Platform. Aggressive — опцион.">
+      <p class="eyebrow">Стратегия</p>
+      <h2>Три сценария развития</h2>
+      <div class="grid-3">
+        <div class="card">
+          <p class="tag">Focus</p>
+          <h3>Доминируем в русском</h3>
+          <ul class="clean">
+            <li>Чат, рефералка, AI, родители</li>
+            <li>Сильный SEO по ЕГЭ рус</li>
+            <li>Доказанный LTV</li>
+          </ul>
+          <p class="tiny warn">Потолок одного предмета</p>
+        </div>
+        <div class="card highlight">
+          <p class="tag">Platform · база</p>
+          <h3>СФЕРА как ОС ЕГЭ</h3>
+          <ul class="clean">
+            <li>Всё из Focus</li>
+            <li>Мат + 3-й предмет</li>
+            <li>Тариф School</li>
+            <li>18–24 мес история роста</li>
+          </ul>
+          <p class="tiny ok">Рекомендуемый путь раунда</p>
+        </div>
+        <div class="card">
+          <p class="tag">Aggressive</p>
+          <h3>Экосистема</h3>
+          <ul class="clean">
+            <li>5+ предметов</li>
+            <li>Партнёрства / marketplace</li>
+            <li>Сети школ</li>
+          </ul>
+          <p class="tiny bad">Только после перевыполнения</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section class="slide" data-notes="Свяжите фазы с метриками. Не обещайте Aggressive timeline.">
+      <p class="eyebrow">Roadmap · Platform 18–24 мес</p>
+      <h2>От кабинета по русскому — к платформе</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Фаза</th><th>Срок</th><th>Что поставляем</th><th>Метрика</th></tr></thead>
+          <tbody>
+            <tr><td>P0</td><td>0–3 мес</td><td>Чат · рефералка · онбординг</td><td>Trial→Paid ↑ · WAT</td></tr>
+            <tr><td>P1</td><td>3–9 мес</td><td>AI-assist · PWA · родители · карта готовности</td><td>Retention D30/D90</td></tr>
+            <tr class="rec"><td>P2</td><td>6–12 мес</td><td>СФЕРА.Мат MVP</td><td>Paid teachers Мат</td></tr>
+            <tr><td>P3</td><td>12–18 мес</td><td>3-й предмет · School beta</td><td>ARPU ↑</td></tr>
+            <tr><td>P4</td><td>18–24 мес</td><td>Методики / партнёрства</td><td>MRR 1M+ (модель)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 12 -->
+    <section class="slide" data-notes="Performance только после unit economics. Рефералы — главный двигатель.">
+      <p class="eyebrow">Go-to-market</p>
+      <h2>Учитель приводит учителя</h2>
+      <div class="two-col">
+        <div class="card">
+          <h3>Каналы</h3>
+          <ul class="clean">
+            <li>SEO и лендинги ЕГЭ</li>
+            <li>Рефералы преподавателей</li>
+            <li>Telegram / комьюнити репетиторов</li>
+            <li>Партнёрства с методистами</li>
+            <li>Performance — после LTV/CAC</li>
+          </ul>
+        </div>
+        <div class="card accent">
+          <h3>Воронка</h3>
+          <p style="color:var(--muted);line-height:1.7;font-size:0.98rem">
+            Визит → Регистрация учителя → Активация<br/>
+            (группа + первое задание &lt; 15 мин) → Trial → Paid → Referral
+          </p>
+          <p class="tiny">North Star: Weekly Active Teachers + assignments / teacher / week</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 13 -->
+    <section class="slide" data-notes="Пообещайте ежемесячный отчёт инвестору по этим метрикам.">
+      <p class="eyebrow">Метрики</p>
+      <h2>Чем измеряем успех</h2>
+      <div class="grid-4">
+        <div class="card"><h3>WAT</h3><p class="tiny">Weekly Active Teachers</p></div>
+        <div class="card"><h3>Trial→Paid</h3><p class="tiny">цель Platform 15%+</p></div>
+        <div class="card"><h3>Retention</h3><p class="tiny">D30 / D90 учителей</p></div>
+        <div class="card"><h3>LTV / CAC</h3><p class="tiny">цель &gt; 3×</p></div>
+        <div class="card"><h3>ARPU</h3><p class="tiny">1 990 → 2 200+</p></div>
+        <div class="card"><h3>Students / teacher</h3><p class="tiny">engagement, не revenue</p></div>
+        <div class="card"><h3>% с рефералом</h3><p class="tiny">вирусный контур</p></div>
+        <div class="card accent"><h3># предметов</h3><p class="tiny">с платящими учителями</p></div>
+      </div>
+    </section>
+
+    <!-- 14 -->
+    <section class="slide" data-notes="Это модель. Честно скажите. Детали в FINANCIAL-MODEL.md.">
+      <p class="eyebrow">Финмодель · допущения</p>
+      <h2>Platform: путь к ~1M ₽ MRR за 24 мес</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Сценарий</th><th>Paid M12</th><th>Paid M24</th><th>MRR M24</th><th>LTV</th><th>Ask (ориентир)</th></tr></thead>
+          <tbody>
+            <tr><td>Focus</td><td class="num">90</td><td class="num">220</td><td class="num">438k</td><td class="num">~21k</td><td>2.5–4M ₽</td></tr>
+            <tr class="rec"><td>Platform</td><td class="num">140</td><td class="num">480</td><td class="num">1.06M</td><td class="num">~31k</td><td>5–8M ₽</td></tr>
+            <tr><td>Aggressive</td><td class="num">280</td><td class="num">1 100</td><td class="num">2.86M</td><td class="num">~42k</td><td>12–20M ₽</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tiny">ARPU база 1 990 ₽ · churn 5–8% · GM ~85%. Break-even Platform ориентир: ~550–650 платящих. Полная модель — в FINANCIAL-MODEL.md</p>
+    </section>
+
+    <!-- 15 -->
+    <section class="slide" data-notes="Подставьте финальную сумму ask. Покажите связь денег и milestones.">
+      <p class="eyebrow">Use of funds · Platform ~6M ₽</p>
+      <h2>На что идут деньги</h2>
+      <div class="grid-2">
+        <div class="card"><h3>45% · Product & eng</h3><p class="tiny">Чат, рефералка, AI, PWA, ядро мультипредмета — 2.7M</p></div>
+        <div class="card"><h3>20% · Контент</h3><p class="tiny">Банки Мат и Общ, методисты — 1.2M</p></div>
+        <div class="card"><h3>20% · Growth</h3><p class="tiny">SEO, комьюнити, performance — 1.2M</p></div>
+        <div class="card"><h3>15% · Ops + reserve</h3><p class="tiny">Поддержка, legal, буфер — 0.9M</p></div>
+      </div>
+      <p class="kicker">Milestone 12 мес: чат + рефералка + Мат MVP + рост paid teachers по модели Platform.</p>
+    </section>
+
+    <!-- 16 -->
+    <section class="slide" data-notes="ОБЯЗАТЕЛЬНО заполните фактом перед питчем. Если цифр мало — кейсы и качественные сигналы.">
+      <p class="eyebrow">Тракшн</p>
+      <h2>Текущие цифры</h2>
+      <div class="grid-3">
+        <div class="card"><div class="stat"><strong>— —</strong><span>платящих учителей</span></div></div>
+        <div class="card"><div class="stat"><strong>— —</strong><span>MRR, ₽</span></div></div>
+        <div class="card"><div class="stat"><strong>— —</strong><span>Trial → Paid</span></div></div>
+        <div class="card"><div class="stat"><strong>— —</strong><span>активных учеников</span></div></div>
+        <div class="card"><div class="stat"><strong>Live</strong><span>продукт · платежи · SEO</span></div></div>
+        <div class="card accent"><div class="stat"><strong>СФЕРА.Рус</strong><span>модуль в проде · sferaege.ru</span></div></div>
+      </div>
+      <p class="tiny">Заполните перед встречей. Пока можно опираться на demo, активацию и качественные отзывы преподавателей.</p>
+    </section>
+
+    <!-- 17 -->
+    <section class="slide" data-notes="Добавьте имена и роли. Почему команда может сделать EdTech для ЕГЭ.">
+      <p class="eyebrow">Команда</p>
+      <h2>Кто строит СФЕРА</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>Продукт / инженерия</h3>
+          <p class="tiny">Full-cycle продукт: Next.js платформа, биллинг, аналитика, кабинет учителя и ученика</p>
+        </div>
+        <div class="card">
+          <h3>Методика ЕГЭ</h3>
+          <p class="tiny">Предметная экспертиза · банки заданий · логика кодификатора (усилить партнёрами)</p>
+        </div>
+        <div class="card accent">
+          <h3>Рост</h3>
+          <p class="tiny">SEO, комьюнити репетиторов, реферальный двигатель, партнёрства</p>
+        </div>
+      </div>
+      <p class="kicker">Допишите имена, бэкграунд и advisors перед питчем.</p>
+    </section>
+
+    <!-- 18 -->
+    <section class="slide close-slide" data-notes="Чёткий ask. Пауза. Вопросы.">
+      <p class="eyebrow">The Ask</p>
+      <h1>Строим стандарт цифрового кабинета подготовки к ЕГЭ</h1>
+      <div class="grid-3" style="margin-top:1.5rem">
+        <div class="card accent"><h3>Сумма</h3><p class="tiny">5–8M ₽ под сценарий Platform (уточнить)</p></div>
+        <div class="card"><h3>На 12–18 мес</h3><p class="tiny">Чат · рефералка · Мат · School beta · unit economics</p></div>
+        <div class="card"><h3>Визия</h3><p class="tiny">СФЕРА.Рус → СФЕРА как ОС ЕГЭ в России</p></div>
+      </div>
+      <p class="lead" style="margin-top:1.5rem">СФЕРА — один кабинет для преподавателя. Предметы масштабируются. Прогресс ученика становится видимым.</p>
+    </section>
+
+    <!-- 19 appendix features -->
+    <section class="slide" data-notes="Appendix — только если спросят про фичи.">
+      <p class="eyebrow">Appendix · Product backlog</p>
+      <h2>Полный каталог усилений</h2>
+      <div class="grid-3">
+        <div class="card"><h3>Коммуникации</h3><ul class="clean"><li>Чат 1:1 и группа</li><li>Треды к заданиям</li><li>Шаблоны сообщений</li><li>Автонапоминания</li></ul></div>
+        <div class="card"><h3>Обучение</h3><ul class="clean"><li>Адаптивные варианты</li><li>Spaced repetition</li><li>Симулятор экзамена</li><li>AI-рубрики сочинений</li></ul></div>
+        <div class="card"><h3>Аналитика</h3><ul class="clean"><li>Heatmap кодификатора</li><li>Прогноз балла</li><li>Алерты «ученик выпал»</li><li>PDF родителям</li></ul></div>
+        <div class="card"><h3>Рост</h3><ul class="clean"><li>Рефералка</li><li>Промокоды</li><li>Affiliate методистов</li><li>Амбассадоры</li></ul></div>
+        <div class="card"><h3>B2B</h3><ul class="clean"><li>Орг-аккаунты</li><li>Роли админ/учитель</li><li>White-label light</li><li>Seats School</li></ul></div>
+        <div class="card"><h3>Доверие</h3><ul class="clean"><li>152-ФЗ</li><li>Оферта и платежи</li><li>Модерация</li><li>Стабильный uptime</li></ul></div>
+      </div>
+    </section>
+
+    <!-- 20 risks -->
+    <section class="slide" data-notes="Показывает зрелость. Не прячьте риски.">
+      <p class="eyebrow">Appendix · Risks</p>
+      <h2>Риски и как снимаем</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Риск</th><th>Mitigation</th></tr></thead>
+          <tbody>
+            <tr><td>Дорогой контент предметов</td><td>Excel-импорт · методисты · UGC учителей</td></tr>
+            <tr><td>Учителя не уходят из WhatsApp</td><td>Чат + дедлайны + отчёты только в СФЕРА</td></tr>
+            <tr><td>Сезонность ЕГЭ</td><td>ОГЭ · 10 класс · лето · несколько предметов</td></tr>
+            <tr><td>Сильные конкуренты</td><td>Скорость · UX репетитора · данные групп</td></tr>
+            <tr><td>AI как commodity</td><td>AI-слой над нашими банками и аналитикой</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="notes-panel" id="notes"><strong>Ноты</strong><span id="notesText"></span></div>
+
+  <div class="footer-meta">
+    <span>СФЕРА · Confidential</span>
+    <span id="counter">1 / 1</span>
+    <div class="nav-hint">
+      <button type="button" id="prev" aria-label="Назад">←</button>
+      <button type="button" id="next" aria-label="Вперёд">→</button>
+    </div>
+  </div>
+
+  <script>
+    const slides = [...document.querySelectorAll(".slide")];
+    const bar = document.getElementById("bar");
+    const counter = document.getElementById("counter");
+    const notesPanel = document.getElementById("notes");
+    const notesText = document.getElementById("notesText");
+    let i = 0;
+
+    function show(n) {
+      i = Math.max(0, Math.min(slides.length - 1, n));
+      slides.forEach((s, idx) => s.classList.toggle("active", idx === i));
+      bar.style.width = ((i + 1) / slides.length * 100) + "%";
+      counter.textContent = (i + 1) + " / " + slides.length;
+      notesText.textContent = slides[i].dataset.notes || "";
+    }
+
+    document.getElementById("prev").onclick = () => show(i - 1);
+    document.getElementById("next").onclick = () => show(i + 1);
+
+    document.addEventListener("keydown", (e) => {
+      if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(e.key)) {
+        e.preventDefault();
+        show(i + 1);
+      } else if (["ArrowLeft", "ArrowUp", "PageUp"].includes(e.key)) {
+        e.preventDefault();
+        show(i - 1);
+      } else if (e.key === "Home") show(0);
+      else if (e.key === "End") show(slides.length - 1);
+      else if (e.key === "n" || e.key === "N" || e.key === "т" || e.key === "Т") {
+        notesPanel.classList.toggle("open");
+      } else if (e.key === "f" || e.key === "F" || e.key === "а" || e.key === "А") {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+        else document.exitFullscreen?.();
+      }
+    });
+
+    let touchX = null;
+    document.addEventListener("touchstart", (e) => { touchX = e.changedTouches[0].screenX; });
+    document.addEventListener("touchend", (e) => {
+      if (touchX == null) return;
+      const dx = e.changedTouches[0].screenX - touchX;
+      if (Math.abs(dx) > 50) show(i + (dx < 0 ? 1 : -1));
+      touchX = null;
+    });
+
+    show(0);
+  </script>
+</body>
+</html>

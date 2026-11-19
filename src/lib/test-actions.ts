@@ -362,6 +362,11 @@ export async function duplicateTest(testId: string) {
 }
 
 export async function startTestAttempt(testId: string, studentId: string) {
+  const session = await getSession();
+  if (!session || session.role !== "student" || session.id !== studentId) {
+    return { error: "Нет доступа" };
+  }
+
   const test = await prisma.test.findFirst({
     where: { id: testId, published: true },
     include: { questions: { orderBy: { orderIndex: "asc" } } },
@@ -446,7 +451,11 @@ export async function saveTestAttemptDraft(
 
 export async function submitTestAttempt(formData: FormData) {
   const testId = String(formData.get("testId") ?? "");
-  const studentId = String(formData.get("studentId") ?? "");
+  const session = await getSession();
+  if (!session || session.role !== "student") {
+    return { error: "Нет доступа" };
+  }
+  const studentId = session.id;
   const attemptId = String(formData.get("attemptId") ?? "");
 
   const test = await prisma.test.findFirst({

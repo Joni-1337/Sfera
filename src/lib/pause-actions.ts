@@ -127,19 +127,3 @@ export async function removeFromPause(pauseItemId: string, studentId: string) {
   return { success: true };
 
 }
-
-
-
-export async function getPauseItems(studentId: string) {
-
-  return prisma.pauseItem.findMany({
-
-    where: { studentId },
-
-    orderBy: { createdAt: "desc" },
-
-  });
-
-}
-
-

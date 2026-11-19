@@ -1,0 +1,16 @@
+.git
+.github
+.next
+node_modules
+.vercel
+.onreza
+deploy
+docs
+*.md
+.env
+.env.*
+*.tsbuildinfo
+prisma/*.db
+prisma/*.db-journal
+templates
+infra/backups
